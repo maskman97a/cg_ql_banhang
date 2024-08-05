@@ -9,18 +9,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="Init project">
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/dto/BaseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/error.jsp" afterDir="false" />
+    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="Refactor code">
+      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/controller/AdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/AdminService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/admin/admin.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/dto/ProductDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/dto/ProductDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/BaseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/BaseModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/ProductModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/ProductModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/BaseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/BaseService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/HomeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/HomeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/views/home/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/views/home/home.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/views/product/product-show.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/views/product/product-show.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,7 +233,7 @@
       <workItem from="1722608545753" duration="6850000" />
       <workItem from="1722672827956" duration="103000" />
       <workItem from="1722673038256" duration="20731000" />
-      <workItem from="1722860520986" duration="4344000" />
+      <workItem from="1722860520986" duration="5592000" />
     </task>
     <task id="LOCAL-00001" summary="Init project">
       <option name="closed" value="true" />
@@ -256,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722863009371</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Refactor code">
+      <option name="closed" value="true" />
+      <created>1722864996677</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722864996677</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,17 +267,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init project" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init project" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/ProductService.java</url>
-          <line>24</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Refactor code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor code" />
   </component>
 </project>

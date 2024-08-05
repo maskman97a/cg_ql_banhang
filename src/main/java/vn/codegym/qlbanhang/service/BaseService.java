@@ -23,6 +23,15 @@ public class BaseService {
         this.modelMapper = new ModelMapper();
     }
 
+    protected void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) {
+        try {
+            req.getRequestDispatcher(req.getContextPath() + "/views/error.jsp").forward(req, resp);
+            req.setAttribute("message", message);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     protected BaseData doSearch(HttpServletRequest req, HttpServletResponse resp, BaseSearchDto baseSearchDto, String columnName) {
         try {
             String keyword = req.getParameter("keyword");

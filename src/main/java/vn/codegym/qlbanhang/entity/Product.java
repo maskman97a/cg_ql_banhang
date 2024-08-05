@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class Product extends BaseEntity {
     private String name;
+    private String imageUrl;
 }

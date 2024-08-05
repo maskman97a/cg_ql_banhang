@@ -1,6 +1,5 @@
 package vn.codegym.qlbanhang.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +7,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class ProductDto {
-    private Integer id;
+public class ProductDto extends BaseDto {
     private String name;
     private Integer price;
+    private String imageUrl;
+
+    public ProductDto(Integer id, String name, Integer price, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
 }

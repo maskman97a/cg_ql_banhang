@@ -1,7 +1,6 @@
 package vn.codegym.qlbanhang.service;
 
 
-
 import vn.codegym.qlbanhang.model.BaseModel;
 
 import javax.servlet.ServletException;
@@ -27,11 +26,20 @@ public class HomeService extends BaseService {
             productService.findListProduct(req, resp);
             renderPage(req, resp);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            renderErrorPage(req, resp);
         }
     }
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/views/home/home.jsp").forward(req, resp);
+        req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
+    }
+
+    protected void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) {
+        try {
+            req.getRequestDispatcher(req.getContextPath() + "/views/error.jsp").forward(req, resp);
+            req.setAttribute("message", message);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

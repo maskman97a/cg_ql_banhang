@@ -17,7 +17,7 @@
         <div class="col-3 p-3">
             <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
                 <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}" class="row">
-                    <img src="../../images/logo.png" class="img-fluid col-12" alt="${product.name}">
+                    <img src="${product.imageUrl}" class="img-fluid col-12" alt="${product.name}">
                     <span class="col-12" style="font-weight: bold">${product.name}</span>
 
                     <span id="col-price-${product.id}" class="col-12 formatted-number"

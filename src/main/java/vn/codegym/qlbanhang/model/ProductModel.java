@@ -15,14 +15,10 @@ public class ProductModel extends BaseModel {
 
     public List<ProductDto> findProduct() {
         List<ProductDto> productDtoList = new ArrayList<>();
-        ProductDto productDto = new ProductDto();
-        productDto.setId(1);
-        productDto.setName("Product 1");
-        productDto.setPrice(1000);
-        productDtoList.add(productDto);
-        productDtoList.add(new ProductDto(2, "Product", 30000));
-        productDtoList.add(new ProductDto(3, "Product 3", 2000));
-        productDtoList.add(new ProductDto(4, "Product", 2000));
+        productDtoList.add(new ProductDto(1, "Product 1", 30000, "../../images/logo.png"));
+        productDtoList.add(new ProductDto(2, "Product 2", 30000, "../../images/logo.png"));
+        productDtoList.add(new ProductDto(3, "Product 3", 2000, "../../images/logo.png"));
+        productDtoList.add(new ProductDto(4, "Product 4", 2000, "../../images/logo.png"));
         return productDtoList;
     }
 }

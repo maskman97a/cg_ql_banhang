@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseModel {
-    private Connection con;
+    private final Connection con;
     private final String tableName;
 
     public BaseModel(String tableName) {

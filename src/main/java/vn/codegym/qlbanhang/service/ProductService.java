@@ -17,7 +17,7 @@ public class ProductService extends HomeService {
 
     public void findListProduct(HttpServletRequest req, HttpServletResponse resp) {
         req.setAttribute("lstProduct", productModel.findProduct());
-        req.setAttribute("productShow", "true");
+        req.setAttribute("showListProduct", true);
     }
 
     public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) {
@@ -26,10 +26,10 @@ public class ProductService extends HomeService {
             Product product = (Product) productModel.findById(id);
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
             req.setAttribute("product", productDto);
-            req.setAttribute("productDetail", "true");
+            req.setAttribute("showProductDetail", true);
             renderPage(req, resp);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            renderErrorPage(req, resp);
         }
     }
 }

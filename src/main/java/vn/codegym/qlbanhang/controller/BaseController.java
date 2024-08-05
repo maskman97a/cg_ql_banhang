@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.controller;
+package vn.codegym.qlbanhang.controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

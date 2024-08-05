@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.dto;
+package vn.codegym.qlbanhang.dto;
 
 public class JoinCondition {
     private String tableName;

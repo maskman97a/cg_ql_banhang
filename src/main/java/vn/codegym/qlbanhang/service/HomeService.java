@@ -1,10 +1,13 @@
-package vn.codegym.ql_banhang.service;
+package vn.codegym.qlbanhang.service;
 
 
-import vn.codegym.ql_banhang.model.BaseModel;
 
+import vn.codegym.qlbanhang.model.BaseModel;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class HomeService extends BaseService {
     private ProductService productService;
@@ -22,9 +25,13 @@ public class HomeService extends BaseService {
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) {
         try {
             productService.findListProduct(req, resp);
-            req.getRequestDispatcher("views/home/home.jsp").forward(req, resp);
+            renderPage(req, resp);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/views/home/home.jsp").forward(req, resp);
     }
 }

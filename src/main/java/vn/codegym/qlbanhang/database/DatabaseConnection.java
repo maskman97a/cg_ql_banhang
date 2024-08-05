@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.database;
+package vn.codegym.qlbanhang.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.entity;
+package vn.codegym.qlbanhang.entity;
 
 public class Note extends BaseEntity {
     private static final String TABLE_NAME = "note";

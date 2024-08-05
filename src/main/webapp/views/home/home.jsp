@@ -25,8 +25,11 @@
 
 </div>
 <div class="container-fluid">
-    <div class="container row" style="margin:0 auto">
+    <div id="div-product-show" class="container row" style="margin:0 auto" hidden="${!productDetail}">
         <c:import url="../product/product-show.jsp"/>
+    </div>
+    <div id="div-product-show" class="container row" style="margin:0 auto" hidden="${!productDetail}">
+        <c:import url="../product/product-detail.jsp"/>
     </div>
 </div>
 </body>

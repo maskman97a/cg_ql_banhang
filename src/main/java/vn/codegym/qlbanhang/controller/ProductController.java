@@ -1,36 +1,33 @@
-package vn.codegym.ql_banhang.controller;
+package vn.codegym.qlbanhang.controller;
 
-import vn.codegym.ql_banhang.service.NoteService;
+import vn.codegym.qlbanhang.service.HomeService;
+import vn.codegym.qlbanhang.service.ProductService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet({"/note/*"})
-public class NoteController extends HttpServlet {
-    private NoteService noteService;
+@WebServlet({"/product/*"})
+public class ProductController extends HttpServlet {
+    private ProductService productService;
+    private HomeService homeService;
 
     @Override
     public void init() {
-        this.noteService = new NoteService();
+        this.productService = new ProductService();
+        this.homeService = new HomeService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         if (req.getPathInfo() == null) {
-            noteService.renderNotePage(req, resp);
+            homeService.renderHomePage(req, resp);
             return;
         }
         switch (req.getPathInfo()) {
-            case "/search":
-                noteService.renderNotePage(req, resp);
-                break;
-            case "/create-note":
-                noteService.renderCreateNoteForm(req, resp);
-                break;
-            case "/update-note":
-                noteService.renderUpdateNoteForm(req, resp);
+            case "/detail":
+                productService.renderProductDetailPage(req, resp);
                 break;
         }
     }

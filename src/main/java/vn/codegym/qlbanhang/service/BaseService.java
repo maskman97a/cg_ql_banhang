@@ -1,10 +1,11 @@
-package vn.codegym.ql_banhang.service;
+package vn.codegym.qlbanhang.service;
 
-import vn.codegym.ql_banhang.dto.BaseSearchDto;
-import vn.codegym.ql_banhang.dto.Condition;
-import vn.codegym.ql_banhang.entity.BaseData;
-import vn.codegym.ql_banhang.entity.BaseEntity;
-import vn.codegym.ql_banhang.model.BaseModel;
+import org.modelmapper.ModelMapper;
+import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.entity.BaseData;
+import vn.codegym.qlbanhang.entity.BaseEntity;
+import vn.codegym.qlbanhang.model.BaseModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +16,11 @@ import java.util.List;
 
 public class BaseService {
     protected final BaseModel baseModel;
+    protected final ModelMapper modelMapper;
 
     public BaseService(BaseModel baseModel) {
         this.baseModel = baseModel;
+        this.modelMapper = new ModelMapper();
     }
 
     protected BaseData doSearch(HttpServletRequest req, HttpServletResponse resp, BaseSearchDto baseSearchDto, String columnName) {

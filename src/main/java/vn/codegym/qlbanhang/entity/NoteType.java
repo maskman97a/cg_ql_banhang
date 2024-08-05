@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.entity;
+package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;

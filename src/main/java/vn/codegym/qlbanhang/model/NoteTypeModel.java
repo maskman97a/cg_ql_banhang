@@ -1,6 +1,6 @@
-package vn.codegym.ql_banhang.model;
+package vn.codegym.qlbanhang.model;
 
-import vn.codegym.ql_banhang.entity.NoteType;
+import vn.codegym.qlbanhang.entity.NoteType;
 
 public class NoteTypeModel extends BaseModel {
 

@@ -1,8 +1,21 @@
-package vn.codegym.ql_banhang.entity;
+package vn.codegym.qlbanhang.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Date;
 import java.util.Map;
 
+@Getter
+@Setter
 public abstract class BaseEntity {
+    private int id;
+    private int status;
+    private String createdBy;
+    private Date createdDate;
+    private String updatedBy;
+    private Date updatedDate;
+
     private Map<String, Object> mapValue;
 
     public BaseEntity() {

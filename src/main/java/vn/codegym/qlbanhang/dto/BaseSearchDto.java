@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.dto;
+package vn.codegym.qlbanhang.dto;
 
 import java.util.ArrayList;
 import java.util.List;

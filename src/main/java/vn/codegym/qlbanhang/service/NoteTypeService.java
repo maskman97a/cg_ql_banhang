@@ -1,11 +1,11 @@
-package vn.codegym.ql_banhang.service;
+package vn.codegym.qlbanhang.service;
 
-import vn.codegym.ql_banhang.dto.BaseSearchDto;
-import vn.codegym.ql_banhang.entity.BaseData;
-import vn.codegym.ql_banhang.entity.BaseEntity;
-import vn.codegym.ql_banhang.entity.Note;
-import vn.codegym.ql_banhang.entity.NoteType;
-import vn.codegym.ql_banhang.model.NoteTypeModel;
+import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.entity.BaseData;
+import vn.codegym.qlbanhang.entity.BaseEntity;
+import vn.codegym.qlbanhang.entity.Note;
+import vn.codegym.qlbanhang.entity.NoteType;
+import vn.codegym.qlbanhang.model.NoteTypeModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

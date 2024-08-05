@@ -1,10 +1,10 @@
-package vn.codegym.ql_banhang.model;
+package vn.codegym.qlbanhang.model;
 
-import vn.codegym.ql_banhang.database.DatabaseConnection;
-import vn.codegym.ql_banhang.dto.BaseSearchDto;
-import vn.codegym.ql_banhang.dto.Condition;
-import vn.codegym.ql_banhang.dto.JoinCondition;
-import vn.codegym.ql_banhang.entity.BaseEntity;
+import vn.codegym.qlbanhang.database.DatabaseConnection;
+import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.JoinCondition;
+import vn.codegym.qlbanhang.entity.BaseEntity;
 
 import java.lang.reflect.Field;
 import java.sql.*;

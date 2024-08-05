@@ -1,7 +1,7 @@
-package vn.codegym.ql_banhang.model;
+package vn.codegym.qlbanhang.model;
 
-import vn.codegym.ql_banhang.dto.ProductDto;
-import vn.codegym.ql_banhang.entity.Note;
+import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.entity.Note;
 
 import java.util.ArrayList;
 import java.util.List;

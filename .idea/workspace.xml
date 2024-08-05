@@ -9,55 +9,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/cody_history.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/BaseController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/HomeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/NoteController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/NoteTypeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/database/DatabaseConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/dto/BaseSearchDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/dto/Condition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/dto/JoinCondition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/dto/ProductDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/BaseData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/BaseEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/Note.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/NoteType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/model/BaseModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/model/NoteTypeModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/model/ProductModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/BaseService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/HomeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/NoteService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/NoteTypeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/ProductService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/admin/product/product-list.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/component/navbar.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/home/home.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note-type/create-note-type.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note-type/note-type.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note-type/update-note-type.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note/create-note.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note/note.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/note/update-note.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/product/product-show.jsp" afterDir="false" />
+    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="Init project">
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/views/product/product-detail.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/cody_history.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cody_history.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/NoteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/entity/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/BaseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/BaseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/HomeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/HomeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/NoteService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/views/home/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/views/home/home.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,14 +35,26 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jsp File" />
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "maskman97a"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/maskman97a/cg_ql_banhang",
+    "accountId": "7d68271a-309c-49c1-92f3-6d0c3121b9c3"
+  }
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -118,6 +95,7 @@
     "RunOnceActivity.CodyProjectSettingsMigration": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "Tomcat Server.Tomcat 9.0.91.executor": "Debug",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
@@ -141,6 +119,7 @@
       <recent name="$PROJECT_DIR$/src/main/java/vn/codegym/ql_banhang" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/views/product" />
       <recent name="$PROJECT_DIR$/src/main/webapp/views/admin" />
       <recent name="$PROJECT_DIR$/src/main/webapp/images" />
     </key>
@@ -261,10 +240,24 @@
       <workItem from="1722608545753" duration="6850000" />
       <workItem from="1722672827956" duration="103000" />
       <workItem from="1722673038256" duration="20731000" />
+      <workItem from="1722860520986" duration="2404000" />
     </task>
+    <task id="LOCAL-00001" summary="Init project">
+      <option name="closed" value="true" />
+      <created>1722860646189</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722860646189</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init project" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init project" />
   </component>
 </project>

@@ -1,6 +1,6 @@
-package vn.codegym.ql_banhang.controller;
+package vn.codegym.qlbanhang.controller;
 
-import vn.codegym.ql_banhang.service.HomeService;
+import vn.codegym.qlbanhang.service.HomeService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

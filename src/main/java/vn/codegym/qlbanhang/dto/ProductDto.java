@@ -1,4 +1,4 @@
-package vn.codegym.ql_banhang.dto;
+package vn.codegym.qlbanhang.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

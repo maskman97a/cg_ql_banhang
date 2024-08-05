@@ -1,6 +1,6 @@
-package vn.codegym.ql_banhang.controller;
+package vn.codegym.qlbanhang.controller;
 
-import vn.codegym.ql_banhang.service.NoteTypeService;
+import vn.codegym.qlbanhang.service.NoteTypeService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

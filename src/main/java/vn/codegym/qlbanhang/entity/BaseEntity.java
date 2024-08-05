@@ -9,12 +9,12 @@ import java.util.Map;
 @Getter
 @Setter
 public abstract class BaseEntity {
-    private int id;
-    private int status;
-    private String createdBy;
-    private Date createdDate;
-    private String updatedBy;
-    private Date updatedDate;
+    protected int id;
+    protected int status;
+    protected String createdBy;
+    protected Date createdDate;
+    protected String updatedBy;
+    protected Date updatedDate;
 
     private Map<String, Object> mapValue;
 

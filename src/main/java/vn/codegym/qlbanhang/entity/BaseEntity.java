@@ -28,6 +28,9 @@ public abstract class BaseEntity {
         if (tableName.equals(NoteType.getTableName())) {
             return new NoteType();
         }
+        if (tableName.equals(Product.getTableName())) {
+            return new Product();
+        }
         return null;
     }
 

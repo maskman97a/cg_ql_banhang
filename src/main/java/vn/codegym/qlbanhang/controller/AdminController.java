@@ -17,6 +17,41 @@ public class AdminController extends BaseController {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        adminService.renderAdmin(req, resp);
+        if (req.getPathInfo() == null) {
+            adminService.renderAdmin(req, resp);
+            return;
+        }
+        System.out.println(req.getPathInfo());
+        switch (req.getPathInfo()) {
+            case "/search":
+                adminService.searchProduct(req, resp);
+                break;
+            case "/product/product-create":
+                adminService.renderCreateProductForm(req, resp);
+                break;
+            case "/transaction":
+//                adminService.renderUpdateNoteForm(req, resp);
+            default:
+                adminService.renderAdmin(req, resp);
+                break;
+        }
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        if (req.getPathInfo() == null) {
+            adminService.renderAdmin(req, resp);
+        }
+        System.out.println(req.getPathInfo());
+        switch (req.getPathInfo()) {
+            case "/search":
+                break;
+            case "/product-create":
+                adminService.createNewProduct(req, resp);
+                break;
+            case "/update-note":
+                break;
+        }
     }
 }

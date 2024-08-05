@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ceotungbeo
-  Date: 5/8/24
-  Time: 20:43
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -25,14 +18,19 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2 row">
-            <a class="col-12" href="${pageContext.request.contextPath}/admin/product">Quản lý sản phẩm</a>
-            <a class="col-12" href="${pageContext.request.contextPath}/admin/transaction">Quản lý đơn hàng</a>
-        </div>
-        <div class="col-8">
-            <c:import url="product/product-list.jsp"/>
-        </div>
-        <div class="col-2"></div>
+            <div class="col-2 bg-light">
+                <div class="list-group">
+                    <a href="${pageContext.request.contextPath}/admin/product"
+                       class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
+                    <a href="${pageContext.request.contextPath}/admin/transaction"
+                       class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
+                </div>
+            </div>
+
+            <div class="col-10">
+                <c:import url="product/product-list.jsp"/>
+            </div>
+        <%--        <div class="col-2"></div>--%>
     </div>
 </div>
 </body>

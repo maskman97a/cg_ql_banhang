@@ -79,9 +79,14 @@ public class BaseModel {
         return sb.toString();
     }
 
-    public List<BaseEntity> findAll() throws SQLException {
-        PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(null));
-        return executeSelect(preparedStatement);
+    public List<BaseEntity> findAll() {
+        try {
+            PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(null));
+            return executeSelect(preparedStatement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public BaseEntity findById(int id) throws SQLException {

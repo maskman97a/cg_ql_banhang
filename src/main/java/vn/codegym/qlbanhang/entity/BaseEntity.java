@@ -22,12 +22,10 @@ public abstract class BaseEntity {
     }
 
     public static BaseEntity getInstance(String tableName) {
-        if (tableName.equals(Note.getTableName())) {
-            return new Note();
+        if (tableName.equals(Product.getTableName())) {
+            return new Product();
         }
-        if (tableName.equals(NoteType.getTableName())) {
-            return new NoteType();
-        }
+
         return null;
     }
 

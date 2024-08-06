@@ -37,6 +37,12 @@
               <chat>
                 <internalId value="cbea45b3-80ca-432d-9a05-2b1e050a61f3" />
               </chat>
+              <chat>
+                <internalId value="62ee8fe7-595e-4d6a-9946-7155a8c19c1b" />
+              </chat>
+              <chat>
+                <internalId value="d3be37a6-9678-47f6-8ad0-f1823981eb5c" />
+              </chat>
             </list>
           </chats>
         </AccountData>

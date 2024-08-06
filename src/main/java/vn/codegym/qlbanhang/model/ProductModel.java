@@ -1,7 +1,7 @@
 package vn.codegym.qlbanhang.model;
 
-import vn.codegym.qlbanhang.dto.ProductDto;
-import vn.codegym.qlbanhang.entity.Note;
+import vn.codegym.qlbanhang.entity.BaseEntity;
+import vn.codegym.qlbanhang.entity.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,16 +9,16 @@ import java.util.List;
 public class ProductModel extends BaseModel {
 
     public ProductModel() {
-        super(Note.getTableName());
+        super(Product.getTableName());
     }
 
 
-    public List<ProductDto> findProduct() {
-        List<ProductDto> productDtoList = new ArrayList<>();
-        productDtoList.add(new ProductDto(1, "Product 1", 30000, "../../images/logo.png"));
-        productDtoList.add(new ProductDto(2, "Product 2", 30000, "../../images/logo.png"));
-        productDtoList.add(new ProductDto(3, "Product 3", 2000, "../../images/logo.png"));
-        productDtoList.add(new ProductDto(4, "Product 4", 2000, "../../images/logo.png"));
-        return productDtoList;
+    public List<Product> findProduct() {
+        List<BaseEntity> baseEntities = findAll();
+        List<Product> productList = new ArrayList<>();
+        for (BaseEntity baseEntity : baseEntities) {
+            productList.add((Product) baseEntity);
+        }
+        return productList;
     }
 }

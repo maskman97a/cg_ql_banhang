@@ -17,7 +17,12 @@
         <div class="col-3 p-3">
             <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
                 <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}" class="row">
-                    <img src="${product.imageUrl}" class="img-fluid col-12" alt="${product.name}">
+                    <div class="col-12 ratio ratio-1x1">
+                        <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
+                             id="product-image-${product.id}"
+                             class="img-fluid col-12"
+                             alt="${product.name}" width="100%" height="100%">
+                    </div>
                     <span class="col-12" style="font-weight: bold">${product.name}</span>
 
                     <span id="col-price-${product.id}" class="col-12 formatted-number"

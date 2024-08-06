@@ -8,8 +8,6 @@ import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Note;
 import vn.codegym.qlbanhang.entity.Product;
-import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Product;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -29,6 +27,36 @@ public class ProductModel extends BaseModel {
             productList.add((Product) baseEntity);
         }
         return productList;
+    }
+
+    public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto) throws SQLException {
+        List<ProductDto> productDtoList = new ArrayList<>();
+        String sql = this.getSearchSQL(baseSearchDto);
+        sql += " order by id desc ";
+        sql += " limit ? offset ?";
+        PreparedStatement preparedStatement = this.con.prepareStatement(sql);
+        int index = 1;
+        if (baseSearchDto != null) {
+            if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+            }
+        }
+        preparedStatement.setInt(index++, baseSearchDto.getSize());
+        preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            ProductDto productDto = new ProductDto();
+            productDto.setId(rs.getInt("id"));
+            productDto.setImageUrl(rs.getString("imageUrl"));
+            productDto.setProductCode(rs.getString("productCode"));
+            productDto.setProductName(rs.getString("productName"));
+            productDto.setPrice(rs.getInt("price"));
+            productDto.setQuantity(rs.getInt("quantity"));
+            productDto.setNote(rs.getString("note"));
+            productDtoList.add(productDto);
+        }
+        return productDtoList;
     }
 
 

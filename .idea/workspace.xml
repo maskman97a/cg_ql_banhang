@@ -2,14 +2,23 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="ql_banhang:war exploded" />
+      <artifact name="cg_ql_banhang:war exploded" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="add product-admin" />
+    <list default="true" id="3f14e836-7acb-4528-b9f3-b18e7a6e00d1" name="Changes" comment="add product-admin">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/database/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/database/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/dto/ProductDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/dto/ProductDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/ProductModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/model/ProductModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vn/codegym/qlbanhang/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/views/admin/admin.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/views/admin/admin.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/views/admin/product/product-list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/views/admin/product/product-list.jsp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,6 +54,10 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/webapp/images" />
@@ -64,12 +77,12 @@
   </component>
   <component name="RunManager">
     <configuration name="Tomcat 9.0.91" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.91" ALTERNATIVE_JRE_ENABLED="false">
-      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/cg_ql_banhang_war_exploded/" />
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/" />
       <option name="UPDATING_POLICY" value="redeploy-artifacts" />
       <deployment>
         <artifact name="cg_ql_banhang:war exploded">
           <settings>
-            <option name="CONTEXT_PATH" value="/cg_ql_banhang_war_exploded" />
+            <option name="CONTEXT_PATH" value="" />
           </settings>
         </artifact>
       </deployment>
@@ -174,6 +187,7 @@
       <workItem from="1722672827956" duration="103000" />
       <workItem from="1722673038256" duration="20731000" />
       <workItem from="1722860520986" duration="5641000" />
+      <workItem from="1722907619543" duration="13120000" />
     </task>
     <task id="LOCAL-00001" summary="Init project">
       <option name="closed" value="true" />
@@ -214,7 +228,14 @@
       <option name="project" value="LOCAL" />
       <updated>1722873622725</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add product-admin">
+      <created>1722873645122</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1722873645122</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,5 +259,8 @@
     <MESSAGE value="Init admin" />
     <MESSAGE value="add product-admin" />
     <option name="LAST_COMMIT_MESSAGE" value="add product-admin" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/cg_ql_banhang$Tomcat_9_0_91.ic" NAME="Tomcat 9.0.91 Coverage Results" MODIFIED="1722933694589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

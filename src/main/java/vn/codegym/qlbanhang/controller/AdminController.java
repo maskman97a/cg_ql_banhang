@@ -24,7 +24,7 @@ public class AdminController extends BaseController {
         System.out.println(req.getPathInfo());
         switch (req.getPathInfo()) {
             case "/search":
-                adminService.searchProduct(req, resp);
+                adminService.renderAdmin(req, resp);
                 break;
             case "/product/product-create":
                 adminService.renderCreateProductForm(req, resp);

@@ -18,33 +18,37 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <c:if test="${!firstSearchTab}">
-            <div class="col-2 bg-light">
-                <div class="list-group">
-                    <a href="${pageContext.request.contextPath}/admin/product"
-                       class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
-                    <a href="${pageContext.request.contextPath}/admin/transaction"
-                       class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
-                </div>
+        <div class="col-2 bg-light">
+            <div class="list-group">
+                <a href="${pageContext.request.contextPath}/admin/product"
+                   class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
+                <a href="${pageContext.request.contextPath}/admin/transaction"
+                   class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
             </div>
-        </c:if>
-        <c:if test="${!firstSearchTab}">
-        <div class="col-10"></c:if>
+        </div>
+        <div class="col-10">
             <div class="container">
                 <div class="container form-control">
                     <div class="row">
                         <div class="col-12 text-center">
                             <h1>Danh sách sản phẩm</h1>
                         </div>
-                        <div class="col-4">
-                        </div>
-                        <div class="col-2 mb-3">
+                        <div class="col-12 mb-3">
                             <a href="${pageContext.request.contextPath}/admin/product/product-create"
                                class="btn btn-primary">Thêm mới</a>
                         </div>
-                        <div class="col-4 mb-3">
+                        <div class="col-3  mb-3">
+
+                        </div>
+                        <div class="col-9 mb-3">
                             <form class="form row" method="get"
-                                  action="${pageContext.request.contextPath}/admin/search?size=10&page=1&keyword=${keyword}">
+                                  action="${pageContext.request.contextPath}/admin/search">
+                                <input type="text" class="form-control" name="size"value="10" hidden/>
+                                <input type="text" class="form-control" name="page"value="1" hidden/>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
+                                           value="${keyword}">
+                                </div>
                                 <div class="col-3">
                                     <input type="submit" class="btn btn-success" value="Tìm"/>
                                 </div>
@@ -63,22 +67,22 @@
                                     <td>Tên sản phẩm</td>
                                     <td>Giá</td>
                                     <td>Số lượng</td>
-                                    <td></td>
+                                    <td>Action</td>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <c:forEach var="product" items="${lstData}">
                                     <tr>
                                         <td>${product.index}</td>
-                                        <td>${product.url}</td>
+                                        <td>${product.imageUrl}</td>
                                         <td>${product.productCode}</td>
                                         <td>${product.productName}</td>
                                         <td>${product.price}</td>
                                         <td>${product.quantity}</td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/product/update?id=${note.id}">Sửa</a>
+                                            <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}">Sửa</a>
                                             |
-                                            <a href="${pageContext.request.contextPath}/admin/product/delete?id=${note.id}">Xóa</a>
+                                            <a href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}">Xóa</a>
                                         </td>
                                     </tr>
                                 </c:forEach>

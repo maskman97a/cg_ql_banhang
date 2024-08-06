@@ -18,6 +18,7 @@
 <body>
 <div class="container-fluid">
     <div class="row">
+        <c:if test="${firstSearchTab}">
             <div class="col-2 bg-light">
                 <div class="list-group">
                     <a href="${pageContext.request.contextPath}/admin/product"
@@ -26,10 +27,11 @@
                        class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
                 </div>
             </div>
+        </c:if>
 
-            <div class="col-10">
-                <c:import url="product/product-list.jsp"/>
-            </div>
+        <div class="col-10">
+            <c:import url="product/product-list.jsp"/>
+        </div>
         <%--        <div class="col-2"></div>--%>
     </div>
 </div>

@@ -6,12 +6,10 @@ import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.JoinCondition;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 
+import javax.persistence.Column;
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseModel {
     protected final Connection con;
@@ -89,13 +87,22 @@ public class BaseModel {
         return new ArrayList<>();
     }
 
-    public BaseEntity findById(int id) throws SQLException {
-        BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition condition = new Condition();
-        condition.setColumnName("id");
-        condition.setOperator("=");
-        condition.setValue(id);
-        baseSearchDto.setConditions(Collections.singletonList(condition));
+    public BaseEntity findById(int id) {
+        try {
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            Condition condition = new Condition();
+            condition.setColumnName("id");
+            condition.setOperator("=");
+            condition.setValue(id);
+            baseSearchDto.setConditions(Collections.singletonList(condition));
+            return findOne(baseSearchDto);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public BaseEntity findOne(BaseSearchDto baseSearchDto) throws SQLException {
         PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(baseSearchDto));
         List<BaseEntity> baseEntities = executeSelect(preparedStatement);
         if (baseEntities != null && !baseEntities.isEmpty()) {
@@ -112,11 +119,22 @@ public class BaseModel {
                 BaseEntity baseEntity = BaseEntity.getInstance(tableName);
                 ResultSetMetaData metaData = rs.getMetaData();
                 for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                    for (Field field : baseEntity.getClass().getDeclaredFields()) {
+                    assert baseEntity != null;
+                    List<Field> thisFields = Arrays.asList(baseEntity.getClass().getDeclaredFields());
+                    List<Field> superFields = Arrays.asList(baseEntity.getClass().getSuperclass().getDeclaredFields());
+                    List<Field> fields = new ArrayList<>();
+                    fields.addAll(thisFields);
+                    fields.addAll(superFields);
+                    for (Field field : fields) {
                         field.setAccessible(true);
-                        if (field.getName().equals(metaData.getColumnName(i))) {
+                        if (field.getAnnotation(Column.class) == null) {
+                            continue;
+                        }
+                        String colName = field.getAnnotation(Column.class).name();
+                        if (colName != null && colName.equals(metaData.getColumnName(i))) {
                             try {
-                                field.set(baseEntity, rs.getObject(i));
+                                Object val = rs.getObject(i);
+                                field.set(baseEntity, val);
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }

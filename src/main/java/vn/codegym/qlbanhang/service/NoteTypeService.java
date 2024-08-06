@@ -3,7 +3,7 @@ package vn.codegym.qlbanhang.service;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Note;
+import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.NoteType;
 import vn.codegym.qlbanhang.model.NoteTypeModel;
 
@@ -41,8 +41,8 @@ public class NoteTypeService extends BaseService {
     public void renderUpdateNoteForm(HttpServletRequest req, HttpServletResponse resp) {
         try {
             req.getRequestDispatcher("/views/note/update-note.jsp").forward(req, resp);
-            Note note = (Note) super.findById(Integer.valueOf(req.getParameter("id")));
-            req.setAttribute("updatingNote", note);
+            Order order = (Order) super.findById(Integer.valueOf(req.getParameter("id")));
+            req.setAttribute("updatingNote", order);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -66,7 +66,7 @@ public class NoteTypeService extends BaseService {
 
     public void createNew(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            BaseEntity baseEntity = new Note();
+            BaseEntity baseEntity = new Order();
             Map<String, Object> mapValue = new HashMap<>();
             mapValue.put("name", req.getAttribute("name"));
             mapValue.put("description", req.getAttribute("description"));

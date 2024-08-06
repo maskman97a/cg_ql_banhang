@@ -1,22 +1,23 @@
 package vn.codegym.qlbanhang.model;
 
-import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
-import vn.codegym.qlbanhang.dto.JoinCondition;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Note;
 import vn.codegym.qlbanhang.entity.Product;
 
-import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductModel extends BaseModel {
     public ProductModel() {
         super(Product.getTableName());
+    }
+
+    public Product findProductById(int id) {
+        return (Product) findById(id);
     }
 
 
@@ -51,7 +52,7 @@ public class ProductModel extends BaseModel {
             productDto.setImageUrl(rs.getString("imageUrl"));
             productDto.setProductCode(rs.getString("productCode"));
             productDto.setProductName(rs.getString("productName"));
-            productDto.setPrice(rs.getInt("price"));
+            productDto.setPrice(rs.getLong("price"));
             productDto.setQuantity(rs.getInt("quantity"));
             productDto.setNote(rs.getString("note"));
             productDtoList.add(productDto);

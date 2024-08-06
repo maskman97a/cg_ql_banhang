@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.List;
 
 public class BaseService {
@@ -23,7 +22,7 @@ public class BaseService {
         this.modelMapper = new ModelMapper();
     }
 
-    protected void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) {
+    public void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) {
         try {
             req.getRequestDispatcher(req.getContextPath() + "/views/error.jsp").forward(req, resp);
             req.setAttribute("message", message);
@@ -113,7 +112,7 @@ public class BaseService {
     public BaseEntity findById(Integer id) {
         try {
             return baseModel.findById(id);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

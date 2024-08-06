@@ -24,7 +24,7 @@
 </head>
 <body>
 <div class="container">
-    <form class="form" method="post" action="${pageContext.request.contextPath}/note-type/create-note-type">
+    <form class="form" method="post" action="${pageContext.request.contextPath}/order-type/create-order-type">
         <div class="row">
             <div class="col-3">
 
@@ -53,7 +53,7 @@
                             <div class="col-3">
                             </div>
                             <div class="col-3  d-grid gap-2">
-                                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/note-type">Hủy</a>
+                                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/order-type">Hủy</a>
                             </div>
                             <div class="col-6  d-grid gap-2">
                                 <input type="submit" class="btn btn-primary" value="Lưu"/>

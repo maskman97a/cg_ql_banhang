@@ -25,7 +25,7 @@
 <body>
 <div class="container">
     <div class="row">
-        <a href="${pageContext.request.contextPath}/note-type">Quản lý Thể loại</a>
+        <a href="${pageContext.request.contextPath}/order-type">Quản lý Thể loại</a>
     </div>
     <div class="row">
         <div class="col-2">
@@ -38,10 +38,10 @@
                         <h1>Các ghi chú</h1>
                     </div>
                     <div class="col-12 mb-3">
-                        <a href="${pageContext.request.contextPath}/note/create" class="btn btn-primary">Thêm mới</a>
+                        <a href="${pageContext.request.contextPath}/order/create" class="btn btn-primary">Thêm mới</a>
                     </div>
                     <div class="col-3  mb-3">
-                        <select class="form-select" name="note-type">
+                        <select class="form-select" name="order-type">
                             <option value="0">Thể loại</option>
                             <c:forEach var="item" items="${noteTypeList}">
                                 <option value="${item.id}">${item.name}</option>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-9 mb-3">
                         <form class="form row" method="get"
-                              action="${pageContext.request.contextPath}/note/search?size=10&page=1&keyword=${keyword}">
+                              action="${pageContext.request.contextPath}/order/search?size=10&page=1&keyword=${keyword}">
                             <div class="col-9">
                                 <input type="text" class="form-control" placeholder="Tiêu đề" name="keyword"
                                        value="${keyword}">
@@ -72,14 +72,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="note" items="${lstData}">
+                            <c:forEach var="order" items="${lstData}">
                                 <tr>
-                                    <td>${note.index}</td>
-                                    <td>${note.title}</td>
-                                    <td>${note.noteType.name}</td>
+                                    <td>${order.index}</td>
+                                    <td>${order.title}</td>
+                                    <td>${order.noteType.name}</td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/note/update?id=${note.id}">Sửa</a> |
-                                        <a href="${pageContext.request.contextPath}/note/delete?id=${note.id}">Xóa</a>
+                                        <a href="${pageContext.request.contextPath}/order/update?id=${order.id}">Sửa</a> |
+                                        <a href="${pageContext.request.contextPath}/order/delete?id=${order.id}">Xóa</a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -92,20 +92,20 @@
                                             <ul class="pagination" style="justify-content: center">
                                                 <c:if test="${!firstTab}">
                                                     <li class="page-item"><a class="page-link"
-                                                                             href="${pageContext.request.contextPath}/note/search?page=${currentPage-1}&size=10">
+                                                                             href="${pageContext.request.contextPath}/order/search?page=${currentPage-1}&size=10">
                                                         Previous</a></li>
                                                 </c:if>
 
                                                 <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                                     <li class="page-item ${currentPage == page ? 'active' : ''}">
                                                         <a class="page-link"
-                                                           href="${pageContext.request.contextPath}/note/search?page=${page}&size=10">${page}</a>
+                                                           href="${pageContext.request.contextPath}/order/search?page=${page}&size=10">${page}</a>
                                                     </li>
                                                 </c:forEach>
                                                 <c:if test="${!lastTab}">
                                                     <li class="page-item">
                                                         <a class="page-link"
-                                                           href="${pageContext.request.contextPath}/note/search?page=${currentPage+1}&size=10">
+                                                           href="${pageContext.request.contextPath}/order/search?page=${currentPage+1}&size=10">
                                                             Next</a></li>
                                                 </c:if>
                                             </ul>

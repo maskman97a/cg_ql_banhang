@@ -24,7 +24,7 @@
 </head>
 <body>
 <div class="container">
-    <form class="form" method="post" action="${pageContext.request.contextPath}/note/update-note">
+    <form class="form" method="post" action="${pageContext.request.contextPath}/order/update-order">
         <div class="row">
             <div class="col-3">
 
@@ -48,7 +48,7 @@
                     </div>
                     <div class="row align-items-center mb-3">
                         <div class="col-3  d-grid gap-2">
-                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/note">Hủy</a>
+                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/order">Hủy</a>
                         </div>
                         <div class="col-3  d-grid gap-2">
                         </div>

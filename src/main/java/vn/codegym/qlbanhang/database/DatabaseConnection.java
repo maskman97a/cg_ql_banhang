@@ -5,10 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-//    private final static String URL = "jdbc:mysql://localhost:3306/iNotes";
     private final static String URL = "jdbc:mysql://159.13.36.51:3306/sales";
     private final static String USERNAME = "root";
-//    private final static String PASSWORD = "123456a@";
     private final static String PASSWORD = "Mysql@123";
 
     public DatabaseConnection() {

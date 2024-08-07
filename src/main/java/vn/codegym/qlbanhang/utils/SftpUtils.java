@@ -21,7 +21,7 @@ import java.util.Properties;
 @MultipartConfig
 public class SftpUtils {
 
-    private static final String SFTP_HOST = "localhost";
+    private static final String SFTP_HOST = "172.17.0.1";
     private static final int SFTP_PORT = 22;
 
     private static final String SFTP_USER_SERVER = "server";

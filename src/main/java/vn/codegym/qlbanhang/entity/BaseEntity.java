@@ -2,6 +2,7 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.constants.Const;
 
 import javax.persistence.Column;
 import java.util.Date;
@@ -26,7 +27,7 @@ public abstract class BaseEntity {
     private Map<String, Object> mapValue;
 
     public BaseEntity() {
-        this.status = 1;
+        this.status = Const.STATUS_ACTIVE;
         this.createdBy = "admin";
         this.createdDate = new Date();
         this.updatedBy = "admin";
@@ -34,10 +35,16 @@ public abstract class BaseEntity {
     }
 
     public static BaseEntity getInstance(String tableName) {
-        if (tableName.equals(Product.getTableName())) {
-            return new Product();
+        switch (tableName) {
+            case Product.TABLE_NAME:
+                return new Product();
+            case Customer.TABLE_NAME:
+                return new Customer();
+            case Order.TABLE_NAME:
+                return new Order();
+            case OrderDetail.TABLE_NAME:
+                return new OrderDetail();
         }
-
         return null;
     }
 

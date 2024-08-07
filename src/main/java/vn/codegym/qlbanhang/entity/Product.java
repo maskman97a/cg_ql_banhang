@@ -22,7 +22,7 @@ public class Product extends BaseEntity {
     @Column(name = "quantity")
     private Integer quantity;
 
-    private static final String TABLE_NAME = "product";
+    public static final String TABLE_NAME = "product";
 
     public static String getTableName() {
         return TABLE_NAME;

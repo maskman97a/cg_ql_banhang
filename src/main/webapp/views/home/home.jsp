@@ -18,21 +18,32 @@
     <script src="../../js/index.js"></script>
 </head>
 <body>
-<div class="container-fluid" style="position: fixed; top: 0">
-    <c:import url="../component/navbar.jsp"/>
-</div>
-<div class="container-fluid" style="height: 120px">
+<header>
+    <div class="container-fluid" style="position: fixed; top: 0; background-color: #e3f2fd">
+        <c:import url="../component/navbar.jsp"/>
+    </div>
+    <div class="container-fluid" style="height: 120px">
 
-</div>
-<div class="container-fluid">
-    <div id="div-product-show" class="container row" style="margin:0 auto"
-         <c:if test="${!showListProduct}">hidden</c:if> >
-        <c:import url="../product/product-show.jsp"/>
     </div>
-    <div id="div-product-detail" class="container row" style="margin:0 auto"
-         <c:if test="${!showProductDetail}">hidden</c:if> >
-        <c:import url="../product/product-detail.jsp"/>
+</header>
+<main>
+    <div class="container-fluid">
+        <c:import url="../component/alert.jsp"/>
+        <div id="div-product-show" class="container row" style="margin:0 auto"
+             <c:if test="${!showListProduct}">hidden</c:if> >
+            <c:import url="../product/product-show.jsp"/>
+        </div>
+        <div id="div-product-detail" class="container row" style="margin:0 auto"
+             <c:if test="${!showProductDetail}">hidden</c:if> >
+            <c:import url="../product/product-detail.jsp"/>
+        </div>
     </div>
-</div>
+</main>
+<footer>
+    <div class="container-fluid" style=" background-color: #e3f2fd">
+        <c:import url="../component/footer.jsp"/>
+    </div>
+</footer>
+</footer>
 </body>
 </html>

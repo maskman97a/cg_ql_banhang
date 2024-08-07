@@ -12,7 +12,7 @@
 </head>
 <body>
 <nav class="navbar navbar-nav navbar-nav-scroll"
-     style="background-color: #e3f2fd;overflow-x: auto;">
+     style="overflow-x: auto;">
     <div class="row container">
         <div class="col-1">
             <a class="navbar-brand" href="/">

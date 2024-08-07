@@ -65,7 +65,7 @@ public class OrderService extends HomeService {
         if (customer == null) {
             Customer newCustomer = new Customer();
             newCustomer.setName(customerDto.getCustomerName());
-            newCustomer.setPhoneNumber(customerDto.getCustomerPhoneNumber());
+            newCustomer.setPhone(customerDto.getCustomerPhoneNumber());
             newCustomer.setEmail(customerDto.getCustomerEmail());
             newCustomer.setAddress(customerDto.getCustomerAddress());
             customerModel.save(newCustomer);

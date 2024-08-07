@@ -3,17 +3,21 @@ package vn.codegym.qlbanhang.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import javax.persistence.Column;
 
 @Getter
 @Setter
 public class Customer extends BaseEntity {
-    private static final String TABLE_NAME = "customer";
-    private static final String SEARCH_COLUMN = "name";
+    public static final String TABLE_NAME = "customer";
+    public static final String SEARCH_COLUMN = "name";
     private int index;
+    @Column(name = "name")
     private String name;
-    private String phoneNumber;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "email")
     private String email;
+    @Column(name = "address")
     private String address;
 
     public static String getTableName() {

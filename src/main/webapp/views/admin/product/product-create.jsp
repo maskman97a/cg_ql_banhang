@@ -14,6 +14,13 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <title>Thêm mới sản phẩm</title>
+    <style>
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -24,21 +31,76 @@
             <div class=" col-6">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h1>Thêm mới sản phẩm</h1>
+                        <c:if test="${!updateProduct}">
+                            <h1>Thêm mới sản phẩm</h1>
+                        </c:if>
+                        <c:if test="${updateProduct}">
+                            <h1>Cập nhật sản phẩm</h1>
+                        </c:if>
                     </div>
                     <div class="row col-12 align-items-center mb-3">
                         <div class="col-3 mb-3">
-                            <label for="inp-name">Tên thể loại</label>
+                            <label for="image">Chọn ảnh:</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="file" id="image" name="image"/>
+                            <br>
+                            <img id="preview" src="#" alt="Image Preview" style="display:none;">
+                        </div>
+                        <script>
+                            document.getElementById('image').addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (e) {
+                                        const preview = document.getElementById('preview');
+                                        preview.src = e.target.result;
+                                        preview.style.display = 'block';
+                                    }
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        </script>
+                        <div class="col-3 mb-3">
+                            <label for="inp-code">Mã sản phẩm</label>
+                        </div>
+                        <div class="col-9">
+                            <input id="inp-code" type="text" class="form-control" name="code"/>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <label for="inp-name">Tên sản phẩm</label>
                         </div>
                         <div class="col-9">
                             <input id="inp-name" type="text" class="form-control" name="name"/>
                         </div>
                         <div class="col-3 mb-3">
+                            <label for="inp-quantity">Số lượng</label>
+                        </div>
+                        <div class="col-9">
+                            <input id="inp-quantity" type="number" oninput="limitLength(this)" class="form-control"
+                                   name="quantity"/>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <label for="inp-price">Giá</label>
+                        </div>
+                        <div class="col-9">
+                            <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control"
+                                   name="price"/>
+                        </div>
+                        <div class="col-3 mb-3">
                             <label for="inp-description">Mô tả</label>
                         </div>
                         <div class="col-9">
-                            <input id="inp-description" type="text" class="form-control" name="description"/>
+                            <textarea id="inp-description" class="form-control" name="description"></textarea>
                         </div>
+
+                        <script>
+                            function limitLength(input) {
+                                if (input.value.length > 15) {
+                                    input.value = input.value.slice(0, 15);
+                                }
+                            }
+                        </script>
                     </div>
                     <div class="row col-12">
                         <div class="col-3">

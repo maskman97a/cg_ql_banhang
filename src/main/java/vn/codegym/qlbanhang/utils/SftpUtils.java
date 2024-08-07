@@ -6,7 +6,6 @@ import com.jcraft.jsch.Session;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -22,10 +21,7 @@ import java.util.Properties;
 @MultipartConfig
 public class SftpUtils {
 
-
-        private static final String SFTP_HOST = "150.230.9.133";
-    private static final String SFTP_USERNAME = "client";
-    private static final String SFTP_PASSWORD = "Client@123";
+    private static final String SFTP_HOST = "150.230.9.133";
     private static final int SFTP_PORT = 22;
 
     private static final String SFTP_USER_SERVER = "server";
@@ -34,8 +30,8 @@ public class SftpUtils {
 
     private static Session setupJsch() throws Exception {
         JSch jsch = new JSch();
-        Session session = jsch.getSession(SFTP_USERNAME, SFTP_HOST, SFTP_PORT);
-        session.setPassword(SFTP_PASSWORD);
+        Session session = jsch.getSession(SFTP_USER_SERVER, SFTP_HOST, SFTP_PORT);
+        session.setPassword(SFTP_PASSWORD_SERVER);
 
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");

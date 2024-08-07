@@ -9,4 +9,5 @@ public class Const {
     }
 
     public static final int STATUS_ACTIVE = 1;
+    public static final int STATUS_UNACTIVE = 0;
 }

@@ -14,7 +14,7 @@ public class ProductDto extends BaseDto {
     private String imageUrl;
     private String productCode;
     private String productName;
-    private String note;
+    private String description;
     private Integer quantity;
     private Integer unitPrice;
 }

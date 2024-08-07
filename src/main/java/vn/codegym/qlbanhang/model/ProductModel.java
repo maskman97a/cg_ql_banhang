@@ -4,6 +4,8 @@ import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.utils.ClassUtils;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,20 +56,21 @@ public class ProductModel extends BaseModel {
             productDto.setProductName(rs.getString("productName"));
             productDto.setPrice(rs.getLong("price"));
             productDto.setQuantity(rs.getInt("quantity"));
-            productDto.setNote(rs.getString("note"));
+            productDto.setDescription(rs.getString("description"));
             productDtoList.add(productDto);
         }
         return productDtoList;
     }
 
 
-    public Integer count(BaseSearchDto baseSearchDto) throws SQLException {
-        PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(baseSearchDto));
+    public Integer countProduct(BaseSearchDto baseSearchDto) throws SQLException {
+        String sql = " SELECT count(1) from (" + getSearchSQL(baseSearchDto) + ") as countLst ";
+        PreparedStatement preparedStatement = this.con.prepareStatement(sql);
         int index = 1;
         if (baseSearchDto != null) {
             if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                preparedStatement.setString(index++, baseSearchDto.getKeyword());
-                preparedStatement.setString(index++, baseSearchDto.getKeyword());
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
         ResultSet rs = preparedStatement.executeQuery();
@@ -79,7 +82,7 @@ public class ProductModel extends BaseModel {
 
     public String getSearchSQL(BaseSearchDto baseSearchDto) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT id,image_url as imageUrl,product_code as productCode,product_name as productName,price,quantity,note ");
+        sb.append(" SELECT id,image_url as imageUrl,product_code as productCode,product_name as productName,price,quantity,description ");
         sb.append("  FROM product ");
         sb.append(" WHERE status = 1 ");
         if (baseSearchDto != null) {
@@ -88,5 +91,52 @@ public class ProductModel extends BaseModel {
             }
         }
         return sb.toString();
+    }
+
+    public int updateProduct(Boolean isCancel, Product product) throws SQLException {
+        StringBuilder sb = new StringBuilder("");
+        sb.append("UPDATE product " +
+                "   SET updated_date = CURRENT_TIMESTAMP , " +
+                "       updated_by = ? ");
+        if (!DataUtil.isNullObject(product)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(product.getImageUrl()))
+                    sb.append(" ,image_url = ? ");
+                if (!DataUtil.isNullOrEmpty(product.getProductName()))
+                    sb.append(" ,product_name = ? ");
+                if (!DataUtil.isNullOrZero(product.getPrice()))
+                    sb.append(" ,price = ? ");
+                if (!DataUtil.isNullOrZero(product.getQuantity()))
+                    sb.append(" ,quantity = ? ");
+                if (!DataUtil.isNullOrZero(product.getDescription()))
+                    sb.append(" ,description = ? ");
+            }
+            if (!DataUtil.isNullObject(product.getStatus()))
+                sb.append(" ,status = ? ");
+        }
+        sb.append(" WHERE id = ? ");
+        if (isCancel)
+            sb.append(" AND status = 1 ");
+        PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
+        int index = 1;
+        preparedStatement.setString(index++, product.getUpdatedBy());
+        if (!DataUtil.isNullObject(product)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(product.getImageUrl()))
+                    preparedStatement.setString(index++, product.getImageUrl().trim());
+                if (!DataUtil.isNullOrEmpty(product.getProductName()))
+                    preparedStatement.setString(index++, product.getProductName().trim());
+                if (!DataUtil.isNullOrZero(product.getPrice()))
+                    preparedStatement.setLong(index++, product.getPrice());
+                if (!DataUtil.isNullOrZero(product.getQuantity()))
+                    preparedStatement.setInt(index++, product.getQuantity());
+                if (!DataUtil.isNullOrZero(product.getDescription()))
+                    preparedStatement.setString(index++, product.getDescription().trim());
+            }
+            if (!DataUtil.isNullObject(product.getStatus()))
+                preparedStatement.setInt(index++, product.getStatus());
+        }
+        preparedStatement.setInt(index++, product.getId());
+        return preparedStatement.executeUpdate();
     }
 }

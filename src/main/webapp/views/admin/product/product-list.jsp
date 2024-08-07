@@ -43,8 +43,8 @@
                         <div class="col-9 mb-3">
                             <form class="form row" method="get"
                                   action="${pageContext.request.contextPath}/admin/search">
-                                <input type="text" class="form-control" name="size"value="10" hidden/>
-                                <input type="text" class="form-control" name="page"value="1" hidden/>
+                                <input type="text" class="form-control" name="size" value="10" hidden/>
+                                <input type="text" class="form-control" name="page" value="1" hidden/>
                                 <div class="col-9">
                                     <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
                                            value="${keyword}">
@@ -74,7 +74,12 @@
                                 <c:forEach var="product" items="${lstData}">
                                     <tr>
                                         <td>${product.index}</td>
-                                        <td>${product.imageUrl}</td>
+                                        <td><img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
+                                                 id="product-image-${product.id}"
+                                                 class="img-fluid col-12"
+                                                 style="max-width: 50%;"
+                                                 alt="${product.productName}" width="100%" height="100%">
+                                        </td>
                                         <td>${product.productCode}</td>
                                         <td>${product.productName}</td>
                                         <td>${product.price}</td>

@@ -31,6 +31,9 @@ public class AdminController extends BaseController {
             case "/product/product-create":
                 adminService.renderCreateProductForm(req, resp);
                 break;
+            case "/product/product-update":
+                adminService.renderUpdateProductForm(req, resp);
+                break;
             case "/transaction":
 //                adminService.renderUpdateNoteForm(req, resp);
             default:
@@ -49,10 +52,14 @@ public class AdminController extends BaseController {
         switch (req.getPathInfo()) {
             case "/search":
                 break;
-            case "/product-create":
+            case "/product/product-create":
                 adminService.createNewProduct(req, resp);
                 break;
-            case "/update-note":
+            case "/product/update":
+                adminService.updateProduct(req, resp);
+                break;
+            case "/product/delete":
+                adminService.cancleProduct(req, resp);
                 break;
         }
     }

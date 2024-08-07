@@ -9,6 +9,7 @@ import vn.codegym.qlbanhang.model.NoteTypeModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ public class NoteTypeService extends BaseService {
         }
     }
 
-    public void searchNoteType(HttpServletRequest req, HttpServletResponse resp) {
+    public void searchNoteType(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         BaseData baseData = super.doSearch(req, resp, baseSearchDto, NoteType.getSearchColumn());
 

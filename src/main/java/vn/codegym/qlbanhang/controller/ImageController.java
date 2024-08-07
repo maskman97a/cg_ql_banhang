@@ -31,6 +31,9 @@ public class ImageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (req.getPathInfo() != null) {
             String imageUrl = req.getPathInfo().substring(1);
+            if (imageUrl.isEmpty()) {
+                return;
+            }
             try {
                 byte[] imageData = SftpUtils.getFileAsByteArray(imageUrl);
                 resp.setContentType("image/jpeg");

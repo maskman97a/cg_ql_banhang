@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class AdminService extends BaseService {
     }
 
 
-    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("firstSearchTab", true);
             this.searchProductAdmin(req, resp);
@@ -37,7 +38,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) {
+    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         try {
             String keyword = req.getParameter("keyword");
@@ -69,7 +70,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("updateProduct", false);
             req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
@@ -78,7 +79,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("updateProduct", true);
             req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
@@ -87,7 +88,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void createNewProduct(HttpServletRequest req, HttpServletResponse resp) {
+    public void createNewProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             BaseEntity baseEntity = new Product();
             Map<String, Object> mapValue = new HashMap<>();
@@ -114,7 +115,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void updateProduct(HttpServletRequest req, HttpServletResponse resp) {
+    public void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             BaseEntity baseEntity = new Product();
             this.commonUpdate(req, resp, baseEntity, 1L);
@@ -124,7 +125,17 @@ public class AdminService extends BaseService {
         }
     }
 
-    private void commonUpdate(HttpServletRequest req, HttpServletResponse resp, BaseEntity baseEntity, Long status) {
+    public void cancleProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            BaseEntity baseEntity = new Product();
+            this.commonUpdate(req, resp, baseEntity, 0L);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.renderAdmin(req, resp);
+        }
+    }
+
+    private void commonUpdate(HttpServletRequest req, HttpServletResponse resp, BaseEntity baseEntity, Long status) throws ServletException, IOException, SQLException {
         Map<String, Object> mapValue = new HashMap<>();
 //            req.getAttribute("image");
 //            String imageUrl = SftpUtils.getPathSFTP(req, resp);

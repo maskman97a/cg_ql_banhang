@@ -3,9 +3,11 @@ package vn.codegym.qlbanhang.controller;
 
 import vn.codegym.qlbanhang.service.AdminService;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @WebServlet("/admin/*")
 public class AdminController extends BaseController {
@@ -16,7 +18,7 @@ public class AdminController extends BaseController {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getPathInfo() == null) {
             adminService.renderAdmin(req, resp);
             return;
@@ -42,7 +44,7 @@ public class AdminController extends BaseController {
 
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getPathInfo() == null) {
             adminService.renderAdmin(req, resp);
         }
@@ -55,6 +57,9 @@ public class AdminController extends BaseController {
                 break;
             case "/product/update":
                 adminService.updateProduct(req, resp);
+                break;
+            case "/product/delete":
+                adminService.cancleProduct(req, resp);
                 break;
         }
     }

@@ -2,9 +2,10 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.constants.Const;
 
 import javax.persistence.Column;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -17,27 +18,33 @@ public abstract class BaseEntity {
     @Column(name = "created_by")
     protected String createdBy;
     @Column(name = "created_date")
-    protected Date createdDate;
+    protected LocalDateTime createdDate;
     @Column(name = "updated_by")
     protected String updatedBy;
     @Column(name = "updated_date")
-    protected Date updatedDate;
+    protected LocalDateTime updatedDate;
 
     private Map<String, Object> mapValue;
 
     public BaseEntity() {
-        this.status = 1;
+        this.status = Const.STATUS_ACTIVE;
         this.createdBy = "admin";
-        this.createdDate = new Date();
+        this.createdDate = LocalDateTime.now();
         this.updatedBy = "admin";
-        this.updatedDate = new Date();
+        this.updatedDate = LocalDateTime.now();
     }
 
     public static BaseEntity getInstance(String tableName) {
-        if (tableName.equals(Product.getTableName())) {
-            return new Product();
+        switch (tableName) {
+            case Product.TABLE_NAME:
+                return new Product();
+            case Customer.TABLE_NAME:
+                return new Customer();
+            case Order.TABLE_NAME:
+                return new Order();
+            case OrderDetail.TABLE_NAME:
+                return new OrderDetail();
         }
-
         return null;
     }
 

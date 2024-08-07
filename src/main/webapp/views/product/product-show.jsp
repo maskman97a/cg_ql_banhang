@@ -21,7 +21,7 @@
                         <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
                              id="product-image-${product.id}"
                              class="img-fluid col-12"
-                             alt="${product.name}" width="100%" height="100%">
+                             alt="${product.name}" width="100%" height="100%" style="z-index: 0">
                     </div>
                     <span class="col-12" style="font-weight: bold">${product.name}</span>
 

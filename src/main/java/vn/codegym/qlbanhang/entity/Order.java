@@ -3,18 +3,23 @@ package vn.codegym.qlbanhang.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import javax.persistence.Column;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class Order extends BaseEntity {
-    private static final String TABLE_NAME = "orders";
-    private static final String SEARCH_COLUMN = "name";
+    public static final String TABLE_NAME = "orders";
+    public static final String SEARCH_COLUMN = "name";
     private int index;
+    @Column(name = "code")
     private String code;
+    @Column(name = "customer_id")
     private int customerId;
+    @Column(name = "address")
     private String address;
-    private Date orderDate;
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
 
     public static String getTableName() {
         return TABLE_NAME;

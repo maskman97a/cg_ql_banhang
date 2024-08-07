@@ -5,11 +5,13 @@ import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.JoinCondition;
 import vn.codegym.qlbanhang.entity.BaseEntity;
+import vn.codegym.qlbanhang.utils.ClassUtils;
 
 import javax.persistence.Column;
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseModel {
     protected final Connection con;
@@ -21,7 +23,7 @@ public class BaseModel {
     }
 
     public List<BaseEntity> search(BaseSearchDto baseSearchDto) throws SQLException {
-        String sql = getSearchSQL(baseSearchDto);
+        String sql = getSelectSQL(baseSearchDto);
         sql += " order by id desc ";
         sql += " limit ? offset ?";
         PreparedStatement preparedStatement = this.con.prepareStatement(sql);
@@ -37,7 +39,7 @@ public class BaseModel {
     }
 
     public Integer count(BaseSearchDto baseSearchDto) throws SQLException {
-        PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(baseSearchDto));
+        PreparedStatement preparedStatement = this.con.prepareStatement(getSelectSQL(baseSearchDto));
         int index = 1;
         if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
             for (Condition condition : baseSearchDto.getConditions()) {
@@ -51,7 +53,7 @@ public class BaseModel {
         return 0;
     }
 
-    public String getSearchSQL(BaseSearchDto baseSearchDto) {
+    public String getSelectSQL(BaseSearchDto baseSearchDto) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ").append(tableName).append(".* ");
         sb.append(" FROM ").append(tableName);
@@ -65,9 +67,14 @@ public class BaseModel {
                     sb.append(joinCondition.getTableName() + "." + joinCondition.getColumn2());
                 }
             }
+            int index = 0;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
                 sb.append(" WHERE ");
                 for (Condition condition : baseSearchDto.getConditions()) {
+                    if (index > 0) {
+                        sb.append(" AND ");
+                    }
+                    index++;
                     sb.append(condition.getColumnName());
                     sb.append(" ").append(condition.getOperator());
                     sb.append(" ? ");
@@ -79,7 +86,7 @@ public class BaseModel {
 
     public List<BaseEntity> findAll() {
         try {
-            PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(null));
+            PreparedStatement preparedStatement = this.con.prepareStatement(getSelectSQL(null));
             return executeSelect(preparedStatement);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -87,23 +94,26 @@ public class BaseModel {
         return new ArrayList<>();
     }
 
-    public BaseEntity findById(int id) {
-        try {
-            BaseSearchDto baseSearchDto = new BaseSearchDto();
-            Condition condition = new Condition();
-            condition.setColumnName("id");
-            condition.setOperator("=");
-            condition.setValue(id);
-            baseSearchDto.setConditions(Collections.singletonList(condition));
-            return findOne(baseSearchDto);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public BaseEntity findById(int id) throws SQLException {
+        BaseSearchDto baseSearchDto = new BaseSearchDto();
+        Condition condition = new Condition();
+        condition.setColumnName("id");
+        condition.setOperator("=");
+        condition.setValue(id);
+        baseSearchDto.getConditions().add(condition);
+        return findOne(baseSearchDto);
     }
 
     public BaseEntity findOne(BaseSearchDto baseSearchDto) throws SQLException {
-        PreparedStatement preparedStatement = this.con.prepareStatement(getSearchSQL(baseSearchDto));
+        String sql = getSelectSQL(baseSearchDto);
+        System.out.println("Execute sql: " + sql);
+        PreparedStatement preparedStatement = this.con.prepareStatement(sql);
+        int index = 1;
+        if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
+            for (Condition condition : baseSearchDto.getConditions()) {
+                preparedStatement.setObject(index++, condition.getValue());
+            }
+        }
         List<BaseEntity> baseEntities = executeSelect(preparedStatement);
         if (baseEntities != null && !baseEntities.isEmpty()) {
             return baseEntities.get(0);
@@ -111,76 +121,63 @@ public class BaseModel {
         return null;
     }
 
-    public List<BaseEntity> executeSelect(PreparedStatement preparedStatement) {
+    public List<BaseEntity> executeSelect(PreparedStatement preparedStatement) throws SQLException {
         List<BaseEntity> baseEntities = new ArrayList<>();
-        try {
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                BaseEntity baseEntity = BaseEntity.getInstance(tableName);
-                ResultSetMetaData metaData = rs.getMetaData();
-                for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                    assert baseEntity != null;
-                    List<Field> thisFields = Arrays.asList(baseEntity.getClass().getDeclaredFields());
-                    List<Field> superFields = Arrays.asList(baseEntity.getClass().getSuperclass().getDeclaredFields());
-                    List<Field> fields = new ArrayList<>();
-                    fields.addAll(thisFields);
-                    fields.addAll(superFields);
-                    for (Field field : fields) {
-                        field.setAccessible(true);
-                        if (field.getAnnotation(Column.class) == null) {
-                            continue;
-                        }
-                        String colName = field.getAnnotation(Column.class).name();
-                        if (colName != null && colName.equals(metaData.getColumnName(i))) {
-                            try {
-                                Object val = rs.getObject(i);
-                                field.set(baseEntity, val);
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            BaseEntity baseEntity = BaseEntity.getInstance(tableName);
+            ResultSetMetaData metaData = rs.getMetaData();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                assert baseEntity != null;
+                for (Field field : ClassUtils.getAllFields(baseEntity)) {
+                    field.setAccessible(true);
+                    if (field.getAnnotation(Column.class) == null) {
+                        continue;
+                    }
+                    String colName = field.getAnnotation(Column.class).name();
+                    if (colName != null && colName.equals(metaData.getColumnName(i))) {
+                        try {
+                            Object val = rs.getObject(i);
+                            field.set(baseEntity, val);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }
-                baseEntities.add(baseEntity);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            baseEntities.add(baseEntity);
         }
         return baseEntities;
     }
 
-    public int save(BaseEntity baseEntity) {
-        try {
-            StringBuilder sb = new StringBuilder("INSERT INTO ");
-            sb.append(tableName);
-            sb.append("(");
-            int index = 0;
-            for (Map.Entry<String, Object> entry : baseEntity.getMapValue().entrySet()) {
-                if (index > 0) {
-                    sb.append(",");
-                }
-                index++;
-                sb.append(entry.getKey());
+    public int save(BaseEntity baseEntity) throws SQLException {
+        StringBuilder sb = new StringBuilder("INSERT INTO ");
+        sb.append(tableName);
+        sb.append("(");
+        int index = 0;
+        List<String> lstColName = ClassUtils.getAllColumnName(baseEntity);
+        for (String colName : lstColName) {
+            if (index > 0) {
+                sb.append(",");
             }
-            sb.append(") VALUE (");
-            index = 0;
-            for (int i = 0; i < baseEntity.getMapValue().size(); i++) {
-                if (index > 0) {
-                    sb.append(",");
-                }
-                index++;
-                sb.append("?");
-            }
-            sb.append(")");
-            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
-            index = 1;
-            for (Map.Entry<String, Object> entry : baseEntity.getMapValue().entrySet()) {
-                preparedStatement.setObject(index++, entry.getValue());
-            }
-            return preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            index++;
+            sb.append(colName);
         }
-        return 0;
+        sb.append(") VALUE (");
+        index = 0;
+        for (int i = 0; i < lstColName.size(); i++) {
+            if (index > 0) {
+                sb.append(",");
+            }
+            index++;
+            sb.append("?");
+        }
+        sb.append(")");
+        PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
+        index = 1;
+        for (String columnName : lstColName) {
+            preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
+        }
+        return preparedStatement.executeUpdate();
     }
 }

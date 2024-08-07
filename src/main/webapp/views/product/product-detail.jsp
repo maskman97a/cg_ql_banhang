@@ -24,7 +24,7 @@
             <h1 class="col-12">${product.productName}</h1>
             <input value="${product.price}" id="view-product-price-hid" hidden/>
             <h2 class="col-12">
-                <span id="view-product-price">${product.price}</span>đ
+                <span id="view-product-price" style="color:red">${product.price}</span>đ
             </h2>
             <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-bs-toggle="modal"
                    data-bs-target="#modalOrder" onclick="initOrderForm()"/>

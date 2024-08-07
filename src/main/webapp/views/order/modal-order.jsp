@@ -77,7 +77,8 @@
                                         <div class="col-12 row">
                                                 <span class="col-12 form-label">
                                                     <span class="fs-4 text">${product.productName}</span></span>
-                                            <span class="col-12 form-label">Mã sản phẩm: ${product.productCode}</span>
+                                            <span class="col-12 form-label"
+                                                  style="font-size: 12px">Mã sản phẩm: ${product.productCode}</span>
                                             <input value="${product.price}" id="inp-product-price" hidden/>
                                             <span id="product-price" class="col-12 form-label">Đơn giá:
                                                     <span id="out-product-price" class="fs-5 text"

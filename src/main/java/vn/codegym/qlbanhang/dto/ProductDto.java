@@ -17,4 +17,5 @@ public class ProductDto extends BaseDto {
     private String description;
     private Integer quantity;
     private Integer unitPrice;
+    private Integer categoryId;
 }

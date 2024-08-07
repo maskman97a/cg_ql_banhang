@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: ceotungbeo
@@ -19,7 +20,15 @@
                 <img src="../../images/logo.png" alt="logo" class="img-fluid rounded"/>
             </a>
         </div>
-        <div class="col-11">
+        <div class="col-2">
+            <select class="form-control" name="category-id">
+                <option value="0">--Chọn thể loại--</option>
+                <c:forEach var="category" items="${lstCategory}" >
+                    <option value="${category.id}">${category.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div class="col-9">
             <form class="d-flex" role="search" action="${pageContext.request.contextPath}/product/search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>

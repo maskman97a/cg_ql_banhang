@@ -44,6 +44,8 @@ public abstract class BaseEntity {
                 return new Order();
             case OrderDetail.TABLE_NAME:
                 return new OrderDetail();
+            case Category.TABLE_NAME:
+                return new Category();
         }
         return null;
     }

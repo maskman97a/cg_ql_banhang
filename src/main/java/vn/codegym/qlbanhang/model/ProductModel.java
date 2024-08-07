@@ -1,10 +1,10 @@
 package vn.codegym.qlbanhang.model;
 
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
-import vn.codegym.qlbanhang.utils.ClassUtils;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import java.sql.PreparedStatement;
@@ -28,6 +28,35 @@ public class ProductModel extends BaseModel {
         List<Product> productList = new ArrayList<>();
         for (BaseEntity baseEntity : baseEntities) {
             productList.add((Product) baseEntity);
+        }
+        return productList;
+    }
+
+    public List<Product> findProductByKeywordAndCategoryId(String keyword, Integer categoryId, Integer page, Integer size) throws SQLException {
+        BaseSearchDto baseSearchDto = new BaseSearchDto();
+        if (!DataUtil.isNullOrEmpty(keyword)) {
+            Condition condition = new Condition();
+            condition.setColumnName("product_name");
+            condition.setOperator("LIKE");
+            condition.setValue("%" + keyword + "%");
+            baseSearchDto.getConditions().add(condition);
+        }
+
+        if (!DataUtil.isNullOrZero(categoryId)) {
+            Condition condition = new Condition();
+            condition.setColumnName("category_id");
+            condition.setOperator("=");
+            condition.setValue(categoryId);
+            baseSearchDto.getConditions().add(condition);
+        }
+        baseSearchDto.setSize(size);
+        baseSearchDto.setPage(page);
+        List<Product> productList = new ArrayList<>();
+        List<BaseEntity> baseEntities = super.search(baseSearchDto);
+        if (!DataUtil.isNullOrEmpty(baseEntities)) {
+            for (BaseEntity baseEntity : baseEntities) {
+                productList.add((Product) baseEntity);
+            }
         }
         return productList;
     }

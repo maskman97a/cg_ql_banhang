@@ -20,6 +20,8 @@ public class Product extends BaseEntity {
     private Long price;
     @Column(name = "quantity")
     private Integer quantity;
+    @Column(name = "category_id")
+    private Integer categoryId;
 
     public static final String TABLE_NAME = "product";
 

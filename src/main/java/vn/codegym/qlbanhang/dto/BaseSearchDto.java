@@ -9,6 +9,8 @@ public class BaseSearchDto {
     private int size;
     private List<Condition> conditions;
     private List<JoinCondition> joinConditions;
+    private String orderByColumn;
+    private String orderType;
 
     public BaseSearchDto() {
         this.conditions = new ArrayList<>();

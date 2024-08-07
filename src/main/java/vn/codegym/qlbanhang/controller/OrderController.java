@@ -23,6 +23,7 @@ public class OrderController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         if (req.getPathInfo() == null) {
             homeService.renderHomePage(req, resp);
             return;
@@ -39,6 +40,7 @@ public class OrderController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         if (request.getPathInfo() == null) {
             orderService.renderErrorPage(request, response);
         }

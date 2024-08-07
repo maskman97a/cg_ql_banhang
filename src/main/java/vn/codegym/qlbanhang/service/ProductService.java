@@ -1,8 +1,12 @@
 package vn.codegym.qlbanhang.service;
 
+import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +17,12 @@ import java.util.List;
 
 public class ProductService extends HomeService {
     private final ProductModel productModel;
+    private final CategoryModel categoryModel;
 
     public ProductService() {
         super(new ProductModel());
         this.productModel = (ProductModel) super.baseModel;
+        this.categoryModel = new CategoryModel();
     }
 
     public void findListProduct(HttpServletRequest req, HttpServletResponse resp) {
@@ -40,5 +46,46 @@ public class ProductService extends HomeService {
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }
+    }
+
+    public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String keyword = req.getParameter("keyword");
+            Integer categoryId = null;
+            if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
+                categoryId = Integer.parseInt(req.getParameter("category-id"));
+            }
+            Integer page = 1;
+            String pageStr = req.getParameter("page");
+            if (!DataUtil.isNullOrEmpty(pageStr)) {
+                page = Integer.parseInt(pageStr);
+            }
+            Integer size = 8;
+            String sizeStr = req.getParameter("size");
+            if (!DataUtil.isNullOrEmpty(sizeStr)) {
+                size = Integer.parseInt(pageStr);
+            }
+            List<Product> productList = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, page, size);
+            List<ProductDto> productDtoList = new ArrayList<>();
+            for (Product product : productList) {
+                productDtoList.add(modelMapper.map(product, ProductDto.class));
+            }
+            req.setAttribute("lstProduct", productDtoList);
+            req.setAttribute("showListProduct", true);
+
+            List<CategoryDto> categoryDtoList = new ArrayList<>();
+            List<BaseEntity> baseEntities = categoryModel.findAll();
+            for (BaseEntity baseEntity : baseEntities) {
+                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
+            }
+            req.setAttribute("lstCategory", categoryDtoList);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        executeSearch(req, resp);
+        renderPage(req, resp);
     }
 }

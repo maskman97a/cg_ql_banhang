@@ -1,4 +1,4 @@
-FROM maven:3.9.8-amazoncorretto-8-al2023 AS build
+FROM maven:3.6.3-jdk-8-slim AS build
 
 WORKDIR /
 

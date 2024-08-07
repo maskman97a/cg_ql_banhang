@@ -29,7 +29,10 @@ public class OrderController extends HttpServlet {
         }
         switch (req.getPathInfo()) {
             case "/success":
-                orderService.renderSuccessPage(req, resp);
+                orderService.renderOrderSuccessPage(req, resp);
+                break;
+            case "/error":
+                orderService.renderOrderErrorPage(req, resp);
                 break;
         }
     }

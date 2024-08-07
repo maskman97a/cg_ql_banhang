@@ -19,7 +19,7 @@
 </head>
 <body>
 <header>
-    <div class="container-fluid" style="position: fixed; top: 0; background-color: #e3f2fd">
+    <div class="container-fluid" style="position: fixed; top: 0; background-color: #e3f2fd" tabindex="-1">
         <c:import url="../component/navbar.jsp"/>
     </div>
     <div class="container-fluid" style="height: 120px">

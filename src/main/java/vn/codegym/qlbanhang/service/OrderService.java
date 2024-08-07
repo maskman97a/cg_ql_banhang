@@ -119,12 +119,22 @@ public class OrderService extends HomeService {
         return baseResponse;
     }
 
-    public void renderSuccessPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void renderOrderSuccessPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String id = req.getParameter("orderId");
             Order order = (Order) orderModel.findById(Integer.parseInt(id));
             req.setAttribute("showOrderSuccess", true);
             req.setAttribute("orderCode", order.getCode());
+            renderPage(req, resp);
+        } catch (Exception e) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void renderOrderErrorPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setAttribute("showOrderError", true);
+            req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
             renderPage(req, resp);
         } catch (Exception e) {
             renderErrorPage(req, resp);

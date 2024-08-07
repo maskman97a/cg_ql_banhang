@@ -12,10 +12,10 @@ import java.util.Properties;
 
 
 public class SftpUtils {
-    private static final String SFTP_HOST = "localhost";
-    //    private static final String SFTP_HOST = "159.13.36.51";
-    private static final String SFTP_USERNAME = "client";
-    private static final String SFTP_PASSWORD = "Client@123";
+    //    private static final String SFTP_HOST = "localhost";
+    private static final String SFTP_HOST = "150.230.9.133";
+    private static final String SFTP_USERNAME = "server";
+    private static final String SFTP_PASSWORD = "Sv@123";
     private static final int SFTP_PORT = 22;
 
     private static Session setupJsch() throws Exception {
@@ -26,14 +26,14 @@ public class SftpUtils {
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.connect();
+        session.connect(30000);
         return session;
     }
 
     public static byte[] getFileAsByteArray(String remoteFile) throws Exception {
         Session session = setupJsch();
         ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
-        channelSftp.connect();
+        channelSftp.connect(30000);
         InputStream inputStream = channelSftp.get(remoteFile);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

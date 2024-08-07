@@ -24,7 +24,7 @@ public class AdminService extends BaseService {
     }
 
 
-    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("firstSearchTab", true);
             this.searchProductAdmin(req, resp);
@@ -34,7 +34,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) {
+    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         try {
             String keyword = req.getParameter("keyword");
@@ -66,7 +66,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
         } catch (Exception ex) {

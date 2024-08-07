@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class Order extends BaseEntity {
     @Column(name = "address")
     private String address;
     @Column(name = "order_date")
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     public static String getTableName() {
         return TABLE_NAME;

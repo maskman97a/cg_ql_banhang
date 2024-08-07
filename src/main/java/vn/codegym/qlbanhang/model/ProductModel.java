@@ -16,7 +16,7 @@ public class ProductModel extends BaseModel {
         super(Product.getTableName());
     }
 
-    public Product findProductById(int id) {
+    public Product findProductById(int id) throws SQLException {
         return (Product) findById(id);
     }
 

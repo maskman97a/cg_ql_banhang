@@ -1,16 +1,30 @@
 package vn.codegym.qlbanhang.constants;
 
-public class ErrorType {
-    public static final int SUCCESS = 0;
-    public static final int UNKNOWN = -1;
+import lombok.Getter;
+import lombok.Setter;
 
-    public static final String getMessage(int errorCode) {
-        switch (errorCode) {
-            case SUCCESS:
-                return "Thành công";
-            case UNKNOWN:
-            default:
-                return "Lỗi chưa xác định";
-        }
+@Getter
+public enum ErrorType {
+    SUCCESS(0, "Thành công"),
+    UNKNOWN(-1, "Lỗi không xác định"),
+    INTERNAL_SERVER_ERROR(99, "Lỗi hệ thống");
+
+    final int errorCode;
+    final String errorMessage;
+
+    ErrorType(int errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
     }
+
+    public static String getMessage(int errorCode) {
+        for (ErrorType errorType : ErrorType.values()) {
+            if (errorType.errorCode == errorCode) {
+                return errorType.errorMessage;
+            }
+        }
+        return ErrorType.UNKNOWN.errorMessage;
+    }
+
+
 }

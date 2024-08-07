@@ -4,8 +4,10 @@ import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.model.ProductModel;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class ProductService extends HomeService {
         req.setAttribute("showListProduct", true);
     }
 
-    public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) {
+    public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Integer id = Integer.parseInt(req.getParameter("id"));
             Product product = (Product) productModel.findById(id);

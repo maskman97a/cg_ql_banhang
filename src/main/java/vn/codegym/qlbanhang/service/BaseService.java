@@ -7,10 +7,13 @@ import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.List;
 
 public class BaseService {
@@ -22,17 +25,12 @@ public class BaseService {
         this.modelMapper = new ModelMapper();
     }
 
-    public void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) {
-        try {
+    public void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) throws ServletException, IOException {
             req.getRequestDispatcher(req.getContextPath() + "/views/error.jsp").forward(req, resp);
             req.setAttribute("message", message);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
-    protected BaseData doSearch(HttpServletRequest req, HttpServletResponse resp, BaseSearchDto baseSearchDto, String columnName) {
-        try {
+    protected BaseData doSearch(HttpServletRequest req, HttpServletResponse resp, BaseSearchDto baseSearchDto, String columnName) throws SQLException {
             String keyword = req.getParameter("keyword");
             int size = 10;
             if (req.getParameter("size") != null) {
@@ -58,10 +56,6 @@ public class BaseService {
             getPaging(req, resp, count, size, page);
             req.setAttribute("keyword", keyword);
             return new BaseData(count, lstData);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     protected void getPaging(HttpServletRequest req, HttpServletResponse resp, int count, int size, int page) {
@@ -100,13 +94,8 @@ public class BaseService {
     }
 
     public BaseData findAll() {
-        try {
             List<BaseEntity> lstData = baseModel.findAll();
             return new BaseData(lstData.size(), lstData);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     public BaseEntity findById(Integer id) {
@@ -118,7 +107,7 @@ public class BaseService {
         return null;
     }
 
-    public int save(BaseEntity entity) {
+    public int save(BaseEntity entity) throws SQLException {
         return baseModel.save(entity);
     }
 }

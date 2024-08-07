@@ -37,6 +37,10 @@
              <c:if test="${!showProductDetail}">hidden</c:if> >
             <c:import url="../product/product-detail.jsp"/>
         </div>
+        <div id="div-order-result" class="container row" style="margin:0 auto"
+             <c:if test="${!showOrderSuccess}">hidden</c:if> >
+            <c:import url="../order/order-success.jsp"/>
+        </div>
     </div>
 </main>
 <footer>

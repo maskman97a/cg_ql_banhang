@@ -12,7 +12,11 @@ public class BaseResponse<T> {
     private T additionalData;
 
     public BaseResponse() {
-        this.errorCode = ErrorType.SUCCESS;
-        this.errorMessage = ErrorType.getMessage(ErrorType.SUCCESS);
+        setError(ErrorType.SUCCESS);
+    }
+
+    public void setError(ErrorType errorType) {
+        this.errorCode = errorType.getErrorCode();
+        this.errorMessage = errorType.getErrorMessage();
     }
 }

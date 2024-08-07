@@ -5,7 +5,7 @@ import lombok.Setter;
 import vn.codegym.qlbanhang.constants.Const;
 
 import javax.persistence.Column;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -18,20 +18,20 @@ public abstract class BaseEntity {
     @Column(name = "created_by")
     protected String createdBy;
     @Column(name = "created_date")
-    protected Date createdDate;
+    protected LocalDateTime createdDate;
     @Column(name = "updated_by")
     protected String updatedBy;
     @Column(name = "updated_date")
-    protected Date updatedDate;
+    protected LocalDateTime updatedDate;
 
     private Map<String, Object> mapValue;
 
     public BaseEntity() {
         this.status = Const.STATUS_ACTIVE;
         this.createdBy = "admin";
-        this.createdDate = new Date();
+        this.createdDate = LocalDateTime.now();
         this.updatedBy = "admin";
-        this.updatedDate = new Date();
+        this.updatedDate = LocalDateTime.now();
     }
 
     public static BaseEntity getInstance(String tableName) {

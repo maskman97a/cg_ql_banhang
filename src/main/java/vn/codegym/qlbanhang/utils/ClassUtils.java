@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ClassUtils {
-    public static List<Field> getAllFields(Class cl) {
+    public static List<Field> getAllFields(Object obj) {
+        Class cl = obj.getClass();
         List<Field> thisFields = Arrays.asList(cl.getDeclaredFields());
         List<Field> superFields = Arrays.asList(cl.getSuperclass().getDeclaredFields());
         List<Field> lstFields = new ArrayList<>();
@@ -16,9 +17,9 @@ public class ClassUtils {
         return lstFields;
     }
 
-    public static List<String> getAllColumnName(Class cl) {
+    public static List<String> getAllColumnName(Object obj) {
         List<String> lstColumn = new ArrayList<>();
-        List<Field> fieldList = getAllFields(cl);
+        List<Field> fieldList = getAllFields(obj);
         for (Field field : fieldList) {
             field.setAccessible(true);
             Column annotation = field.getAnnotation(Column.class);
@@ -32,7 +33,7 @@ public class ClassUtils {
 
     public static Object getValueFromColumnAnnotation(Object ob, String colName) {
         try {
-            List<Field> fieldList = getAllFields(ob.getClass());
+            List<Field> fieldList = getAllFields(ob);
             for (Field field : fieldList) {
                 field.setAccessible(true);
                 Column annotation = field.getAnnotation(Column.class);

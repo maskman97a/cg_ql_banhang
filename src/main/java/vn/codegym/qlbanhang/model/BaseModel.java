@@ -136,7 +136,7 @@ public class BaseModel {
                 ResultSetMetaData metaData = rs.getMetaData();
                 for (int i = 1; i <= metaData.getColumnCount(); i++) {
                     assert baseEntity != null;
-                    for (Field field : ClassUtils.getAllFields(baseEntity.getClass())) {
+                    for (Field field : ClassUtils.getAllFields(baseEntity)) {
                         field.setAccessible(true);
                         if (field.getAnnotation(Column.class) == null) {
                             continue;
@@ -166,7 +166,7 @@ public class BaseModel {
             sb.append(tableName);
             sb.append("(");
             int index = 0;
-            List<String> lstColName = ClassUtils.getAllColumnName(baseEntity.getClass());
+            List<String> lstColName = ClassUtils.getAllColumnName(baseEntity);
             for (String colName : lstColName) {
                 if (index > 0) {
                     sb.append(",");

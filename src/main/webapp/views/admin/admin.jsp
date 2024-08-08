@@ -18,7 +18,7 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <c:if test="${firstSearchTab}">
+        <c:if test="${!firstSearchTab}">
             <div class="col-2 bg-light">
                 <div class="list-group">
                     <a href="${pageContext.request.contextPath}/admin/product"

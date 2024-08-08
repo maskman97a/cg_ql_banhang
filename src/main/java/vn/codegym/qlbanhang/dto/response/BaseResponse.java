@@ -2,7 +2,7 @@ package vn.codegym.qlbanhang.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import vn.codegym.qlbanhang.constants.ErrorType;
+import vn.codegym.qlbanhang.enums.ErrorType;
 
 @Data
 @AllArgsConstructor

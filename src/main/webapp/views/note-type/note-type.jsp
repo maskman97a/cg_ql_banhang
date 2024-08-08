@@ -86,30 +86,7 @@
                             <tfoot>
                             <tr>
                                 <td colspan="4" class="text-right">
-                                    <div class="container row text-center col-12" style="position: fixed; bottom: 5px;">
-                                        <nav aria-label="Page navigation example">
-                                            <ul class="pagination" style="justify-content: center">
-                                                <c:if test="${!firstTab}">
-                                                    <li class="page-item"><a class="page-link"
-                                                                             href="${pageContext.request.contextPath}/order-type/search?page=${currentPage-1}&size=10">
-                                                        Previous</a></li>
-                                                </c:if>
 
-                                                <c:forEach begin="${beginPage}" end="${endPage}" var="page">
-                                                    <li class="page-item ${currentPage == page ? 'active' : ''}">
-                                                        <a class="page-link"
-                                                           href="${pageContext.request.contextPath}/order-type/search?page=${page}&size=10">${page}</a>
-                                                    </li>
-                                                </c:forEach>
-                                                <c:if test="${!lastTab}">
-                                                    <li class="page-item">
-                                                        <a class="page-link"
-                                                           href="${pageContext.request.contextPath}/order-type/search?page=${currentPage+1}&size=10">
-                                                            Next</a></li>
-                                                </c:if>
-                                            </ul>
-                                        </nav>
-                                    </div>
                                 </td>
                             </tr>
                             </tfoot>

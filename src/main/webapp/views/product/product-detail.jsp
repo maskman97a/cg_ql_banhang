@@ -20,17 +20,21 @@
              alt="${product.name}" width="100%" height="100%">
     </div>
     <div class="col-6 row">
-        <div class="col-12">
+        <div class="col-12 p5">
             <h1 class="col-12">${product.productName}</h1>
             <input value="${product.price}" id="view-product-price-hid" hidden/>
             <h2 class="col-12">
-                <span id="view-product-price" style="color:red">${product.price}</span>đ
+                <span id="view-product-price" style="color:red">${product.price}đ</span>
             </h2>
+            <label for="product-description">Mô tả sản phẩm: </label>
+            <div class="card card-body mb-3">
+                <label id="product-description" class="col-12">${product.description}</label>
+            </div>
             <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-bs-toggle="modal"
                    data-bs-target="#modalOrder" onclick="initOrderForm()"/>
             <input type="button" class="btn btn-secondary"
                    value="Thêm vào giỏ"
-                   onclick="initOrderForm()"/>
+                   onclick="initOrderForm()" disabled/>
         </div>
         <div class="col-12">
 

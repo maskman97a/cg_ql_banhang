@@ -21,6 +21,8 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "amount")
     private int amount;
 
+    private Product product;
+
     public static String getTableName() {
         return TABLE_NAME;
     }

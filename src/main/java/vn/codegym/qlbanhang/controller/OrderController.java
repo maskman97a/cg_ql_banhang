@@ -23,6 +23,7 @@ public class OrderController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         if (req.getPathInfo() == null) {
             homeService.renderHomePage(req, resp);
             return;
@@ -34,17 +35,27 @@ public class OrderController extends HttpServlet {
             case "/error":
                 orderService.renderOrderErrorPage(req, resp);
                 break;
+            case "/lookup":
+                orderService.renderLookupOrderPage(req, resp);
+                break;
+            case "/lookup-by-code":
+                orderService.executeLookupOrder(req, resp);
+                break;
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         if (request.getPathInfo() == null) {
             orderService.renderErrorPage(request, response);
         }
         switch (request.getPathInfo()) {
             case "/create":
                 orderService.executeCreateOrder(request, response);
+                return;
+            case "/cancel":
+                orderService.executeCancelOrder(request, response);
                 return;
         }
         orderService.renderErrorPage(request, response);

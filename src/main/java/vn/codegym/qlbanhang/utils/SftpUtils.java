@@ -6,6 +6,7 @@ import com.jcraft.jsch.Session;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -13,12 +14,14 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
-@MultipartConfig
+
 public class SftpUtils {
 
     private static final String SFTP_HOST = "172.17.0.1";
@@ -88,9 +91,12 @@ public class SftpUtils {
 
 
     public static String getPathSFTP(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        final Part filePart = request.getPart("image");
-        final String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyMMddHHmmss");
+        String strDate = formatDate.format(new Date());
+        final Part filePart = request.getPart("file");
+        String oldFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String extension = oldFileName.substring(oldFileName.lastIndexOf('.') + 1);
+        final String fileName = oldFileName.substring(0, oldFileName.lastIndexOf('.')) + "_" + strDate + "." + extension;
         // Save the file temporarily
         File tempFile = new File(System.getProperty("java.io.tmpdir"), fileName);
         try (InputStream fileContent = filePart.getInputStream()) {

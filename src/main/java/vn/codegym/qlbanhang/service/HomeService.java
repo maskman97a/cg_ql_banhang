@@ -23,7 +23,7 @@ public class HomeService extends BaseService {
 
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            productService.findListProduct(req, resp);
+            productService.executeSearch(req, resp);
             renderPage(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);

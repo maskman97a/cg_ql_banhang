@@ -110,7 +110,7 @@
             <div class="modal-content">
                 <form class="form" action="${pageContext.request.contextPath}/order/cancel" method="post">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Hủy đơn hàng<span id="cancel-order-lb"></span>. Xác nhận OTP</h1>
+                        <h1 class="modal-title fs-5">Hủy đơn hàng <span id="cancel-order-lb"></span>. Xác nhận OTP</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

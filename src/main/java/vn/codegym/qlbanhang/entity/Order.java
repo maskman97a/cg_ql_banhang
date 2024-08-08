@@ -7,6 +7,7 @@ import vn.codegym.qlbanhang.utils.DataUtil;
 import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,8 @@ public class Order extends BaseEntity {
     private String orderStatusName;
 
     private String orderDateStr;
+
+    private List<OrderDetail> orderDetailList;
 
     public static String getTableName() {
         return TABLE_NAME;

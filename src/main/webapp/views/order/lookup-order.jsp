@@ -93,7 +93,7 @@
                 <div class="col-md-12 mb-3 text-center">
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otp-modal"
                         ${orderInfo.status == 2 ? 'disabled': ''}
-                            onclick="setAttribute( ${orderInfo.id}, ${orderInfo.code})">
+                            onclick="setAttribute( ${orderInfo.id}, '${orderInfo.code}')">
                         Hủy đơn hàng
                     </button>
                     <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Trở về</a>

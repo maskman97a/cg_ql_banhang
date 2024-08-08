@@ -13,6 +13,7 @@ public class Condition {
     private String columnName;
     private String operator;
     private Object value;
+    private String appendLogic;
 
 
 }

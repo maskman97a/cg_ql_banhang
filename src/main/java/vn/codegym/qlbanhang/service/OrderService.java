@@ -196,35 +196,44 @@ public class OrderService extends HomeService {
             if (DataUtil.isNullOrEmpty(orderCode)) {
                 req.setAttribute("lookupResponse", "Vui lòng nhập Mã đơn hàng");
             }
+
             BaseSearchDto baseSearchDto = new BaseSearchDto();
-            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode));
-            BaseEntity baseEntity = orderModel.findOne(baseSearchDto);
-            if (baseEntity == null) {
+            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode, "AND"));
+            Customer customer = customerModel.findByPhone(orderCode);
+            if (!DataUtil.isNullObject(customer)) {
+                baseSearchDto.getConditions().add(new Condition("customer_id", "=", customer.getId(), "OR"));
+            }
+            List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
+            if (DataUtil.isNullOrEmpty(baseEntities)) {
                 req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");
             } else {
-                Order order = (Order) baseEntity;
-                req.setAttribute("orderInfo", order);
                 req.setAttribute("showOrderInfo", true);
-                order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
-                BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
-                baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId()));
-                List<BaseEntity> baseEntities = orderDetailModel.search(baseSearchDtoForDetail);
-                req.setAttribute("orderDetailInfo", baseEntities);
-                int totalAmount = 0;
-                int index = 1;
-                for (BaseEntity baseE2 : baseEntities) {
-                    OrderDetail orderDetail = (OrderDetail) baseE2;
-                    orderDetail.setIndex(index++);
-                    totalAmount += orderDetail.getAmount();
-                    Product product = (Product) productModel.findById(orderDetail.getProductId());
-                    orderDetail.setProduct(product);
+                req.setAttribute("orderList", baseEntities);
+                for (BaseEntity baseEntity : baseEntities) {
+                    Order order = (Order) baseEntity;
+                    if (DataUtil.isNullObject(customer)) {
+                        customer = (Customer) customerModel.findById(order.getCustomerId());
+                    }
+                    order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
+                    BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
+                    baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId(), "AND"));
+                    List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
+                    order.setOrderDetailList(new ArrayList<>());
+                    int totalAmount = 0;
+                    int index = 1;
+                    for (BaseEntity baseE2 : baseEntitiesForDetail) {
+                        OrderDetail orderDetail = (OrderDetail) baseE2;
+                        orderDetail.setIndex(index++);
+                        totalAmount += orderDetail.getAmount();
+                        Product product = (Product) productModel.findById(orderDetail.getProductId());
+                        orderDetail.setProduct(product);
+                        order.getOrderDetailList().add(orderDetail);
+                    }
+                    order.setTotalAmount(totalAmount);
                 }
-                order.setTotalAmount(totalAmount);
-
-                Customer customer = (Customer) customerModel.findById(order.getCustomerId());
                 req.setAttribute("customerInfo", customer);
-
             }
+
             renderLookupOrderPage(req, resp);
         } catch (Exception e) {
             renderErrorPage(req, resp);

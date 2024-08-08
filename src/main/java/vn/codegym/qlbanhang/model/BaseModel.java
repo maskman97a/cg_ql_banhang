@@ -98,10 +98,14 @@ public class BaseModel {
             }
             int index = 0;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
-                sb.append(" WHERE ");
+                sb.append(" WHERE 1 = 1 AND ");
                 for (Condition condition : baseSearchDto.getConditions()) {
                     if (index > 0) {
-                        sb.append(" AND ");
+                        if (DataUtil.isNullOrEmpty(condition.getAppendLogic())) {
+                            sb.append(" AND ");
+                        } else {
+                            sb.append(" ").append(condition.getAppendLogic()).append(" ");
+                        }
                     }
                     index++;
                     sb.append(condition.getColumnName());

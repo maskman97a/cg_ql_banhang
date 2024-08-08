@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html style="height:100%">
 <head>
     <title>Quản lý bán hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -16,18 +16,20 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <script src="../../js/index.js"></script>
+    <link href="../../css/index.css" rel="stylesheet"/>
 </head>
-<body>
+<body style="height: 100%; min-height: 100vh;flex-direction: column;">
 <header>
-    <div class="container-fluid" style="position: fixed; top: 0; background-color: #e3f2fd" tabindex="-1">
+    <div class="container-fluid"
+         style="height: 150px; position: fixed; top: 0; background-color: #e3f2fd; z-index: 9999; padding-top:25px">
         <c:import url="../component/navbar.jsp"/>
     </div>
-    <div class="container-fluid" style="height: 120px">
-
+    <div class="container-fluid" style="height: 160px; ">
+        <a href="${pageContext.request.contextPath}/admin">Đăng nhập</a>
     </div>
 </header>
-<main>
-    <div class="container-fluid">
+<main style="height: 70%">
+    <div class="container-fluid" style="display: flex">
         <c:import url="../component/alert.jsp"/>
         <div id="div-product-show" class="container row" style="margin:0 auto"
              <c:if test="${!showListProduct}">hidden</c:if> >
@@ -40,6 +42,10 @@
         <div id="div-order-result" class="container row" style="margin:0 auto"
              <c:if test="${!showOrderSuccess}">hidden</c:if> >
             <c:import url="../order/order-success.jsp"/>
+        </div>
+        <div id="div-order-lookup" class="container row" style="margin:0 auto"
+             <c:if test="${!showLookupOrder}">hidden</c:if> >
+            <c:import url="../order/lookup-order.jsp"/>
         </div>
     </div>
 </main>

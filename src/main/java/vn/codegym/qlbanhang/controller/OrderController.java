@@ -35,6 +35,12 @@ public class OrderController extends HttpServlet {
             case "/error":
                 orderService.renderOrderErrorPage(req, resp);
                 break;
+            case "/lookup":
+                orderService.renderLookupOrderPage(req, resp);
+                break;
+            case "/lookup-by-code":
+                orderService.executeLookupOrder(req, resp);
+                break;
         }
     }
 

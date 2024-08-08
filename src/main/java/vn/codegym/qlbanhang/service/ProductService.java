@@ -5,6 +5,7 @@ import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.enums.ProductSort;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -53,8 +54,8 @@ public class ProductService extends HomeService {
         try {
             String keyword = req.getParameter("keyword");
             Integer categoryId = null;
-            if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
-                categoryId = Integer.parseInt(req.getParameter("category-id"));
+            if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
+                categoryId = Integer.parseInt(req.getParameter("categoryId"));
             }
             Integer page = 1;
             String pageStr = req.getParameter("page");
@@ -66,26 +67,59 @@ public class ProductService extends HomeService {
             if (!DataUtil.isNullOrEmpty(sizeStr)) {
                 size = Integer.parseInt(sizeStr);
             }
-            BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, page, size);
+
+            String sortCol = req.getParameter("sortCol");
+            if (!DataUtil.isNullOrEmpty(sortCol)) {
+                req.setAttribute("sortCol", sortCol);
+            }
+            String sortType = req.getParameter("sortType");
+            if (!DataUtil.isNullOrEmpty(sortType)) {
+                req.setAttribute("sortType", sortType);
+            }
+            if (!DataUtil.isNullOrEmpty(sortCol) && !DataUtil.isNullOrEmpty(sortType)) {
+                ProductSort productSort = ProductSort.getProductSort(sortCol, sortType);
+                assert productSort != null;
+                req.setAttribute("selectedSort", productSort.getName());
+            }
+            BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, sortCol, sortType, page, size);
             List<ProductDto> productDtoList = new ArrayList<>();
             for (BaseEntity baseEntity : baseData.getLstData()) {
                 productDtoList.add(modelMapper.map(baseEntity, ProductDto.class));
             }
             req.setAttribute("lstProduct", productDtoList);
             req.setAttribute("showListProduct", true);
+            req.setAttribute("keyword", keyword);
+            req.setAttribute("categoryId", categoryId);
 
-            List<CategoryDto> categoryDtoList = new ArrayList<>();
+            getAllCategory(req);
+
+            getPaging(req, resp, baseData.getTotalRow(), size, page);
+
+            getAllProductSortType(req);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void getAllCategory(HttpServletRequest req) {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        try {
             List<BaseEntity> baseEntities = categoryModel.findAll();
             for (BaseEntity baseEntity : baseEntities) {
                 categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
             }
             req.setAttribute("lstCategory", categoryDtoList);
-            req.setAttribute("keyword", keyword);
-            req.setAttribute("categoryId", categoryId);
-            getPaging(req, resp, baseData.getTotalRow(), size, page);
+            String selectedCategoryId = req.getParameter("categoryId");
+            if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
+                req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
+            }
         } catch (Exception ex) {
-            renderErrorPage(req, resp);
+            ex.printStackTrace();
         }
+    }
+
+    public void getAllProductSortType(HttpServletRequest req) {
+        req.setAttribute("sortList", ProductSort.getAllSort());
     }
 
     public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

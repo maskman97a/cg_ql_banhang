@@ -1,7 +1,6 @@
-package vn.codegym.qlbanhang.constants;
+package vn.codegym.qlbanhang.enums;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum ErrorType {

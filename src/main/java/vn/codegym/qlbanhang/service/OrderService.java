@@ -1,7 +1,6 @@
 package vn.codegym.qlbanhang.service;
 
 import vn.codegym.qlbanhang.constants.Const;
-import vn.codegym.qlbanhang.constants.ErrorType;
 import vn.codegym.qlbanhang.dto.CustomerDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.dto.request.CreateOrderRequest;
@@ -10,10 +9,12 @@ import vn.codegym.qlbanhang.entity.Customer;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.OrderDetail;
 import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.enums.ErrorType;
 import vn.codegym.qlbanhang.model.CustomerModel;
 import vn.codegym.qlbanhang.model.OrderDetailModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -136,6 +137,28 @@ public class OrderService extends HomeService {
             req.setAttribute("showOrderError", true);
             req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
             renderPage(req, resp);
+        } catch (Exception e) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void renderLookupOrderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setAttribute("showLookupOrder", true);
+
+            renderPage(req, resp);
+        } catch (Exception e) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void executeLookupOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String orderCode = req.getParameter("orderCode");
+            if (DataUtil.isNullOrEmpty(orderCode)) {
+                req.setAttribute("lookupResponse", "Vui lòng nhập Mã đơn hàng");
+            }
+            renderLookupOrderPage(req, resp);
         } catch (Exception e) {
             renderErrorPage(req, resp);
         }

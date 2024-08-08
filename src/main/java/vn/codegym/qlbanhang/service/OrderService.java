@@ -91,9 +91,9 @@ public class OrderService extends HomeService {
                     order.setUpdatedDate(LocalDateTime.now());
                     int updateRecord = orderModel.save(order);
                     if (updateRecord == 1) {
-                        responseMessage = "Hủy đơn hàng " + order.getCode() + " thành công!";
+                        req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
                     } else {
-                        req.setAttribute("sucessResponse", "Hủy đơn hàng " + order.getCode() + " thất bại!");
+                        throw new Exception("Hủy đơn hàng " + order.getCode() + " thất bại!");
                     }
                 } else {
                     throw new Exception("Mã đơn hàng không tồn tại");

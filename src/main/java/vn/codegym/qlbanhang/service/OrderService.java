@@ -86,6 +86,9 @@ public class OrderService extends HomeService {
                     if (DataUtil.isNullOrEmpty(otp) || !otp.equals("000000")) {
                         throw new Exception("Otp không hợp lệ");
                     }
+                    if (order.getStatus() != OrderStatus.NEW.getValue()) {
+                        throw new Exception("Đơn hàng ở trạng thái không hợp lệ");
+                    }
                     order.setStatus(OrderStatus.CANCELED.getValue());
                     order.setUpdatedBy("CUSTOMER");
                     order.setUpdatedDate(LocalDateTime.now());
@@ -93,7 +96,7 @@ public class OrderService extends HomeService {
                     if (updateRecord == 1) {
                         req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
                     } else {
-                        throw new Exception("Hủy đơn hàng " + order.getCode() + " thất bại!");
+                        responseMessage = "Hủy đơn hàng " + order.getCode() + " thất bại!";
                     }
                 } else {
                     throw new Exception("Mã đơn hàng không tồn tại");

@@ -92,8 +92,8 @@
                 </div>
                 <div class="col-md-12 mb-3 text-center">
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otp-modal"
-                        ${orderInfo.status == 2 ? 'disabled': ''}
-                            onclick="setAttribute( ${orderInfo.id}, '${orderInfo.code}')">
+                        ${orderInfo.status == 0 ? '': 'disabled'}
+                            onclick="setData( ${orderInfo.id}, '${orderInfo.code}')">
                         Hủy đơn hàng
                     </button>
                     <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Trở về</a>
@@ -110,12 +110,13 @@
             <div class="modal-content">
                 <form class="form" action="${pageContext.request.contextPath}/order/cancel" method="post">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Hủy đơn hàng.<span id="cancel-order-lb"></span> Xác nhận OTP</h1>
+                        <h1 class="modal-title fs-5">Hủy đơn hàng<span id="cancel-order-lb"></span>. Xác nhận OTP</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <input id="inp-order-id" type="text" name="orderId" hidden/>
-                        <input type="text" class="form-control" placeholder="Nhập OTP" value="" name="otp"/>
+                        <input id="inp-otp" type="text" class="form-control" placeholder="Nhập OTP" value=""
+                               name="otp"/>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -136,9 +137,10 @@
     }
 
 
-    function setAttribute(orderId, orderCode) {
-        document.getElementById("inp-order-id").value = orderId
-        document.getElementById("cancel-order-lb").innerHTML = orderCode
+    function setData(orderId, orderCode) {
+        document.getElementById("inp-order-id").value = orderId;
+        document.getElementById("inp-otp").value = '';
+        document.getElementById("cancel-order-lb").innerHTML = orderCode;
     }
 
 </script>

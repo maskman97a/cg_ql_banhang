@@ -234,6 +234,9 @@ public class BaseModel {
                 sb.append(tableName);
                 sb.append("(");
                 for (String colName : lstColName) {
+                    if (colName.equals("id")) {
+                        continue;
+                    }
                     if (index > 0) {
                         sb.append(",");
                     }
@@ -242,7 +245,10 @@ public class BaseModel {
                 }
                 sb.append(") VALUE (");
                 index = 0;
-                for (int i = 0; i < lstColName.size(); i++) {
+                for (String colName : lstColName) {
+                    if (colName.equals("id")) {
+                        continue;
+                    }
                     if (index > 0) {
                         sb.append(",");
                     }
@@ -255,17 +261,27 @@ public class BaseModel {
                 sb.append(tableName);
                 sb.append(" SET ");
                 for (String colName : lstColName) {
+                    if (colName.equals("id")) {
+                        continue;
+                    }
                     if (index > 0) {
                         sb.append(",");
                     }
                     index++;
                     sb.append(colName).append(" = ").append(" ? ");
                 }
+                sb.append(" WHERE id = ? ");
             }
             PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
             index = 1;
             for (String columnName : lstColName) {
+                if (columnName.equals("id")) {
+                    continue;
+                }
                 preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
+            }
+            if (exists) {
+                preparedStatement.setObject(index, baseEntity.getId());
             }
             return preparedStatement.executeUpdate();
         } catch (Exception ex) {

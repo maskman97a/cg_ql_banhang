@@ -54,6 +54,9 @@ public class OrderController extends HttpServlet {
             case "/create":
                 orderService.executeCreateOrder(request, response);
                 return;
+            case "/cancel":
+                orderService.executeCancelOrder(request, response);
+                return;
         }
         orderService.renderErrorPage(request, response);
     }

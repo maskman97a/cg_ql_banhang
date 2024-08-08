@@ -28,7 +28,10 @@ public class BaseModel {
         try {
             con = DatabaseConnection.getConnection();
             String sql = getSelectSQL(baseSearchDto);
-            sql += " limit ? offset ?";
+            if (!DataUtil.isNullObject(baseSearchDto.getPage()) && !DataUtil.isNullObject(baseSearchDto.getSize())) {
+                sql += " limit ? offset ?";
+            }
+            System.out.println("Search SQL: " + sql);
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             int index = 1;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
@@ -36,8 +39,10 @@ public class BaseModel {
                     preparedStatement.setObject(index++, condition.getValue());
                 }
             }
-            preparedStatement.setInt(index++, baseSearchDto.getSize());
-            preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
+            if (!DataUtil.isNullObject(baseSearchDto.getPage()) && !DataUtil.isNullObject(baseSearchDto.getSize())) {
+                preparedStatement.setInt(index++, baseSearchDto.getSize());
+                preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
+            }
 
             baseEntities = executeSelect(preparedStatement);
         } catch (Exception e) {
@@ -210,28 +215,49 @@ public class BaseModel {
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
-            StringBuilder sb = new StringBuilder("INSERT INTO ");
-            sb.append(tableName);
-            sb.append("(");
-            int index = 0;
             List<String> lstColName = ClassUtils.getAllColumnName(baseEntity);
-            for (String colName : lstColName) {
-                if (index > 0) {
-                    sb.append(",");
+            boolean exists = false;
+            if (!DataUtil.isNullObject(baseEntity.getId())) {
+                BaseEntity baseEntityDB = findById(baseEntity.getId());
+                if (baseEntityDB != null) {
+                    exists = true;
                 }
-                index++;
-                sb.append(colName);
             }
-            sb.append(") VALUE (");
-            index = 0;
-            for (int i = 0; i < lstColName.size(); i++) {
-                if (index > 0) {
-                    sb.append(",");
+            int index = 0;
+            StringBuilder sb = new StringBuilder();
+            if (!exists) {
+                sb.append("INSERT INTO ");
+                sb.append(tableName);
+                sb.append("(");
+                for (String colName : lstColName) {
+                    if (index > 0) {
+                        sb.append(",");
+                    }
+                    index++;
+                    sb.append(colName);
                 }
-                index++;
-                sb.append("?");
+                sb.append(") VALUE (");
+                index = 0;
+                for (int i = 0; i < lstColName.size(); i++) {
+                    if (index > 0) {
+                        sb.append(",");
+                    }
+                    index++;
+                    sb.append("?");
+                }
+                sb.append(")");
+            } else {
+                sb.append(" UPDATE ");
+                sb.append(tableName);
+                sb.append(" SET ");
+                for (String colName : lstColName) {
+                    if (index > 0) {
+                        sb.append(",");
+                    }
+                    index++;
+                    sb.append(colName).append(" = ").append(" ? ");
+                }
             }
-            sb.append(")");
             PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
             index = 1;
             for (String columnName : lstColName) {

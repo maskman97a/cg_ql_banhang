@@ -68,7 +68,7 @@ public class ProductModel extends BaseModel {
 
         baseSearchDto.setSize(size);
         baseSearchDto.setPage(page);
-        if (sortCol == null) {
+        if (DataUtil.isNullOrEmpty(sortCol)) {
             OrderByCondition orderByCondition = new OrderByCondition();
             orderByCondition.setColumnName("category_id");
             orderByCondition.setOrderType("ASC");

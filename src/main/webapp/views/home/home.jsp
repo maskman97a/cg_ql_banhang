@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html style="height:100%">
+<html>
 <head>
     <title>Quản lý bán hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -21,7 +21,7 @@
 <body style="height: 100%; min-height: 100vh;flex-direction: column;">
 <header>
     <div class="container-fluid"
-         style="height: 150px; position: fixed; top: 0; background-color: #e3f2fd; z-index: 9999; padding-top:25px">
+         style="height: 150px; position: fixed; top: 0; background-color: #e3f2fd; z-index: 10; padding-top:25px">
         <c:import url="../component/navbar.jsp"/>
     </div>
     <div class="container-fluid" style="height: 160px; ">

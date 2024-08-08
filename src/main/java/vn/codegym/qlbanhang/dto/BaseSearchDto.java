@@ -10,8 +10,8 @@ import java.util.List;
 @Setter
 public class BaseSearchDto {
     private String keyword;
-    private int page;
-    private int size;
+    private Integer page;
+    private Integer size;
     private List<Condition> conditions;
     private List<JoinCondition> joinConditions;
     private List<OrderByCondition> orderByConditions;

@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="modal modal-xl fade" tabindex="-1" id="modalOrder" data-bs-backdrop="static"
-     data-bs-keyboard="false">
+     data-bs-keyboard="false" style="">
     <c:import url="../component/alert-modal.jsp"/>
     <form class="form needs-validation" action="${pageContext.request.contextPath}/order/create" method="post"
           onsubmit="return validateCreateOrder()">

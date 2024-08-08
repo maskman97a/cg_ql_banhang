@@ -52,6 +52,8 @@ public class ProductService extends HomeService {
 
     public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            getAllCategory(req);
+            getAllProductSortType(req);
             String keyword = req.getParameter("keyword");
             Integer categoryId = null;
             if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
@@ -91,11 +93,9 @@ public class ProductService extends HomeService {
             req.setAttribute("keyword", keyword);
             req.setAttribute("categoryId", categoryId);
 
-            getAllCategory(req);
-
             getPaging(req, resp, baseData.getTotalRow(), size, page);
 
-            getAllProductSortType(req);
+
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }

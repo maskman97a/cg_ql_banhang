@@ -2,6 +2,7 @@ package vn.codegym.qlbanhang.service;
 
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.model.CategoryModel;
@@ -63,12 +64,12 @@ public class ProductService extends HomeService {
             Integer size = 8;
             String sizeStr = req.getParameter("size");
             if (!DataUtil.isNullOrEmpty(sizeStr)) {
-                size = Integer.parseInt(pageStr);
+                size = Integer.parseInt(sizeStr);
             }
-            List<Product> productList = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, page, size);
+            BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, page, size);
             List<ProductDto> productDtoList = new ArrayList<>();
-            for (Product product : productList) {
-                productDtoList.add(modelMapper.map(product, ProductDto.class));
+            for (BaseEntity baseEntity : baseData.getLstData()) {
+                productDtoList.add(modelMapper.map(baseEntity, ProductDto.class));
             }
             req.setAttribute("lstProduct", productDtoList);
             req.setAttribute("showListProduct", true);
@@ -79,6 +80,9 @@ public class ProductService extends HomeService {
                 categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
             }
             req.setAttribute("lstCategory", categoryDtoList);
+            req.setAttribute("keyword", keyword);
+            req.setAttribute("categoryId", categoryId);
+            getPaging(req, resp, baseData.getTotalRow(), size, page);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }

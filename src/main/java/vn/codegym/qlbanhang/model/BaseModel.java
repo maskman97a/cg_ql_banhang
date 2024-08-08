@@ -4,8 +4,10 @@ import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.JoinCondition;
+import vn.codegym.qlbanhang.dto.OrderByCondition;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.utils.ClassUtils;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.persistence.Column;
 import java.lang.reflect.Field;
@@ -24,7 +26,6 @@ public class BaseModel {
 
     public List<BaseEntity> search(BaseSearchDto baseSearchDto) throws SQLException {
         String sql = getSelectSQL(baseSearchDto);
-        sql += " order by id desc ";
         sql += " limit ? offset ?";
         PreparedStatement preparedStatement = this.con.prepareStatement(sql);
         int index = 1;
@@ -39,13 +40,15 @@ public class BaseModel {
     }
 
     public Integer count(BaseSearchDto baseSearchDto) throws SQLException {
-        PreparedStatement preparedStatement = this.con.prepareStatement(getSelectSQL(baseSearchDto));
+        String countSQL = "SELECT COUNT(1) FROM (" + getSelectSQL(baseSearchDto) + ") a";
+        PreparedStatement preparedStatement = this.con.prepareStatement(countSQL);
         int index = 1;
         if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
             for (Condition condition : baseSearchDto.getConditions()) {
                 preparedStatement.setObject(index++, condition.getValue());
             }
         }
+        System.out.println("Count query: " + countSQL);
         ResultSet rs = preparedStatement.executeQuery();
         if (rs.next()) {
             return rs.getInt(1);
@@ -80,7 +83,23 @@ public class BaseModel {
                     sb.append(" ? ");
                 }
             }
+            if (!DataUtil.isNullOrEmpty(baseSearchDto.getOrderByConditions())) {
+                sb.append(" ORDER BY ");
+                index = 0;
+                for (OrderByCondition orderByCondition : baseSearchDto.getOrderByConditions()) {
+                    if (index > 0) {
+                        sb.append(", ");
+                    }
+                    index++;
+                    sb.append(orderByCondition.getColumnName());
+                    if (!DataUtil.isNullOrEmpty(orderByCondition.getOrderType())) {
+                        sb.append(" ").append(orderByCondition.getOrderType()).append(" ");
+                    }
+
+                }
+            }
         }
+
         return sb.toString();
     }
 

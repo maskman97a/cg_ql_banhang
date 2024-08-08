@@ -60,14 +60,15 @@ public class BaseService {
 
     protected void getPaging(HttpServletRequest req, HttpServletResponse resp, int count, int size, int page) {
         req.setAttribute("totalRow", count);
+        req.setAttribute("currentPage", page);
         BigDecimal bCount = new BigDecimal(count);
         BigDecimal bSize = new BigDecimal(size);
         // Thực hiện phép chia và làm tròn lên
         BigDecimal totalPage = bCount.divide(bSize, 0, RoundingMode.CEILING);
         req.setAttribute("totalPage", totalPage);
 
-        int tabSize = 10;
-        BigDecimal bTabSize = new BigDecimal(10);
+        int tabSize = 5;
+        BigDecimal bTabSize = new BigDecimal(tabSize);
         BigDecimal countTab = totalPage.divide(bTabSize, 0, RoundingMode.CEILING);
         for (int tabIndex = 0; tabIndex < countTab.intValue(); tabIndex++) {
             int startValue = tabIndex * tabSize + 1;

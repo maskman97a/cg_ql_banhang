@@ -2,7 +2,9 @@ package vn.codegym.qlbanhang.model;
 
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.OrderByCondition;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -32,7 +34,7 @@ public class ProductModel extends BaseModel {
         return productList;
     }
 
-    public List<Product> findProductByKeywordAndCategoryId(String keyword, Integer categoryId, Integer page, Integer size) throws SQLException {
+    public BaseData findProductByKeywordAndCategoryId(String keyword, Integer categoryId, Integer page, Integer size) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         if (!DataUtil.isNullOrEmpty(keyword)) {
             Condition condition = new Condition();
@@ -51,14 +53,20 @@ public class ProductModel extends BaseModel {
         }
         baseSearchDto.setSize(size);
         baseSearchDto.setPage(page);
+        OrderByCondition orderByCondition = new OrderByCondition();
+        orderByCondition.setColumnName("category_id");
+        orderByCondition.setOrderType("ASC");
+        baseSearchDto.getOrderByConditions().add(orderByCondition);
+
+        OrderByCondition orderByCondition2 = new OrderByCondition();
+        orderByCondition2.setColumnName("product_name");
+        orderByCondition2.setOrderType("ASC");
+        baseSearchDto.getOrderByConditions().add(orderByCondition2);
+
         List<Product> productList = new ArrayList<>();
         List<BaseEntity> baseEntities = super.search(baseSearchDto);
-        if (!DataUtil.isNullOrEmpty(baseEntities)) {
-            for (BaseEntity baseEntity : baseEntities) {
-                productList.add((Product) baseEntity);
-            }
-        }
-        return productList;
+        int count = super.count(baseSearchDto);
+        return new BaseData(count, baseEntities);
     }
 
     public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto) throws SQLException {

@@ -33,7 +33,7 @@
                 <div class="container form-control">
                     <div class="row">
                         <div class="col-12 text-center">
-                            <h1>Danh sách sản phẩm</h1>
+                            <h1>Danh sách thể loại</h1>
                         </div>
 
                         <div class="col-3  mb-3">
@@ -41,19 +41,11 @@
                         </div>
                         <div class="col-9 mb-3">
                             <form class="form row" method="get"
-                                  action="${pageContext.request.contextPath}/admin/search">
+                                  action="${pageContext.request.contextPath}/admin/category/search">
                                 <input type="text" class="form-control" name="size" value="5" hidden/>
                                 <input type="text" class="form-control" name="page" value="1" hidden/>
-                                <div class="col-2">
-                                    <select class="form-control" name="category-id">
-                                        <option value="0">--Chọn thể loại--</option>
-                                        <c:forEach var="category" items="${lstCategory}">
-                                            <option value="${category.id}">${category.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
+                                    <input type="text" class="form-control" placeholder="Tên thể loại" name="keyword"
                                            value="${keyword}">
                                 </div>
                                 <div class="col-3">
@@ -65,7 +57,7 @@
                         <div class="col-2">
                         </div>
                         <div class="col-12 mb-3">
-                            <a href="${pageContext.request.contextPath}/admin/product/product-create"
+                            <a href="${pageContext.request.contextPath}/admin/category/category-create"
                                class="btn btn-primary">Thêm mới</a>
                         </div>
                         <div class="col-12">
@@ -73,30 +65,20 @@
                                 <thead>
                                 <tr>
                                     <td>STT</td>
-                                    <td>Mã sản phẩm</td>
-                                    <td>Tên sản phẩm</td>
-                                    <td>Thể loại</td>
-                                    <td>Giá</td>
-                                    <td>Số lượng</td>
-                                    <td>Mô tả</td>
+                                    <td>Tên thể loại</td>
                                     <td>Action</td>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="product" items="${lstData}">
+                                <c:forEach var="product" items="${lstCategory}">
                                     <tr>
                                         <td>${product.index}</td>
-                                        <td>${product.productCode}</td>
-                                        <td>${product.productName}</td>
-                                        <td>${product.categoryName}</td>
-                                        <td>${product.price}</td>
-                                        <td>${product.quantity}</td>
-                                        <td>${product.description}</td>
+                                        <td>${product.name}</td>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}">Sửa</a>
+                                            <a href="${pageContext.request.contextPath}/admin/category/update?id=${product.id}">Sửa</a>
                                             |
-                                            <a class="btn-delete" onclick="return confirm('Bạn muốn xóa sản phẩm này')"
-                                               href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}">Xóa</a>
+                                            <a class="btn-delete" onclick="return confirm('Bạn muốn xóa thể loại này')"
+                                               href="${pageContext.request.contextPath}/admin/category/delete?id=${product.id}">Xóa</a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -108,7 +90,7 @@
                                 <ul class="pagination" style="justify-content: center">
                                     <c:if test="${!firstTab}">
                                         <li class="page-item"><a class="page-link"
-                                                                 href="${pageContext.request.contextPath}/admin/search?page=${currentPage-1}&size=5">
+                                                                 href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage-1}&size=5">
                                             Previous</a></li>
                                     </c:if>
 
@@ -121,7 +103,7 @@
                                     <c:if test="${!lastTab}">
                                         <li class="page-item">
                                             <a class="page-link"
-                                               href="${pageContext.request.contextPath}/admin/search?page=${currentPage+1}&size=5">
+                                               href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage+1}&size=5">
                                                 Next</a></li>
                                     </c:if>
                                 </ul>

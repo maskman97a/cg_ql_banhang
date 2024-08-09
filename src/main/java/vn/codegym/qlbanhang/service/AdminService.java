@@ -30,11 +30,13 @@ import java.util.Map;
 public class AdminService extends BaseService {
     public ProductModel productModel;
     private final CategoryModel categoryModel;
+    private final CategoryService categoryService;
 
     public AdminService() {
         super(null);
         this.productModel = new ProductModel();
         this.categoryModel = new CategoryModel();
+        this.categoryService = new CategoryService();
     }
 
 
@@ -67,7 +69,7 @@ public class AdminService extends BaseService {
                 categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
             }
             req.setAttribute("lstCategory", categoryDtoList);
-            req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/product/category-create.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -79,7 +81,7 @@ public class AdminService extends BaseService {
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductDto productDto = productModel.getDetailProduct(null, null, id);
             req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/product/product-update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/product/category-update.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -197,6 +199,28 @@ public class AdminService extends BaseService {
         } catch (Exception ex) {
             ex.printStackTrace();
             this.renderAdmin(req, resp);
+        }
+    }
+
+
+    public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            categoryService.renderSearchCategory(req, resp);
+            req.getRequestDispatcher("/views/admin/category/category-list.jsp").forward(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setAttribute("updateCreate", true);
+            Integer id = Integer.parseInt(req.getParameter("id"));
+            ProductDto productDto = productModel.getDetailProduct(null, null, id);
+            req.setAttribute("product", productDto);
+            req.getRequestDispatcher("/views/admin/product/category-update.jsp").forward(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp, ex.getMessage());
         }
     }
 }

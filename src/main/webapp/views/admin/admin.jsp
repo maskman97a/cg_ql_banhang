@@ -26,6 +26,8 @@
                            class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
                         <a href="${pageContext.request.contextPath}/admin/transaction"
                            class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
+                        <a href="${pageContext.request.contextPath}/admin/category"
+                           class="list-group-item list-group-item-action">Quản lý thể loại</a>
                     </div>
                 </div>
             </c:if>

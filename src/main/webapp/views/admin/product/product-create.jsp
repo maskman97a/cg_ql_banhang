@@ -13,7 +13,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
-    <title>Thêm mới sản phẩm</title>
+    <c:if test="${!updateProduct}">
+        <title>Thêm mới sản phẩm</title>
+    </c:if>
+    <c:if test="${updateProduct}">
+        <title>Cập nhật sản phẩm</title>
+    </c:if>
     <style>
         #preview {
             max-width: 100%;
@@ -24,6 +29,7 @@
 </head>
 <body>
 <div class="container">
+
     <form class="form" method="post" action="${pageContext.request.contextPath}/admin/product/product-create"
           enctype="multipart/form-data">
         <div class="row">
@@ -64,6 +70,17 @@
                                 });
                             </script>
                             <div class="col-3 mb-3">
+                                <label for="category-id">Thể loại</label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" id="category-id" name="category-id">
+                                    <option value="0">--Chọn thể loại--</option>
+                                    <c:forEach var="category" items="${lstCategory}">
+                                        <option value="${category.id}">${category.name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="col-3 mb-3">
                                 <label for="inp-code">Mã sản phẩm</label>
                             </div>
                             <div class="col-9">
@@ -79,7 +96,8 @@
                                 <label for="inp-quantity">Số lượng</label>
                             </div>
                             <div class="col-9">
-                                <input id="inp-quantity" type="number" oninput="limitLength(this)" class="form-control"
+                                <input id="inp-quantity" type="number" oninput="limitLength(this)"
+                                       class="form-control"
                                        name="quantity"/>
                             </div>
                             <div class="col-3 mb-3">
@@ -112,7 +130,8 @@
                                 <label for="file">Chọn ảnh:</label>
                             </div>
                             <div class="col-9">
-                                <input type="file" id="fileUpdate" name="fileUpdate" accept="multipart/form-data"/>
+                                <input type="file" id="fileUpdate" name="${product.imageUrl}"
+                                       accept="multipart/form-data"/>
                                 <br>
                                 <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
                                      id="product-image-${product.id}"
@@ -134,6 +153,18 @@
                                 });
                             </script>
                             <div class="col-3 mb-3">
+                                <label for="inp-category-name-update">Thể loại</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" name="category-id"
+                                       value="${product.categoryId}"
+                                       hidden/>
+                                <input id="inp-category-name-update" type="text" value="${product.categoryName}"
+                                       class="form-control"
+                                       disabled
+                                       name="category-name"/>
+                            </div>
+                            <div class="col-3 mb-3">
                                 <label for="inp-code">Mã sản phẩm</label>
                             </div>
                             <div class="col-9">
@@ -144,7 +175,8 @@
                                 <label for="inp-name-update">Tên sản phẩm</label>
                             </div>
                             <div class="col-9">
-                                <input id="inp-name-update" type="text" value="${product.name}" class="form-control"
+                                <input id="inp-name-update" type="text" value="${product.productName}"
+                                       class="form-control"
                                        name="name"/>
                             </div>
                             <div class="col-3 mb-3">

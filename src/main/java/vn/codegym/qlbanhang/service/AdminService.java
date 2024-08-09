@@ -3,9 +3,11 @@ package vn.codegym.qlbanhang.service;
 import lombok.var;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.*;
+import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.ClassUtils;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -27,10 +29,12 @@ import java.util.Map;
 @MultipartConfig
 public class AdminService extends BaseService {
     public ProductModel productModel;
+    private final CategoryModel categoryModel;
 
     public AdminService() {
         super(null);
         this.productModel = new ProductModel();
+        this.categoryModel = new CategoryModel();
     }
 
 
@@ -57,6 +61,12 @@ public class AdminService extends BaseService {
     public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("updateProduct", false);
+            List<CategoryDto> categoryDtoList = new ArrayList<>();
+            List<BaseEntity> baseEntities = categoryModel.findAll();
+            for (BaseEntity baseEntity : baseEntities) {
+                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
+            }
+            req.setAttribute("lstCategory", categoryDtoList);
             req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
@@ -67,23 +77,9 @@ public class AdminService extends BaseService {
         try {
             req.setAttribute("updateProduct", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
-            Product product = (Product) productModel.findById(id);
-            ProductDto productDto = modelMapper.map(product, ProductDto.class);
+            ProductDto productDto = productModel.getDetailProduct(null, null, id);
             req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
-    }
-
-    public void renderDeleteProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            req.setAttribute("updateProduct", true);
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            Product product = (Product) productModel.findById(id);
-            ProductDto productDto = modelMapper.map(product, ProductDto.class);
-            req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/product/product-update.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -93,6 +89,10 @@ public class AdminService extends BaseService {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         try {
             String keyword = req.getParameter("keyword");
+            Long categoryId = null;
+            if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
+                categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
+            }
             int size = 5;
             if (req.getParameter("size") != null) {
                 size = Integer.parseInt(req.getParameter("size"));
@@ -107,7 +107,7 @@ public class AdminService extends BaseService {
             baseSearchDto.setKeyword(keyword);
             baseSearchDto.setSize(size);
             baseSearchDto.setPage(page);
-            List<ProductDto> lstData = productModel.findProductByKeyword(baseSearchDto);
+            List<ProductDto> lstData = productModel.findProductByKeyword(baseSearchDto, categoryId, null);
             if (lstData != null && !lstData.isEmpty()) {
                 int index = 1;
                 for (ProductDto productDto : lstData) {
@@ -115,7 +115,13 @@ public class AdminService extends BaseService {
                 }
                 req.setAttribute("lstData", lstData);
             }
-            int count = productModel.countProduct(baseSearchDto);
+            List<CategoryDto> categoryDtoList = new ArrayList<>();
+            List<BaseEntity> baseEntities = categoryModel.findAll();
+            for (BaseEntity baseEntity : baseEntities) {
+                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
+            }
+            req.setAttribute("lstCategory", categoryDtoList);
+            int count = productModel.countProduct(baseSearchDto, categoryId, null);
             getPaging(req, resp, count, size, page);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
@@ -130,6 +136,7 @@ public class AdminService extends BaseService {
             product.setImageUrl(imageUrl);
             product.setProductCode(req.getParameter("code"));
             product.setProductName(req.getParameter("name"));
+            product.setCategoryId(Integer.parseInt(req.getParameter("categoryId")));
             product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
             product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
             product.setDescription(req.getParameter("description"));
@@ -146,16 +153,20 @@ public class AdminService extends BaseService {
 
     public void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setCharacterEncoding("UTF-8");
             Product product = new Product();
             Integer id = Integer.parseInt(req.getParameter("id"));
             product.setId(id);
-            String imageUrl = SftpUtils.getPathSFTP(req, resp);
-            product.setImageUrl(imageUrl);
-            product.setProductCode(req.getParameter("code"));
-            product.setProductName(req.getParameter("name"));
-            product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-            product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
-            product.setDescription(req.getParameter("description"));
+            if (!DataUtil.isNullObject(req.getPart("file"))) {
+                String imageUrl = SftpUtils.getPathSFTP(req, resp);
+                product.setImageUrl(imageUrl);
+            }
+            product.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
+            product.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
+            product.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+            product.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
+            product.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
+            product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
             int save = productModel.updateProduct(false, product);
             if (save == 1) {
                 this.searchProductAdmin(req, resp);

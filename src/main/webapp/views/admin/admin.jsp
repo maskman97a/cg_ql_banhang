@@ -16,24 +16,30 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <c:if test="${!firstSearchTab}">
-            <div class="col-2 bg-light">
-                <div class="list-group">
-                    <a href="${pageContext.request.contextPath}/admin/product"
-                       class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
-                    <a href="${pageContext.request.contextPath}/admin/transaction"
-                       class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <c:if test="${!firstSearchTab}">
+                <div class="col-2 bg-light">
+                    <div class="list-group">
+                        <a href="${pageContext.request.contextPath}/admin/product"
+                           class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
+                        <a href="${pageContext.request.contextPath}/admin/transaction"
+                           class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
+                    </div>
                 </div>
+            </c:if>
+            <div class="col-10">
+                <c:import url="product/product-list.jsp"/>
             </div>
-        </c:if>
-
-        <div class="col-10">
-            <c:import url="product/product-list.jsp"/>
         </div>
-        <%--        <div class="col-2"></div>--%>
     </div>
-</div>
+</main>
+<footer>
+    <div class="container-fluid" style=" background-color: #e3f2fd">
+        <c:import url="../component/footer.jsp"/>
+    </div>
+</footer>
+</footer>
 </body>
 </html>

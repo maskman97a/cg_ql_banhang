@@ -101,7 +101,7 @@ public class ProductModel extends BaseModel {
             String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
             sql += " order by id desc ";
             sql += " limit ? offset ?";
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
             int index = 1;
             if (baseSearchDto != null) {
                 if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
@@ -142,7 +142,6 @@ public class ProductModel extends BaseModel {
     }
 
     public Integer countProduct(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
-
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
@@ -176,42 +175,52 @@ public class ProductModel extends BaseModel {
     }
 
     public ProductDto getDetailProduct(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
-        String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
-        if (DataUtil.isNullObject(id)) {
-            sql += " order by id desc ";
-            sql += " limit ? offset ?";
-        }
-        PreparedStatement preparedStatement = this.con.prepareStatement(sql);
-        int index = 1;
-        if (baseSearchDto != null) {
-            if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
-                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+        Connection con = null;
+        try {
+            con = DatabaseConnection.getConnection();
+            String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
+            if (DataUtil.isNullObject(id)) {
+                sql += " order by id desc ";
+                sql += " limit ? offset ?";
             }
-        }
-        if (!DataUtil.isNullObject(categoryId)) {
-            preparedStatement.setLong(index++, categoryId);
-        }
-        if (!DataUtil.isNullObject(id)) {
-            preparedStatement.setInt(index++, id);
-        }
-        if (DataUtil.isNullObject(id)) {
-            preparedStatement.setInt(index++, baseSearchDto.getSize());
-            preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
-        }
-        ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next()) {
-            ProductDto productDto = new ProductDto();
-            productDto.setId(rs.getInt("id"));
-            productDto.setImageUrl(rs.getString("imageUrl"));
-            productDto.setProductCode(rs.getString("productCode"));
-            productDto.setProductName(rs.getString("productName"));
-            productDto.setPrice(rs.getLong("price"));
-            productDto.setQuantity(rs.getInt("quantity"));
-            productDto.setDescription(rs.getString("description"));
-            productDto.setCategoryName(rs.getString("categoryName"));
-            productDto.setCategoryId(rs.getInt("categoryId"));
-            return productDto;
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            int index = 1;
+            if (baseSearchDto != null) {
+                if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
+                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                }
+            }
+            if (!DataUtil.isNullObject(categoryId)) {
+                preparedStatement.setLong(index++, categoryId);
+            }
+            if (!DataUtil.isNullObject(id)) {
+                preparedStatement.setInt(index++, id);
+            }
+            if (DataUtil.isNullObject(id)) {
+                preparedStatement.setInt(index++, baseSearchDto.getSize());
+                preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
+            }
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                ProductDto productDto = new ProductDto();
+                productDto.setId(rs.getInt("id"));
+                productDto.setImageUrl(rs.getString("imageUrl"));
+                productDto.setProductCode(rs.getString("productCode"));
+                productDto.setProductName(rs.getString("productName"));
+                productDto.setPrice(rs.getLong("price"));
+                productDto.setQuantity(rs.getInt("quantity"));
+                productDto.setDescription(rs.getString("description"));
+                productDto.setCategoryName(rs.getString("categoryName"));
+                productDto.setCategoryId(rs.getInt("categoryId"));
+                return productDto;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (con != null) {
+                con.close();
+            }
         }
         return null;
     }
@@ -255,7 +264,7 @@ public class ProductModel extends BaseModel {
                         sb.append(" ,price = ? ");
                     if (!DataUtil.isNullOrZero(product.getQuantity()))
                         sb.append(" ,quantity = ? ");
-                    if (!DataUtil.isNullOrZero(product.getDescription()))
+                    if (!DataUtil.isNullOrEmpty(product.getDescription()))
                         sb.append(" ,description = ? ");
                 }
                 if (!DataUtil.isNullObject(product.getStatus()))
@@ -277,7 +286,7 @@ public class ProductModel extends BaseModel {
                         preparedStatement.setLong(index++, product.getPrice());
                     if (!DataUtil.isNullOrZero(product.getQuantity()))
                         preparedStatement.setInt(index++, product.getQuantity());
-                    if (!DataUtil.isNullOrZero(product.getDescription()))
+                    if (!DataUtil.isNullOrEmpty(product.getDescription()))
                         preparedStatement.setString(index++, product.getDescription().trim());
                 }
                 if (!DataUtil.isNullObject(product.getStatus()))

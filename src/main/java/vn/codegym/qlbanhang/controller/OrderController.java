@@ -35,6 +35,12 @@ public class OrderController extends HttpServlet {
             case "/error":
                 orderService.renderOrderErrorPage(req, resp);
                 break;
+            case "/lookup":
+                orderService.renderLookupOrderPage(req, resp);
+                break;
+            case "/lookup-by-code":
+                orderService.executeLookupOrder(req, resp);
+                break;
         }
     }
 
@@ -47,6 +53,9 @@ public class OrderController extends HttpServlet {
         switch (request.getPathInfo()) {
             case "/create":
                 orderService.executeCreateOrder(request, response);
+                return;
+            case "/cancel":
+                orderService.executeCancelOrder(request, response);
                 return;
         }
         orderService.renderErrorPage(request, response);

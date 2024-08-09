@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BaseService {
@@ -95,8 +96,13 @@ public class BaseService {
     }
 
     public BaseData findAll() {
+        try {
             List<BaseEntity> lstData = baseModel.findAll();
             return new BaseData(lstData.size(), lstData);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new BaseData(0, new ArrayList<>());
     }
 
     public BaseEntity findById(Integer id) {

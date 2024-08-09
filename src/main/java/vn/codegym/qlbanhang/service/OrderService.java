@@ -1,19 +1,20 @@
 package vn.codegym.qlbanhang.service;
 
 import vn.codegym.qlbanhang.constants.Const;
-import vn.codegym.qlbanhang.constants.ErrorType;
+import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.CustomerDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.dto.request.CreateOrderRequest;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
-import vn.codegym.qlbanhang.entity.Customer;
-import vn.codegym.qlbanhang.entity.Order;
-import vn.codegym.qlbanhang.entity.OrderDetail;
-import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.entity.*;
+import vn.codegym.qlbanhang.enums.ErrorType;
+import vn.codegym.qlbanhang.enums.OrderStatus;
 import vn.codegym.qlbanhang.model.CustomerModel;
 import vn.codegym.qlbanhang.model.OrderDetailModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -71,6 +72,45 @@ public class OrderService extends HomeService {
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }
+    }
+
+    public void executeCancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String responseMessage = "";
+        try {
+            String orderIdStr = req.getParameter("orderId");
+            if (!DataUtil.isNullOrEmpty(orderIdStr)) {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = (Order) orderModel.findById(orderId);
+                if (order != null) {
+                    String otp = req.getParameter("otp");
+                    if (DataUtil.isNullOrEmpty(otp) || !otp.equals("000000")) {
+                        throw new Exception("Otp không hợp lệ");
+                    }
+                    if (order.getStatus() != OrderStatus.NEW.getValue()) {
+                        throw new Exception("Đơn hàng ở trạng thái không hợp lệ");
+                    }
+                    order.setStatus(OrderStatus.CANCELED.getValue());
+                    order.setUpdatedBy("CUSTOMER");
+                    order.setUpdatedDate(LocalDateTime.now());
+                    int updateRecord = orderModel.save(order);
+                    if (updateRecord == 1) {
+                        req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
+                    } else {
+                        responseMessage = "Hủy đơn hàng " + order.getCode() + " thất bại!";
+                    }
+                } else {
+                    throw new Exception("Mã đơn hàng không tồn tại");
+                }
+            } else {
+                throw new Exception("Mã đơn hàng không tồn tại");
+            }
+
+
+        } catch (Exception ex) {
+            responseMessage = "Hủy đơn hàng thất bại. " + ex.getMessage();
+        }
+        req.setAttribute("errorResponse", responseMessage);
+        renderLookupOrderPage(req, resp);
     }
 
 
@@ -136,6 +176,68 @@ public class OrderService extends HomeService {
             req.setAttribute("showOrderError", true);
             req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
             renderPage(req, resp);
+        } catch (Exception e) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void renderLookupOrderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setAttribute("showLookupOrder", true);
+
+            renderPage(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void executeLookupOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String orderCode = req.getParameter("orderCode");
+            req.setAttribute("orderCode", orderCode);
+            if (DataUtil.isNullOrEmpty(orderCode)) {
+                req.setAttribute("lookupResponse", "Vui lòng nhập Mã đơn hàng");
+            }
+
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode, "AND"));
+            Customer customer = customerModel.findByPhone(orderCode);
+            if (!DataUtil.isNullObject(customer)) {
+                baseSearchDto.getConditions().add(new Condition("customer_id", "=", customer.getId(), "OR"));
+            }
+            List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
+            if (DataUtil.isNullOrEmpty(baseEntities)) {
+                req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");
+            } else {
+                req.setAttribute("showOrderInfo", true);
+                req.setAttribute("orderList", baseEntities);
+                for (BaseEntity baseEntity : baseEntities) {
+                    Order order = (Order) baseEntity;
+                    if (DataUtil.isNullObject(customer)) {
+                        customer = (Customer) customerModel.findById(order.getCustomerId());
+                    }
+                    order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
+                    BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
+                    baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId(), "AND"));
+                    List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
+                    order.setOrderDetailList(new ArrayList<>());
+                    int totalAmount = 0;
+                    int index = 1;
+                    for (BaseEntity baseE2 : baseEntitiesForDetail) {
+                        OrderDetail orderDetail = (OrderDetail) baseE2;
+                        orderDetail.setIndex(index++);
+                        totalAmount += orderDetail.getAmount();
+                        Product product = (Product) productModel.findById(orderDetail.getProductId());
+                        orderDetail.setProduct(product);
+                        order.getOrderDetailList().add(orderDetail);
+                    }
+                    order.setTotalAmount(totalAmount);
+                }
+                req.setAttribute("customerInfo", customer);
+            }
+
+            renderLookupOrderPage(req, resp);
         } catch (Exception e) {
             renderErrorPage(req, resp);
         }

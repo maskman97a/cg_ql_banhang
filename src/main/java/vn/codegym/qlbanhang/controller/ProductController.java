@@ -32,6 +32,7 @@ public class ProductController extends HttpServlet {
         switch (req.getPathInfo()) {
             case "/search":
                 productService.searchProduct(req, resp);
+                break;
             case "/detail":
                 productService.renderProductDetailPage(req, resp);
                 break;

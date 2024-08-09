@@ -1,31 +1,19 @@
 package vn.codegym.qlbanhang.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Condition {
     private String columnName;
     private String operator;
     private Object value;
+    private String appendLogic;
 
-    public String getColumnName() {
-        return columnName;
-    }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
 }

@@ -18,17 +18,18 @@
     <script src="../../js/index.js"></script>
     <link href="../../css/index.css" rel="stylesheet"/>
 </head>
-<body style="height: 100%; min-height: 100vh;flex-direction: column;">
+<body style="height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;">
 <header>
     <div class="container-fluid"
-         style="height: 150px; position: fixed; top: 0; background-color: #e3f2fd; z-index: 10; padding-top:25px">
+         style=" position: fixed; top: 0; background-color: #e3f2fd; z-index: 10; padding-top:25px">
         <c:import url="../component/navbar.jsp"/>
     </div>
-    <div class="container-fluid" style="height: 160px; ">
-        <a href="${pageContext.request.contextPath}/admin">Đăng nhập</a>
-    </div>
 </header>
-<main style="height: 70%">
+<main style=" FLEX-GROW: 1; padding-top: 150px">
     <div class="container-fluid" style="display: flex">
         <c:import url="../component/alert.jsp"/>
         <div id="div-product-show" class="container row" style="margin:0 auto"

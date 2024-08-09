@@ -42,7 +42,16 @@ public class AdminController extends BaseController {
             case "/transaction":
 //                adminService.renderUpdateNoteForm(req, resp);
             case "/category":
-                adminService.renderAdminFistTab(req, resp);
+                adminService.renderSearchCategory(req, resp);
+                break;
+            case "/category/category-create":
+                adminService.renderCreateProductForm(req, resp);
+                break;
+            case "/category/update":
+                adminService.renderUpdateProductForm(req, resp);
+                break;
+            case "/category/delete":
+                adminService.cancelProduct(req, resp);
                 break;
             default:
                 adminService.renderAdminFistTab(req, resp);
@@ -68,6 +77,12 @@ public class AdminController extends BaseController {
                 break;
             case "/product/delete":
                 adminService.cancelProduct(req, resp);
+                break;
+            case "/category/category-create":
+                adminService.createNewProduct(req, resp);
+                break;
+            case "/category/category":
+                adminService.updateProduct(req, resp);
                 break;
         }
     }

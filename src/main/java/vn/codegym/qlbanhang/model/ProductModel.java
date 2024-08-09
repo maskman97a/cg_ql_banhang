@@ -109,7 +109,7 @@ public class ProductModel extends BaseModel {
                     preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
                 }
             }
-            if (!DataUtil.isNullObject(categoryId)) {
+            if (!DataUtil.isNullOrZero(categoryId)) {
                 preparedStatement.setLong(index++, categoryId);
             }
             if (!DataUtil.isNullObject(id)) {
@@ -154,7 +154,7 @@ public class ProductModel extends BaseModel {
                     preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
                 }
             }
-            if (!DataUtil.isNullObject(categoryId)) {
+            if (!DataUtil.isNullOrZero(categoryId)) {
                 preparedStatement.setLong(index++, categoryId);
             }
             if (!DataUtil.isNullObject(id)) {
@@ -237,7 +237,7 @@ public class ProductModel extends BaseModel {
                 sb.append(" AND ( p.product_code LIKE ? OR p.product_name LIKE ? ) ");
             }
         }
-        if (!DataUtil.isNullObject(categoryId)) {
+        if (!DataUtil.isNullOrZero(categoryId)) {
             sb.append(" AND p.category_id = ? ");
         }
         if (!DataUtil.isNullObject(id)) {

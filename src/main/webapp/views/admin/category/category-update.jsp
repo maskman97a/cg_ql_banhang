@@ -24,10 +24,10 @@
 </head>
 <body>
 <div class="container">
-    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/product/update"
+    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/category/update"
           enctype="multipart/form-data">
         <input type="text" class="form-control" name="id"
-               value="${product.id}"
+               value="${category.id}"
                hidden/>
         <div class="row">
             <div class=" col-3">
@@ -39,84 +39,12 @@
                     </div>
                     <div class="row col-12 align-items-center mb-3">
                         <div class="col-3 mb-3">
-                            <label for="file">Chọn ảnh:</label>
+                            <label for="inp-name">Tên thể loại</label>
                         </div>
                         <div class="col-9">
-                            <input type="file" id="file" name="${product.imageUrl}"
-                                   accept="multipart/form-data"/>
-                            <br>
-                            <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
-                                 id="product-image-${product.id}"
-                                 class="img-fluid col-12"
-                                 alt="${product.name}" width="100%" height="100%">
+                            <input id="inp-name" type="text" value="${category.name}"
+                                   class="form-control" name="name"/>
                         </div>
-                        <script>
-                            document.getElementById('file').addEventListener('change', function (event) {
-                                const file = event.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = function (e) {
-                                        const preview = document.getElementById('preview');
-                                        preview.src = e.target.result;
-                                        preview.style.display = 'block';
-                                    }
-                                    reader.readAsDataURL(file);
-                                }
-                            });
-                        </script>
-                        <div class="col-3 mb-3">
-                            <label for="inp-category-name-update">Thể loại</label>
-                        </div>
-                        <div class="col-9">
-                            <input type="text" class="form-control" name="category-id"
-                                   value="${product.categoryId}"
-                                   hidden/>
-                            <input id="inp-category-name-update" type="text" value="${product.categoryName}"
-                                   class="form-control"
-                                   disabled
-                                   name="category-name"/>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-code">Mã sản phẩm</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-code" type="text" disabled value="${product.productCode}"
-                                   class="form-control" name="code"/>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-name">Tên sản phẩm</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-name" type="text" value="${product.productName}"
-                                   class="form-control"
-                                   name="name"/>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-quantity">Số lượng</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-quantity" type="number" oninput="limitLength(this)"
-                                   class="form-control"
-                                   value="${product.quantity}"
-                                   name="quantity"/>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-price">Giá</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-price" type="number" oninput="limitLength(this)"
-                                   class="form-control"
-                                   value="${product.price}"
-                                   name="price"/>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-description">Mô tả</label>
-                        </div>
-                        <div class="col-9">
-                                <textarea id="inp-description" class="form-control"
-                                          name="description">${product.description}</textarea>
-                        </div>
-
                         <script>
                             function limitLength(input) {
                                 if (input.value.length > 15) {
@@ -130,7 +58,7 @@
                         </div>
                         <div class="col-3  d-grid gap-2">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/admin/">Hủy
+                               href="${pageContext.request.contextPath}/admin/category">Hủy
                             </a>
                         </div>
                         <div class="col-6  d-grid gap-2">

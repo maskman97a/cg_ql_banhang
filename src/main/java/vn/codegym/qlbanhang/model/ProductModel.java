@@ -69,9 +69,9 @@ public class ProductModel extends BaseModel {
         return new BaseData(count, baseEntities);
     }
 
-    public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto) throws SQLException {
+    public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
         List<ProductDto> productDtoList = new ArrayList<>();
-        String sql = this.getSearchSQL(baseSearchDto);
+        String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
         sql += " order by id desc ";
         sql += " limit ? offset ?";
         PreparedStatement preparedStatement = this.con.prepareStatement(sql);
@@ -81,6 +81,12 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
+        }
+        if (!DataUtil.isNullObject(categoryId)) {
+            preparedStatement.setLong(index++, categoryId);
+        }
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setInt(index++, id);
         }
         preparedStatement.setInt(index++, baseSearchDto.getSize());
         preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
@@ -94,14 +100,15 @@ public class ProductModel extends BaseModel {
             productDto.setPrice(rs.getLong("price"));
             productDto.setQuantity(rs.getInt("quantity"));
             productDto.setDescription(rs.getString("description"));
+            productDto.setCategoryName(rs.getString("categoryName"));
+            productDto.setCategoryId(rs.getInt("categoryId"));
             productDtoList.add(productDto);
         }
         return productDtoList;
     }
 
-
-    public Integer countProduct(BaseSearchDto baseSearchDto) throws SQLException {
-        String sql = " SELECT count(1) from (" + getSearchSQL(baseSearchDto) + ") as countLst ";
+    public Integer countProduct(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
+        String sql = " SELECT count(1) from (" + getSearchSQL(baseSearchDto, categoryId, id) + ") as countLst ";
         PreparedStatement preparedStatement = this.con.prepareStatement(sql);
         int index = 1;
         if (baseSearchDto != null) {
@@ -110,6 +117,12 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
+        if (!DataUtil.isNullObject(categoryId)) {
+            preparedStatement.setLong(index++, categoryId);
+        }
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setLong(index++, id);
+        }
         ResultSet rs = preparedStatement.executeQuery();
         if (rs.next()) {
             return rs.getInt(1);
@@ -117,15 +130,64 @@ public class ProductModel extends BaseModel {
         return 0;
     }
 
-    public String getSearchSQL(BaseSearchDto baseSearchDto) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT id,image_url as imageUrl,product_code as productCode,product_name as productName,price,quantity,description ");
-        sb.append("  FROM product ");
-        sb.append(" WHERE status = 1 ");
+    public ProductDto getDetailProduct(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
+        String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
+        if (DataUtil.isNullObject(id)) {
+            sql += " order by id desc ";
+            sql += " limit ? offset ?";
+        }
+        PreparedStatement preparedStatement = this.con.prepareStatement(sql);
+        int index = 1;
         if (baseSearchDto != null) {
             if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                sb.append(" AND ( product_code LIKE ? OR product_name LIKE ? ) ");
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
+        }
+        if (!DataUtil.isNullObject(categoryId)) {
+            preparedStatement.setLong(index++, categoryId);
+        }
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setInt(index++, id);
+        }
+        if (DataUtil.isNullObject(id)) {
+            preparedStatement.setInt(index++, baseSearchDto.getSize());
+            preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            ProductDto productDto = new ProductDto();
+            productDto.setId(rs.getInt("id"));
+            productDto.setImageUrl(rs.getString("imageUrl"));
+            productDto.setProductCode(rs.getString("productCode"));
+            productDto.setProductName(rs.getString("productName"));
+            productDto.setPrice(rs.getLong("price"));
+            productDto.setQuantity(rs.getInt("quantity"));
+            productDto.setDescription(rs.getString("description"));
+            productDto.setCategoryName(rs.getString("categoryName"));
+            productDto.setCategoryId(rs.getInt("categoryId"));
+            return productDto;
+        }
+        return null;
+    }
+
+
+    public String getSearchSQL(BaseSearchDto baseSearchDto, Long categoryId, Integer id) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT p.id,p.image_url as imageUrl,p.product_code as productCode,p.product_name as productName,p.price,p.quantity,p.description,c.name as categoryName,p.category_id as categoryId ");
+        sb.append("  FROM product p ");
+        sb.append("       left join category c on c.status = 1 and p.category_id = c.id ");
+        sb.append(" WHERE p.status = 1 ");
+        if (!DataUtil.isNullObject(baseSearchDto)) {
+            if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
+                sb.append(" AND ( p.product_code LIKE ? OR p.product_name LIKE ? ) ");
+            }
+        }
+        if (!DataUtil.isNullObject(categoryId)) {
+            sb.append(" AND p.category_id = ? ");
+        }
+        if (!DataUtil.isNullObject(id)) {
+            sb.append(" AND p.id= ? ");
         }
         return sb.toString();
     }

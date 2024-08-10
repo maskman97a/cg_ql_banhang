@@ -1,0 +1,29 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        
+    - name: Deploy to Server
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@34.87.23.65 << 'EOF'
+          sudo git pull
+          sudo docker stop ql_banhang_app
+          sudo docker rm ql_banhang_app
+          sudo docker --debug  build -t ql_banhang_app .
+          sudo docker run --name ql_banhang_app -d --network=bridge -p 80:8080 ql_banhang_app
+        EOF

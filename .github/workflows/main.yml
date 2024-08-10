@@ -25,6 +25,7 @@ jobs:
           sudo git pull
           sudo docker stop ql_banhang_app
           sudo docker rm ql_banhang_app
+          sudo docker image prune -a < y
           sudo docker --debug  build -t ql_banhang_app .
           sudo docker run --name ql_banhang_app -d --network=bridge -p 80:8080 ql_banhang_app
         EOF

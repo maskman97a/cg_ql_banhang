@@ -68,7 +68,7 @@
                            href="${pageContext.request.contextPath}/product/search?page=${currentPage-1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
                         Previous</a></li>
                 </c:if>
-<%----%>
+
                 <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                     <li class="page-item ${currentPage == page ? 'active' : ''}">
                         <a class="page-link"

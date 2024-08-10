@@ -20,7 +20,7 @@ jobs:
         
     - name: Deploy to Server
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@34.87.23.65 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ceotungbeo@34.87.23.65 << 'EOF'
           sudo git pull
           sudo docker stop ql_banhang_app
           sudo docker rm ql_banhang_app

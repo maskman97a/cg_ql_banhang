@@ -81,7 +81,7 @@ public class AdminService extends BaseService {
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductDto productDto = productModel.getDetailProduct(null, null, id);
             req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/product/category-update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/product/product-update.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -212,15 +212,80 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void renderCreateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            req.setAttribute("updateCreate", true);
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            ProductDto productDto = productModel.getDetailProduct(null, null, id);
-            req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/product/category-update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/category/category-create.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
+        }
+    }
+
+    public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            Integer id = Integer.parseInt(req.getParameter("id"));
+            CategoryDto category = categoryService.getDetailCategory(null, id);
+            req.setAttribute("category", category);
+            req.getRequestDispatcher("/views/admin/category/category-update.jsp").forward(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp, ex.getMessage());
+        }
+    }
+
+    public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setCharacterEncoding("UTF-8");
+            Category category = new Category();
+            category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
+
+            int save = categoryModel.save(category);
+            if (save == 1) {
+                this.renderSearchCategory(req, resp);
+                categoryService.renderSearchCategory(req, resp);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            req.getRequestDispatcher("/views/admin/category/category-list.jsp").forward(req, resp);
+        }
+    }
+
+    public void updateCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setCharacterEncoding("UTF-8");
+            Category category = new Category();
+            Integer id = Integer.parseInt(req.getParameter("id"));
+            category.setId(id);
+            category.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+            category.setUpdatedBy("admin");
+            int save = categoryModel.updateCategory(false, category);
+            if (save == 1) {
+                this.searchProductAdmin(req, resp);
+                resp.sendRedirect("/admin");
+            } else {
+                renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.renderAdmin(req, resp);
+        }
+    }
+
+    public void cancelCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            Integer id = Integer.parseInt(req.getParameter("id"));
+            Category category = new Category();
+            category.setId(id);
+            category.setStatus(Const.STATUS_UNACTIVE);
+            category.setUpdatedBy("admin");
+            int save = categoryModel.updateCategory(true, category);
+            if (save == 1) {
+                this.searchProductAdmin(req, resp);
+                resp.sendRedirect("/admin");
+            } else {
+                renderErrorPage(req, resp, "Xóa sản phẩm thất bại. Vui lòng kiểm tra lại!");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.renderAdmin(req, resp);
         }
     }
 }

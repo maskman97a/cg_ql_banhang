@@ -108,18 +108,13 @@ public class CategoryService extends BaseService {
         }
     }
 
-    public CategoryDto getDetailProduct(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
+    public CategoryDto getDetailCategory(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
             String sql = categoryModel.getSearchCategorySQL(baseSearchDto, id);
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             int index = 1;
-            if (baseSearchDto != null) {
-                if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
-                }
-            }
             if (!DataUtil.isNullObject(id)) {
                 preparedStatement.setInt(index++, id);
             }

@@ -122,4 +122,47 @@ public class CategoryModel extends BaseModel {
         }
         return sb.toString();
     }
+
+    public int updateCategory(Boolean isCancel, Category category) throws SQLException {
+        Connection con = null;
+        try {
+            con = DatabaseConnection.getConnection();
+            StringBuilder sb = new StringBuilder("");
+            sb.append("UPDATE category " +
+                    "   SET updated_date = CURRENT_TIMESTAMP , " +
+                    "       updated_by = ? ");
+            if (!DataUtil.isNullObject(category)) {
+                if (!isCancel) {
+                    if (!DataUtil.isNullOrEmpty(category.getName()))
+                        sb.append(" ,name = ? ");
+                }
+                if (!DataUtil.isNullObject(category.getStatus()))
+                    sb.append(" ,status = ? ");
+            }
+            sb.append(" WHERE id = ? ");
+            if (isCancel)
+                sb.append(" AND status = 1 ");
+            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
+            int index = 1;
+            preparedStatement.setString(index++, category.getUpdatedBy());
+            if (!DataUtil.isNullObject(category)) {
+                if (!isCancel) {
+                    if (!DataUtil.isNullOrEmpty(category.getName()))
+                        preparedStatement.setString(index++, category.getName().trim());
+                }
+                if (!DataUtil.isNullObject(category.getStatus()))
+                    preparedStatement.setInt(index++, category.getStatus());
+            }
+            preparedStatement.setInt(index++, category.getId());
+            return preparedStatement.executeUpdate();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return 0;
+    }
 }

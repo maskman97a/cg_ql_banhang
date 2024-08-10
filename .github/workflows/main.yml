@@ -21,6 +21,7 @@ jobs:
     - name: Deploy to Server
       run: |
         ssh -o StrictHostKeyChecking=no github@34.87.23.65 << 'EOF'
+          cd /opt/source/cg_ql_banhang
           sudo git pull
           sudo docker stop ql_banhang_app
           sudo docker rm ql_banhang_app

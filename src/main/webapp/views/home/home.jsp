@@ -17,6 +17,7 @@
             crossorigin="anonymous"></script>
     <script src="../../js/index.js"></script>
     <link href="../../css/index.css" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/7fc3852c80.js" crossorigin="anonymous"></script>
 </head>
 <body style="height: 100%;
     min-height: 100vh;
@@ -29,7 +30,9 @@
         <c:import url="../component/navbar.jsp"/>
     </div>
 </header>
+
 <main style=" FLEX-GROW: 1; padding-top: 150px">
+    <i class="fa-solid fa-cart-shopping"></i>
     <div class="container-fluid" style="display: flex">
         <c:import url="../component/alert.jsp"/>
         <div id="div-product-show" class="container row" style="margin:0 auto"

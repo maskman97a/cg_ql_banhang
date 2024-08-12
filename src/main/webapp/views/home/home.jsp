@@ -16,7 +16,7 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <script src="../../js/index.js"></script>
-    <link href="../../css/index.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/7fc3852c80.js" crossorigin="anonymous"></script>
 </head>
 <body style="height: 100%;
@@ -25,14 +25,10 @@
     flex-direction: column;
     justify-content: space-between;">
 <header>
-    <div class="container-fluid"
-         style=" position: fixed; top: 0; background-color: #e3f2fd; z-index: 10; padding-top:25px">
-        <c:import url="../component/navbar.jsp"/>
-    </div>
+    <c:import url="../component/navbar.jsp"/>
 </header>
 
 <main style=" FLEX-GROW: 1; padding-top: 150px">
-    <i class="fa-solid fa-cart-shopping"></i>
     <div class="container-fluid" style="display: flex">
         <c:import url="../component/alert.jsp"/>
         <div id="div-product-show" class="container row" style="margin:0 auto"
@@ -54,7 +50,7 @@
     </div>
 </main>
 <footer>
-    <div class="container-fluid" style=" background-color: #e3f2fd">
+    <div class="container-fluid">
         <c:import url="../component/footer.jsp"/>
     </div>
 </footer>

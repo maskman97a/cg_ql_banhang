@@ -5,14 +5,13 @@ import vn.codegym.qlbanhang.service.ProductService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @WebServlet({"/product/*"})
-public class ProductController extends HttpServlet {
+public class ProductController extends HomeController {
     private ProductService productService;
     private HomeService homeService;
 
@@ -29,12 +28,16 @@ public class ProductController extends HttpServlet {
             homeService.renderHomePage(req, resp);
             return;
         }
+        log.info(req.getPathInfo());
         switch (req.getPathInfo()) {
             case "/search":
                 productService.searchProduct(req, resp);
                 break;
             case "/detail":
                 productService.renderProductDetailPage(req, resp);
+                break;
+            case "/add-to-cart":
+                productService.addToCart(req, resp);
                 break;
         }
     }

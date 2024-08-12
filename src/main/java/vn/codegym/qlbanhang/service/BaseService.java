@@ -16,8 +16,10 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BaseService {
+    protected final Logger log = Logger.getLogger("System Log");
     protected final BaseModel baseModel;
     protected final ModelMapper modelMapper;
 

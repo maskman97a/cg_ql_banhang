@@ -1,12 +1,17 @@
 package vn.codegym.qlbanhang.service;
 
 
+import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.model.BaseModel;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeService extends BaseService {
     private ProductService productService;
@@ -31,6 +36,13 @@ public class HomeService extends BaseService {
     }
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        Object productList = session.getAttribute("cartProductList");
+        if (DataUtil.isNullObject(productList)) {
+            productList = new ArrayList<ProductDto>();
+        }
+        req.setAttribute("cartCount", ((List) productList).size());
         req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
     }
 

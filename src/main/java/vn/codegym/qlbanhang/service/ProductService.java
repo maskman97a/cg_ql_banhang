@@ -1,7 +1,11 @@
 package vn.codegym.qlbanhang.service;
 
+import com.google.gson.Gson;
+import vn.codegym.qlbanhang.dto.CartProductDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.dto.response.AddCartResponse;
+import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
@@ -13,9 +17,11 @@ import vn.codegym.qlbanhang.utils.DataUtil;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class ProductService extends HomeService {
     private final ProductModel productModel;
@@ -125,5 +131,43 @@ public class ProductService extends HomeService {
     public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         executeSearch(req, resp);
         renderPage(req, resp);
+    }
+
+    public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String productId = req.getParameter("productId");
+        if (!DataUtil.isNullObject(productId)) {
+            updateCart(req, resp, Integer.parseInt(productId));
+        }
+    }
+
+    public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id) {
+        try {
+            BaseResponse baseResponse = new BaseResponse();
+            HttpSession session = req.getSession();
+            Object productList = session.getAttribute("cartProductList");
+            if (DataUtil.isNullObject(productList)) {
+                productList = new ArrayList<>();
+            }
+            List<CartProductDto> cartList = (List<CartProductDto>) productList;
+            Product product = productModel.findProductById(id);
+            ProductDto productDto = modelMapper.map(product, ProductDto.class);
+            if (cartList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
+                CartProductDto cartProductDto = cartList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
+                cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+            } else {
+                CartProductDto newCartProductDto = new CartProductDto(productDto, 1);
+                cartList.add(newCartProductDto);
+            }
+            session.setAttribute("cartProductList", cartList);
+            resp.setContentType("application/json");
+            AddCartResponse addCartResponse = new AddCartResponse();
+            addCartResponse.setCartCount(cartList.size());
+            addCartResponse.setProductDtoList(cartList);
+            baseResponse.setAdditionalData(addCartResponse);
+            resp.getWriter().write(new Gson().toJson(baseResponse));
+            resp.getWriter().close();
+        } catch (Exception ex) {
+            log.log(Level.WARNING, ex.getMessage());
+        }
     }
 }

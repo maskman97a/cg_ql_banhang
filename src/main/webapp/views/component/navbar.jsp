@@ -12,44 +12,60 @@
     <title>Title</title>
 </head>
 <body>
-<nav class="navbar navbar-nav navbar-nav-scroll"
-     style="overflow-x: auto;">
-    <div class="row container">
-        <div class="col-1">
-            <a class="navbar-brand" href="/">
-                <img src="../../images/logo.png" alt="logo" class="img-fluid rounded"/>
-            </a>
+<nav class="navbar navbar-nav navbar-nav-scroll navbar-custom container-fluid">
+    <div class="container-fluid nav-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-end m-1">
+                    <a class="link" style="color:#860303 !important" href="${pageContext.request.contextPath}/admin">Đăng
+                        nhập Quản trị</a>
+                </div>
+            </div>
         </div>
-
-        <div class="col-11">
-            <form class="d-flex row" role="search"
-                  action="${pageContext.request.contextPath}/product/search">
-                <div class="col-2">
-                    <input type="text" hidden name="sortType" value="${sortType}"/>
-                    <input type="text" hidden name="sortCol" value="${sortCol}"/>
-                    <input type="text" hidden name="page" value="${page}"/>
-                    <input type="text" hidden name="size" value="${size}"/>
-
-                    <select class="form-control" name="categoryId">
-                        <option value="">--Chọn thể loại--</option>
-                        <c:forEach var="category" items="${lstCategory}">
-                            <option value="${category.id}" ${selectedCategoryId == category.id ? 'selected':''} >${category.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="col-8">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
-                           value="${keyword}">
-                </div>
-                <div class="col-2">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </div>
-            </form>
-        </div>
-
     </div>
-    <div style="position: fixed; top:10px; right: 10px;">
-        <a class="link" href="${pageContext.request.contextPath}/admin">Đăng nhập Quản trị</a>
+    <div class="container-fluid nav-footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-1">
+                    <a class="navbar-brand" href="/">
+                        <img src="../../images/logo.png" alt="logo" class="img-fluid rounded"/>
+                    </a>
+                </div>
+
+                <div class="col-10">
+                    <form class="d-flex row" role="search"
+                          action="${pageContext.request.contextPath}/product/search">
+                        <div class="col-2">
+                            <input type="text" hidden name="sortType" value="${sortType}"/>
+                            <input type="text" hidden name="sortCol" value="${sortCol}"/>
+                            <input type="text" hidden name="page" value="${page}"/>
+                            <input type="text" hidden name="size" value="${size}"/>
+
+                            <select class="form-control" name="categoryId">
+                                <option value="">--Chọn thể loại--</option>
+                                <c:forEach var="category" items="${lstCategory}">
+                                    <option value="${category.id}" ${selectedCategoryId == category.id ? 'selected':''} >${category.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                                   value="${keyword}">
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-1">
+                    <div class="cart-icon">
+                        <i class="fa-solid fa-cart-shopping fs-3"></i>
+                        <span class="cart-count" id="count-cart">${cartCount}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
     <div style="position: fixed; bottom:100px; right: 20px;">
         <a class="" href="${pageContext.request.contextPath}/order/lookup">

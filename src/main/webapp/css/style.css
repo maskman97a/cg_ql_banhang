@@ -1,8 +1,42 @@
-.div-navbar {
-    height: 300px !important;
+.navbar-custom {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    overflow-x: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.nav-header {
+    background-color: #b5b5ee;
+}
+
+.nav-footer {
+    background-color: #00ffa6;
+}
+
+footer {
+    background-color: #00ffa6;
 }
 
 #icon-lookup-order:hover {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
+}
+
+.cart-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
 }

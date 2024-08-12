@@ -18,6 +18,7 @@
     <script src="../../js/index.js"></script>
     <link href="../../css/style.css" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/7fc3852c80.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="../../images/logo.png">
 </head>
 <body style="height: 100%;
     min-height: 100vh;
@@ -48,12 +49,35 @@
             <c:import url="../order/lookup-order.jsp"/>
         </div>
     </div>
+    <div class="div-lookup-order">
+        <a class="" href="${pageContext.request.contextPath}/order/lookup" data-bs-toggle="tooltip"
+           data-bs-placement="bottom" data-bs-title="Tra cứu đơn hàng">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </a>
+    </div>
 </main>
 <footer>
-    <div class="container-fluid">
-        <c:import url="../component/footer.jsp"/>
-    </div>
-</footer>
+    <c:import url="../component/footer.jsp"/>
 </footer>
 </body>
+<script>
+    function addToCart(productId) {
+        let contextPath = window.location.origin;
+        let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
+        fetch(fetchUrl, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.errorCode === 0) {
+                    alert("Thêm hàng vào giỏ thành công!");
+                    document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
+                } else {
+                    alert("Thêm vào giỏ hàng thất bại");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+    }
+</script>
 </html>

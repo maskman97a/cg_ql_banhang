@@ -13,26 +13,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
-    <title>Thêm mới thể loại</title>
+    <title>Cập nhật sản phẩm</title>
+    <style>
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<div>
-    <form class="form form-control p-4" method="post"
-          action="${pageContext.request.contextPath}/admin/category/category-create"
+<div class="container">
+    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/category/update"
           enctype="multipart/form-data">
+        <input type="text" class="form-control" name="id"
+               value="${category.id}"
+               hidden/>
         <div class="row">
             <div class=" col-3">
             </div>
             <div class=" col-6">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h1>Thêm mới Loại sản phẩm</h1>
+                        <h1>Cập nhật sản phẩm</h1>
                     </div>
                     <div class="row col-12 align-items-center mb-3">
-                        <div class="col-12">
-                            <label class="form-label" for="inp-name">Tên Loại sản phẩm:</label>
-                            <input id="inp-name" type="text" class="form-control" name="name"
-                                   placeholder="Nhập tên Loại sản phẩm"/>
+                        <div class="col-3 mb-3">
+                            <label for="inp-name">Tên thể loại</label>
+                        </div>
+                        <div class="col-9">
+                            <input id="inp-name" type="text" value="${category.name}"
+                                   class="form-control" name="name"/>
                         </div>
                         <script>
                             function limitLength(input) {

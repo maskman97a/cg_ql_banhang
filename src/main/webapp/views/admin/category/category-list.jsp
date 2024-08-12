@@ -16,103 +16,96 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-<%--        <div class="col-2 bg-light">--%>
-<%--            <div class="list-group">--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/product"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý sản phẩm</a>--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/transaction"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý đơn hàng</a>--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/category"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý thể loại</a>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-        <div class="col-10">
-            <div class="container">
-                <div class="container form-control">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h1>Danh sách thể loại</h1>
-                        </div>
-
-                        <div class="col-3  mb-3">
-
-                        </div>
-                        <div class="col-9 mb-3">
-                            <form class="form row" method="get"
-                                  action="${pageContext.request.contextPath}/admin/category/search">
-                                <input type="text" class="form-control" name="size" value="5" hidden/>
-                                <input type="text" class="form-control" name="page" value="1" hidden/>
+<div>
+    <div class="row" ${!renderCategoryList ? 'hidden': ''}>
+        <div class="container">
+            <div class="container form-control">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1>Quản lý Loại sản phẩm</h1>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <form class="form" method="get"
+                              action="${pageContext.request.contextPath}/admin/category/search">
+                            <input type="text" class="form-control" name="size" value="10" hidden/>
+                            <input type="text" class="form-control" name="page" value="1" hidden/>
+                            <div class="row justify-content-center">
                                 <div class="col-7">
-                                    <input type="text" class="form-control" placeholder="Tên thể loại" name="keyword"
+                                    <input type="text" class="form-control" placeholder="Nhập Loại sản phẩm"
+                                           name="keyword"
                                            value="${keyword}">
                                 </div>
-                                <div class="col-3">
-                                    <input type="submit" class="btn btn-success" value="Tìm"/>
+                                <div class="col-2">
+                                    <input type="submit" class="btn btn-success col-12" value="Tìm"/>
                                 </div>
+                            </div>
 
-                            </form>
-                        </div>
-                        <div class="col-2">
-                        </div>
-                        <div class="col-12 mb-3">
-                            <a href="${pageContext.request.contextPath}/admin/category/category-create"
-                               class="btn btn-primary">Thêm mới</a>
-                        </div>
-                        <div class="col-12">
-                            <table class="table table-hover">
-                                <thead>
+                        </form>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <a href="${pageContext.request.contextPath}/admin/category/category-create"
+                           class="btn btn-primary">Thêm Loại sản phẩm</a>
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên Loại sản phẩm</th>
+                                <th>Tác động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach var="category" items="${lstCategory}">
                                 <tr>
-                                    <td>STT</td>
-                                    <td>Tên thể loại</td>
-                                    <td>Action</td>
+                                    <td>${category.index}</td>
+                                    <td>${category.name}</td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/admin/category/update?id=${category.id}">Sửa</a>
+                                        |
+                                        <a class="btn-delete" onclick="return confirm('Bạn muốn xóa thể loại này')"
+                                           href="${pageContext.request.contextPath}/admin/category/delete?id=${category.id}">Xóa</a>
+                                    </td>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="product" items="${lstCategory}">
-                                    <tr>
-                                        <td>${product.index}</td>
-                                        <td>${product.name}</td>
-                                        <td>
-                                            <a href="${pageContext.request.contextPath}/admin/category/update?id=${product.id}">Sửa</a>
-                                            |
-                                            <a class="btn-delete" onclick="return confirm('Bạn muốn xóa thể loại này')"
-                                               href="${pageContext.request.contextPath}/admin/category/delete?id=${product.id}">Xóa</a>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="text-center col-12">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination" style="justify-content: center">
-                                    <c:if test="${!firstTab}">
-                                        <li class="page-item"><a class="page-link"
-                                                                 href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage-1}&size=5">
-                                            Previous</a></li>
-                                    </c:if>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center col-12">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination" style="justify-content: center">
+                                <c:if test="${!firstTab}">
+                                    <li class="page-item"><a class="page-link"
+                                                             href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage-1}&size=5">
+                                        Previous</a></li>
+                                </c:if>
 
-                                    <c:forEach begin="${beginPage}" end="${endPage}" var="page">
-                                        <li class="page-item ${currentPage == page ? 'active' : ''}">
-                                            <a class="page-link"
-                                               href="${pageContext.request.contextPath}/admin/category/search?page=${page}&size=5">${page}</a>
-                                        </li>
-                                    </c:forEach>
-                                    <c:if test="${!lastTab}">
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage+1}&size=5">
-                                                Next</a></li>
-                                    </c:if>
-                                </ul>
-                            </nav>
-                        </div>
+                                <c:forEach begin="${beginPage}" end="${endPage}" var="page">
+                                    <li class="page-item ${currentPage == page ? 'active' : ''}">
+                                        <a class="page-link"
+                                           href="${pageContext.request.contextPath}/admin/category/search?page=${page}&size=5">${page}</a>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="${!lastTab}">
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage+1}&size=5">
+                                            Next</a></li>
+                                </c:if>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div  ${!renderCreateCategory ? 'hidden': ''}>
+        <c:import url="/views/admin/category/category-create.jsp"/>
+    </div>
+    <div class="row" ${!renderUpdateCategory ? 'hidden': ''}>
+        <c:import url="/views/admin/category/category-update.jsp"/>
     </div>
 </div>
 </body>

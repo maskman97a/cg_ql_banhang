@@ -58,7 +58,8 @@
                     </form>
                 </div>
                 <div class="col-1">
-                    <div class="cart-icon">
+                    <button id="btn-open-cart" data-bs-toggle="modal" data-bs-target="#modalCart" hidden></button>
+                    <div class="cart-icon" onclick="openCart()">
                         <i class="fa-solid fa-cart-shopping fs-3"></i>
                         <span class="cart-count" id="count-cart">${cartCount}</span>
                     </div>
@@ -67,11 +68,12 @@
 
         </div>
     </div>
-    <div style="position: fixed; bottom:100px; right: 20px;">
-        <a class="" href="${pageContext.request.contextPath}/order/lookup">
-            <img id="icon-lookup-order" class="rounded-circle" src="../../images/icon-lookup.png" width="50px" height="50px"/>
-        </a>
-    </div>
 </nav>
+<c:import url="../product/product-cart-modal.jsp"/>
+<script>
+    function openCart() {
+        document.getElementById("btn-open-cart").click();
+    }
+</script>
 </body>
 </html>

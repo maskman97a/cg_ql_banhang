@@ -25,7 +25,8 @@
 <body>
 <div class="container">
 
-    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/product/product-create"
+    <form class="form form-control" method="post"
+          action="${pageContext.request.contextPath}/admin/product/product-create"
           enctype="multipart/form-data">
         <div class="row">
             <div class=" col-3">
@@ -39,7 +40,7 @@
                         <div class="col-3 mb-3">
                             <label for="file">Chọn ảnh:</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-9 mb-3">
                             <input type="file" id="file" name="file" accept="multipart/form-data"/>
                             <br>
                             <img id="preview" src="#" alt="Image Preview" style="display:none;">
@@ -61,7 +62,7 @@
                         <div class="col-3 mb-3">
                             <label for="category-id">Thể loại</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-9 mb-3">
                             <select class="form-control" id="category-id" name="category-id">
                                 <option value="0">--Chọn thể loại--</option>
                                 <c:forEach var="category" items="${lstCategory}">
@@ -69,22 +70,36 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="col-3 mb-3">
-                            <label for="inp-code">Mã sản phẩm</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-code" type="text" class="form-control" name="code"/>
-                        </div>
+
                         <div class="col-3 mb-3">
                             <label for="inp-name">Tên sản phẩm</label>
                         </div>
-                        <div class="col-9">
-                            <input id="inp-name" type="text" class="form-control" name="name"/>
+                        <div class="col-9 mb-3">
+                            <input id="inp-product-name" type="text" class="form-control" name="name"
+                                   onkeyup="generateProductCode()"/>
+                        </div>
+                        <script>
+                            function removeDiacritics(str) {
+                                return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                            }
+
+                            function generateProductCode() {
+                                const name = document.getElementById('inp-product-name').value.trim().toUpperCase();
+                                let newProductCode = removeDiacritics(name);
+                                newProductCode = newProductCode.replaceAll(" ", "_");
+                                document.getElementById('inp-code').value = newProductCode;
+                            }
+                        </script>
+                        <div class="col-3 mb-3">
+                            <label for="inp-code">Mã sản phẩm</label>
+                        </div>
+                        <div class="col-9 mb-3">
+                            <input id="inp-code" type="text" class="form-control" name="code" readonly/>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-quantity">Số lượng</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-9 mb-3">
                             <input id="inp-quantity" type="number" oninput="limitLength(this)"
                                    class="form-control"
                                    name="quantity"/>
@@ -92,14 +107,14 @@
                         <div class="col-3 mb-3">
                             <label for="inp-price">Giá</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-9 mb-3">
                             <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control"
                                    name="price"/>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-description">Mô tả</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-9 mb-3">
                             <textarea id="inp-description" class="form-control" name="description"></textarea>
                         </div>
 

@@ -39,6 +39,9 @@
             <div class="col-10" ${!renderCategory? 'hidden': ''}>
                 <c:import url="category/category-list.jsp"/>
             </div>
+            <div class="col-10" ${!renderOrder? 'hidden': ''}>
+                <c:import url="transaction/transaction-list.jsp"/>
+            </div>
 
         </div>
     </div>

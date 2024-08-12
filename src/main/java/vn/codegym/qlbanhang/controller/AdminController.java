@@ -46,8 +46,21 @@ public class AdminController extends BaseController {
                 req.setAttribute("renderProduct", true);
                 adminService.cancelProduct(req, resp);
                 break;
+
             case "/transaction":
-//                adminService.renderUpdateNoteForm(req, resp);
+                adminService.renderSearchOrder(req, resp);
+                break;
+            case "/transaction/search":
+                adminService.renderSearchOrder(req, resp);
+                break;
+            case "/transaction/update":
+                adminService.renderSearchOrder(req, resp);
+                break;
+            case "/transaction/delete":
+                adminService.renderSearchOrder(req, resp);
+                break;
+
+
             case "/category":
                 req.setAttribute("renderCategory", true);
                 req.setAttribute("renderProduct", false);
@@ -55,18 +68,15 @@ public class AdminController extends BaseController {
                 adminService.renderSearchCategory(req, resp);
                 break;
             case "/category/search":
-                req.setAttribute("renderCategory", true);
                 adminService.renderSearchCategory(req, resp);
                 break;
             case "/category/category-create":
-                req.setAttribute("renderCategory", true);
                 adminService.renderCreateCategoryForm(req, resp);
                 break;
             case "/category/update":
                 adminService.renderUpdateCategoryForm(req, resp);
                 break;
             case "/category/delete":
-                req.setAttribute("renderCategory", true);
                 adminService.cancelCategory(req, resp);
                 break;
             default:

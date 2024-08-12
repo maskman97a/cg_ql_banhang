@@ -57,7 +57,7 @@ public class CategoryService extends BaseService {
             if (save == 1) {
                 this.searchCategory(req, resp);
 //                resp.sendRedirect("/admin");
-                req.getRequestDispatcher("/views/admin/category/category-list.jsp").forward(req, resp);
+                req.getRequestDispatcher("/views/admin/category/transaction-list.jsp").forward(req, resp);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,7 +71,7 @@ public class CategoryService extends BaseService {
             req.setAttribute("renderProduct", false);
             req.setAttribute("renderOrder", false);
             this.searchCategory(req, resp);
-            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
+            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }

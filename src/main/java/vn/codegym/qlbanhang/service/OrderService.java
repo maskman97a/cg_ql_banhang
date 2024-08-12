@@ -242,4 +242,17 @@ public class OrderService extends HomeService {
             renderErrorPage(req, resp);
         }
     }
+
+
+    public void renderSearchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            req.setAttribute("renderOrder", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderProduct", false);
+//            this.searchCategory(req, resp);
+            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
 }

@@ -24,7 +24,7 @@ import java.util.Properties;
 
 public class SftpUtils {
 
-    private static final String SFTP_HOST = "34.87.23.65";
+    private static final String SFTP_HOST = "172.17.0.1";
     private static final int SFTP_PORT = 22;
 
     private static final String SFTP_USER_SERVER = "server";

@@ -106,6 +106,30 @@ public class CategoryModel extends BaseModel {
         return 0;
     }
 
+    public List<CategoryDto> getLstCategory() throws SQLException {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            String sql = this.getSearchCategorySQL(null, null);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            int index = 1;
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                CategoryDto categoryDto = new CategoryDto();
+                categoryDto.setId(rs.getInt("id"));
+                categoryDto.setName(rs.getString("name"));
+                categoryDtoList.add(categoryDto);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return categoryDtoList;
+    }
 
     public String getSearchCategorySQL(BaseSearchDto baseSearchDto, Integer id) {
         StringBuilder sb = new StringBuilder();

@@ -42,7 +42,9 @@ public class AdminService extends BaseService {
 
     public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            req.setAttribute("firstSearchTab", false);
+            req.setAttribute("renderProduct", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderOrder", false);
             this.searchProductAdmin(req, resp);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
@@ -52,8 +54,10 @@ public class AdminService extends BaseService {
 
     public void renderAdminFistTab(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            req.setAttribute("firstSearchTab", true);
             this.searchProductAdmin(req, resp);
+            req.setAttribute("renderProduct", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderOrder", false);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
@@ -62,6 +66,9 @@ public class AdminService extends BaseService {
 
     public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderProduct", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderOrder", false);
             req.setAttribute("updateProduct", false);
             List<CategoryDto> categoryDtoList = new ArrayList<>();
             List<BaseEntity> baseEntities = categoryModel.findAll();
@@ -69,7 +76,7 @@ public class AdminService extends BaseService {
                 categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
             }
             req.setAttribute("lstCategory", categoryDtoList);
-            req.getRequestDispatcher("/views/admin/product/category-create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -77,6 +84,9 @@ public class AdminService extends BaseService {
 
     public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderProduct", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderOrder", false);
             req.setAttribute("updateProduct", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductDto productDto = productModel.getDetailProduct(null, null, id);
@@ -117,11 +127,7 @@ public class AdminService extends BaseService {
                 }
                 req.setAttribute("lstData", lstData);
             }
-            List<CategoryDto> categoryDtoList = new ArrayList<>();
-            List<BaseEntity> baseEntities = categoryModel.findAll();
-            for (BaseEntity baseEntity : baseEntities) {
-                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
-            }
+            List<CategoryDto> categoryDtoList = categoryModel.getLstCategory();
             req.setAttribute("lstCategory", categoryDtoList);
             int count = productModel.countProduct(baseSearchDto, categoryId, null);
             getPaging(req, resp, count, size, page);
@@ -144,8 +150,7 @@ public class AdminService extends BaseService {
             product.setDescription(req.getParameter("description"));
             int save = productModel.save(product);
             if (save == 1) {
-                this.searchProductAdmin(req, resp);
-                resp.sendRedirect("/admin");
+                this.renderAdmin(req, resp);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -171,8 +176,7 @@ public class AdminService extends BaseService {
             product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
             int save = productModel.updateProduct(false, product);
             if (save == 1) {
-                this.searchProductAdmin(req, resp);
-                resp.sendRedirect("/admin");
+                this.renderAdmin(req, resp);
             } else {
                 renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
             }
@@ -191,8 +195,7 @@ public class AdminService extends BaseService {
             product.setUpdatedBy("admin");
             int save = productModel.updateProduct(true, product);
             if (save == 1) {
-                this.searchProductAdmin(req, resp);
-                resp.sendRedirect("/admin");
+                this.renderAdmin(req, resp);
             } else {
                 renderErrorPage(req, resp, "Xóa sản phẩm thất bại. Vui lòng kiểm tra lại!");
             }
@@ -206,7 +209,7 @@ public class AdminService extends BaseService {
     public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             categoryService.renderSearchCategory(req, resp);
-            req.getRequestDispatcher("/views/admin/category/category-list.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }
@@ -222,6 +225,9 @@ public class AdminService extends BaseService {
 
     public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderCategory", true);
+            req.setAttribute("renderProduct", false);
+            req.setAttribute("renderOrder", false);
             Integer id = Integer.parseInt(req.getParameter("id"));
             CategoryDto category = categoryService.getDetailCategory(null, id);
             req.setAttribute("category", category);
@@ -239,12 +245,11 @@ public class AdminService extends BaseService {
 
             int save = categoryModel.save(category);
             if (save == 1) {
-                this.renderSearchCategory(req, resp);
                 categoryService.renderSearchCategory(req, resp);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            req.getRequestDispatcher("/views/admin/category/category-list.jsp").forward(req, resp);
+            this.renderAdmin(req, resp);
         }
     }
 
@@ -258,8 +263,7 @@ public class AdminService extends BaseService {
             category.setUpdatedBy("admin");
             int save = categoryModel.updateCategory(false, category);
             if (save == 1) {
-                this.searchProductAdmin(req, resp);
-                resp.sendRedirect("/admin");
+                categoryService.renderSearchCategory(req, resp);
             } else {
                 renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
             }
@@ -270,6 +274,9 @@ public class AdminService extends BaseService {
     }
 
     public void cancelCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("renderCategory", true);
+        req.setAttribute("renderProduct", false);
+        req.setAttribute("renderOrder", false);
         try {
             Integer id = Integer.parseInt(req.getParameter("id"));
             Category category = new Category();
@@ -278,8 +285,7 @@ public class AdminService extends BaseService {
             category.setUpdatedBy("admin");
             int save = categoryModel.updateCategory(true, category);
             if (save == 1) {
-                this.searchProductAdmin(req, resp);
-                resp.sendRedirect("/admin");
+                categoryService.renderSearchCategory(req, resp);
             } else {
                 renderErrorPage(req, resp, "Xóa sản phẩm thất bại. Vui lòng kiểm tra lại!");
             }

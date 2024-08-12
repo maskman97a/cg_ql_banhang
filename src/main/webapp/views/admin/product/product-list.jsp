@@ -18,16 +18,16 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2 bg-light">
-            <div class="list-group">
-                <a href="${pageContext.request.contextPath}/admin/product"
-                   class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
-                <a href="${pageContext.request.contextPath}/admin/transaction"
-                   class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
-                <a href="${pageContext.request.contextPath}/admin/category"
-                   class="list-group-item list-group-item-action">Quản lý thể loại</a>
-            </div>
-        </div>
+<%--        <div class="col-2 bg-light">--%>
+<%--            <div class="list-group">--%>
+<%--                <a href="${pageContext.request.contextPath}/admin/product"--%>
+<%--                   class="list-group-item list-group-item-action">Quản lý sản phẩm</a>--%>
+<%--                <a href="${pageContext.request.contextPath}/admin/transaction"--%>
+<%--                   class="list-group-item list-group-item-action">Quản lý đơn hàng</a>--%>
+<%--                <a href="${pageContext.request.contextPath}/admin/category"--%>
+<%--                   class="list-group-item list-group-item-action">Quản lý thể loại</a>--%>
+<%--            </div>--%>
+<%--        </div>--%>
         <div class="col-10">
             <div class="container">
                 <div class="container form-control">

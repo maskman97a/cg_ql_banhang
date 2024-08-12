@@ -22,12 +22,18 @@ public class AdminController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getPathInfo() == null) {
+            req.setAttribute("renderProduct", true);
+            req.setAttribute("renderCategory", false);
+            req.setAttribute("renderOrder", false);
             adminService.renderAdminFistTab(req, resp);
             return;
         }
         System.out.println(req.getPathInfo());
         switch (req.getPathInfo()) {
             case "/search":
+                adminService.renderAdminFistTab(req, resp);
+                break;
+            case "/product/search":
                 adminService.renderAdminFistTab(req, resp);
                 break;
             case "/product/product-create":
@@ -37,26 +43,36 @@ public class AdminController extends BaseController {
                 adminService.renderUpdateProductForm(req, resp);
                 break;
             case "/product/delete":
+                req.setAttribute("renderProduct", true);
                 adminService.cancelProduct(req, resp);
                 break;
             case "/transaction":
 //                adminService.renderUpdateNoteForm(req, resp);
             case "/category":
+                req.setAttribute("renderCategory", true);
+                req.setAttribute("renderProduct", false);
+                req.setAttribute("renderOrder", false);
                 adminService.renderSearchCategory(req, resp);
                 break;
             case "/category/search":
+                req.setAttribute("renderCategory", true);
                 adminService.renderSearchCategory(req, resp);
                 break;
             case "/category/category-create":
+                req.setAttribute("renderCategory", true);
                 adminService.renderCreateCategoryForm(req, resp);
                 break;
             case "/category/update":
                 adminService.renderUpdateCategoryForm(req, resp);
                 break;
             case "/category/delete":
+                req.setAttribute("renderCategory", true);
                 adminService.cancelCategory(req, resp);
                 break;
             default:
+                req.setAttribute("renderProduct", true);
+                req.setAttribute("renderCategory", false);
+                req.setAttribute("renderOrder", false);
                 adminService.renderAdminFistTab(req, resp);
                 break;
         }

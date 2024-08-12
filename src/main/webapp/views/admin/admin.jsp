@@ -15,25 +15,31 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
 </head>
-<body>
+<body style="height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;">
 <main>
     <div class="container-fluid">
         <div class="row">
-            <c:if test="${!firstSearchTab}">
-                <div class="col-2 bg-light">
-                    <div class="list-group">
-                        <a href="${pageContext.request.contextPath}/admin/product"
-                           class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
-                        <a href="${pageContext.request.contextPath}/admin/transaction"
-                           class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
-                        <a href="${pageContext.request.contextPath}/admin/category"
-                           class="list-group-item list-group-item-action">Quản lý thể loại</a>
-                    </div>
+            <div class="col-2 bg-light">
+                <div class="list-group">
+                    <a href="${pageContext.request.contextPath}/admin/product"
+                       class="list-group-item list-group-item-action">Quản lý sản phẩm</a>
+                    <a href="${pageContext.request.contextPath}/admin/transaction"
+                       class="list-group-item list-group-item-action">Quản lý đơn hàng</a>
+                    <a href="${pageContext.request.contextPath}/admin/category"
+                       class="list-group-item list-group-item-action">Quản lý thể loại</a>
                 </div>
-            </c:if>
-            <div class="col-10">
+            </div>
+            <div class="col-10" ${!renderProduct? 'hidden': ''}>
                 <c:import url="product/product-list.jsp"/>
             </div>
+            <div class="col-10" ${!renderCategory? 'hidden': ''}>
+                <c:import url="category/category-list.jsp"/>
+            </div>
+
         </div>
     </div>
 </main>

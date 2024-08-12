@@ -67,8 +67,11 @@ public class CategoryService extends BaseService {
 
     public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            req.setAttribute("firstSearchTab", true);
+            req.setAttribute("renderCategory", true);
+            req.setAttribute("renderProduct", false);
+            req.setAttribute("renderOrder", false);
             this.searchCategory(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }

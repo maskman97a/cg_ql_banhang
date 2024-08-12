@@ -17,18 +17,8 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row">
-<%--        <div class="col-2 bg-light">--%>
-<%--            <div class="list-group">--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/product"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý sản phẩm</a>--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/transaction"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý đơn hàng</a>--%>
-<%--                <a href="${pageContext.request.contextPath}/admin/category"--%>
-<%--                   class="list-group-item list-group-item-action">Quản lý thể loại</a>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-        <div class="col-10">
+    <div class="row"  ${!renderProductList ? 'hidden': ''}>
+        <div class="col-12">
             <div class="container">
                 <div class="container form-control">
                     <div class="row">
@@ -36,13 +26,10 @@
                             <h1>Danh sách sản phẩm</h1>
                         </div>
 
-                        <div class="col-3  mb-3">
-
-                        </div>
-                        <div class="col-9 mb-3">
-                            <form class="form row" method="get"
-                                  action="${pageContext.request.contextPath}/admin/search">
-                                <input type="text" class="form-control" name="size" value="5" hidden/>
+                        <div class="col-12 mb-3">
+                            <form class="form row justify-content-center" method="get"
+                                  action="${pageContext.request.contextPath}/admin/product/search">
+                                <input type="text" class="form-control" name="size" value="10" hidden/>
                                 <input type="text" class="form-control" name="page" value="1" hidden/>
                                 <div class="col-2">
                                     <select class="form-control" name="category-id">
@@ -56,7 +43,7 @@
                                     <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
                                            value="${keyword}">
                                 </div>
-                                <div class="col-3">
+                                <div class="col-1">
                                     <input type="submit" class="btn btn-success" value="Tìm"/>
                                 </div>
 
@@ -72,14 +59,14 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <td>STT</td>
-                                    <td>Mã sản phẩm</td>
-                                    <td>Tên sản phẩm</td>
-                                    <td>Thể loại</td>
-                                    <td>Giá</td>
-                                    <td>Số lượng</td>
-                                    <td>Mô tả</td>
-                                    <td>Action</td>
+                                    <th>STT</th>
+                                    <th>Mã sản phẩm</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Thể loại</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Mô tả</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -131,6 +118,12 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row" ${!renderProductCreate ? 'hidden': ''}>
+        <c:import url="/views/admin/product/product-create.jsp"/>
+    </div>
+    <div class="row" ${!renderProductUpdate ? 'hidden': ''}>
+        <c:import url="/views/admin/product/product-update.jsp"/>
     </div>
 </div>
 </body>

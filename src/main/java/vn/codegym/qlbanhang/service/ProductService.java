@@ -155,7 +155,7 @@ public class ProductService extends HomeService {
                 CartProductDto cartProductDto = cartList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
                 cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
             } else {
-                CartProductDto newCartProductDto = new CartProductDto(productDto, 1);
+                CartProductDto newCartProductDto = new CartProductDto(cartList.size() + 1, productDto, 1);
                 cartList.add(newCartProductDto);
             }
             session.setAttribute("cartProductList", cartList);

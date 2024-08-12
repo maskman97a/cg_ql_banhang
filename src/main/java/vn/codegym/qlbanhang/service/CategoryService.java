@@ -1,17 +1,13 @@
 package vn.codegym.qlbanhang.service;
 
-import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Category;
-import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
-import vn.codegym.qlbanhang.utils.SftpUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -22,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @MultipartConfig
@@ -68,6 +63,7 @@ public class CategoryService extends BaseService {
     public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("renderCategory", true);
+            req.setAttribute("renderCategoryList", true);
             req.setAttribute("renderProduct", false);
             req.setAttribute("renderOrder", false);
             this.searchCategory(req, resp);

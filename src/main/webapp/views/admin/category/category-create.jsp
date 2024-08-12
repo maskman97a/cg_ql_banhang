@@ -14,18 +14,11 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <title>Thêm mới thể loại</title>
-    <style>
-        #preview {
-            max-width: 100%;
-            max-height: 300px;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
-<div class="container">
-
-    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/category/category-create"
+<div>
+    <form class="form form-control p-4" method="post"
+          action="${pageContext.request.contextPath}/admin/category/category-create"
           enctype="multipart/form-data">
         <div class="row">
             <div class=" col-3">
@@ -33,14 +26,13 @@
             <div class=" col-6">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h1>Thêm mới thể loại</h1>
+                        <h1>Thêm mới Loại sản phẩm</h1>
                     </div>
                     <div class="row col-12 align-items-center mb-3">
-                        <div class="col-3 mb-3">
-                            <label for="inp-name">Tên thể loại</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-name" type="text" class="form-control" name="name"/>
+                        <div class="col-12">
+                            <label class="form-label" for="inp-name">Tên Loại sản phẩm:</label>
+                            <input id="inp-name" type="text" class="form-control" name="name"
+                                   placeholder="Nhập tên Loại sản phẩm"/>
                         </div>
                         <script>
                             function limitLength(input) {

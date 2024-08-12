@@ -1,15 +1,13 @@
 package vn.codegym.qlbanhang.service;
 
-import lombok.var;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.dto.Condition;
 import vn.codegym.qlbanhang.dto.ProductDto;
-import vn.codegym.qlbanhang.entity.*;
+import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
-import vn.codegym.qlbanhang.utils.ClassUtils;
 import vn.codegym.qlbanhang.utils.DataUtil;
 import vn.codegym.qlbanhang.utils.SftpUtils;
 
@@ -18,13 +16,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @MultipartConfig
 public class AdminService extends BaseService {
@@ -58,8 +50,7 @@ public class AdminService extends BaseService {
         try {
             this.searchProductAdmin(req, resp);
             req.setAttribute("renderProduct", true);
-            req.setAttribute("renderCategory", false);
-            req.setAttribute("renderOrder", false);
+            req.setAttribute("renderProductList", true);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
@@ -68,13 +59,11 @@ public class AdminService extends BaseService {
 
     public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderProductCreate", true);
             req.setAttribute("renderProduct", true);
-            req.setAttribute("renderCategory", false);
-            req.setAttribute("renderOrder", false);
-            req.setAttribute("updateProduct", false);
             List<CategoryDto> categoryDtoList = categoryModel.getLstCategory();
             req.setAttribute("lstCategory", categoryDtoList);
-            req.getRequestDispatcher("/views/admin/product/product-create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -82,14 +71,12 @@ public class AdminService extends BaseService {
 
     public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderProductUpdate", true);
             req.setAttribute("renderProduct", true);
-            req.setAttribute("renderCategory", false);
-            req.setAttribute("renderOrder", false);
-            req.setAttribute("updateProduct", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductDto productDto = productModel.getDetailProduct(null, null, id);
             req.setAttribute("product", productDto);
-            req.getRequestDispatcher("/views/admin/product/product-update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -103,7 +90,7 @@ public class AdminService extends BaseService {
             if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
                 categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
             }
-            int size = 5;
+            int size = 10;
             if (req.getParameter("size") != null) {
                 size = Integer.parseInt(req.getParameter("size"));
             }
@@ -148,7 +135,7 @@ public class AdminService extends BaseService {
             product.setDescription(req.getParameter("description"));
             int save = productModel.save(product);
             if (save == 1) {
-                resp.sendRedirect("/admin");
+                resp.sendRedirect("/admin/product");
             }
         } catch (Exception ex) {
             this.renderAdmin(req, resp);
@@ -173,7 +160,7 @@ public class AdminService extends BaseService {
             product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
             int save = productModel.updateProduct(false, product);
             if (save == 1) {
-                resp.sendRedirect("/admin");
+                resp.sendRedirect("/admin/product");
             } else {
                 renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
             }
@@ -192,7 +179,7 @@ public class AdminService extends BaseService {
             product.setUpdatedBy("admin");
             int save = productModel.updateProduct(true, product);
             if (save == 1) {
-                resp.sendRedirect("/admin");
+                resp.sendRedirect("/admin/product");
             } else {
                 renderErrorPage(req, resp, "Xóa sản phẩm thất bại. Vui lòng kiểm tra lại!");
             }
@@ -213,7 +200,9 @@ public class AdminService extends BaseService {
 
     public void renderCreateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            req.getRequestDispatcher("/views/admin/category/category-create.jsp").forward(req, resp);
+            req.setAttribute("renderCategory", true);
+            req.setAttribute("renderCreateCategory", true);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }
@@ -222,12 +211,11 @@ public class AdminService extends BaseService {
     public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("renderCategory", true);
-            req.setAttribute("renderProduct", false);
-            req.setAttribute("renderOrder", false);
+            req.setAttribute("renderUpdateCategory", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
             CategoryDto category = categoryService.getDetailCategory(null, id);
             req.setAttribute("category", category);
-            req.getRequestDispatcher("/views/admin/category/transaction-update.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());
         }

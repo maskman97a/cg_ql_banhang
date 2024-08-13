@@ -1,6 +1,9 @@
 package vn.codegym.qlbanhang.entity;
 
+import vn.codegym.qlbanhang.annotation.Table;
+
 import java.util.List;
+
 
 public class BaseData {
     int totalRow;

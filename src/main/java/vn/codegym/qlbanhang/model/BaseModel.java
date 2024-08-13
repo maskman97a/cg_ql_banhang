@@ -1,5 +1,7 @@
 package vn.codegym.qlbanhang.model;
 
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
@@ -9,7 +11,6 @@ import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.utils.ClassUtils;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
-import javax.persistence.Column;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,8 +19,9 @@ import java.util.List;
 public class BaseModel {
     private final String tableName;
 
-    public BaseModel(String tableName) {
-        this.tableName = tableName;
+    public BaseModel(Class<?> cl) {
+        Table tableAnnotation = cl.getDeclaredAnnotation(Table.class);
+        this.tableName = tableAnnotation.name();
     }
 
     public List<BaseEntity> search(BaseSearchDto baseSearchDto) throws SQLException {

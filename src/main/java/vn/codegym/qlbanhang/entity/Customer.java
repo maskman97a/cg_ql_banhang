@@ -2,13 +2,14 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 
-import javax.persistence.Column;
 
 @Getter
 @Setter
+@Table(name = "customer")
 public class Customer extends BaseEntity {
-    public static final String TABLE_NAME = "customer";
     public static final String SEARCH_COLUMN = "name";
     private int index;
     @Column(name = "name")
@@ -19,15 +20,7 @@ public class Customer extends BaseEntity {
     private String email;
     @Column(name = "address")
     private String address;
-
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
-
-    public static String getSearchColumn() {
-        return SEARCH_COLUMN;
-    }
-
+    
     public Customer() {
 
     }

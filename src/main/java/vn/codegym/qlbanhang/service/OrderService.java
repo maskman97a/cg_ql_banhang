@@ -33,10 +33,10 @@ public class OrderService extends HomeService {
     private final OrderDetailModel orderDetailModel;
 
     public OrderService() {
-        super(new ProductModel());
-        this.productModel = (ProductModel) super.baseModel;
+        super(new OrderModel());
+        this.productModel = new ProductModel();
         this.customerModel = new CustomerModel();
-        this.orderModel = new OrderModel();
+        this.orderModel = (OrderModel) super.getBaseModal();
         this.orderDetailModel = new OrderDetailModel();
     }
 

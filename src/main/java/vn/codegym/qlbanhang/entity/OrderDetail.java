@@ -2,13 +2,14 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 
-import javax.persistence.Column;
 
 @Getter
 @Setter
+@Table(name = "order_detail")
 public class OrderDetail extends BaseEntity {
-    public static final String TABLE_NAME = "order_detail";
     private int index;
     @Column(name = "order_id")
     private int orderId;
@@ -22,11 +23,6 @@ public class OrderDetail extends BaseEntity {
     private int amount;
 
     private Product product;
-
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
-
 
     public OrderDetail() {
 

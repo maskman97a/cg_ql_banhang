@@ -2,18 +2,18 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
 @Setter
+@Table(name = "orders")
 public class Order extends BaseEntity {
-    public static final String TABLE_NAME = "orders";
-    public static final String SEARCH_COLUMN = "name";
     private int index;
     @Column(name = "code")
     private String code;
@@ -29,14 +29,6 @@ public class Order extends BaseEntity {
     private String orderDateStr;
 
     private List<OrderDetail> orderDetailList;
-
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
-
-    public static String getSearchColumn() {
-        return SEARCH_COLUMN;
-    }
 
     public Order() {
 

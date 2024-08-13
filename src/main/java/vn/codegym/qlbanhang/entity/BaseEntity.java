@@ -2,10 +2,13 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 import vn.codegym.qlbanhang.constants.Const;
+import vn.codegym.qlbanhang.utils.ClassUtils;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -35,17 +38,18 @@ public abstract class BaseEntity {
     }
 
     public static BaseEntity getInstance(String tableName) {
-        switch (tableName) {
-            case Product.TABLE_NAME:
-                return new Product();
-            case Customer.TABLE_NAME:
-                return new Customer();
-            case Order.TABLE_NAME:
-                return new Order();
-            case OrderDetail.TABLE_NAME:
-                return new OrderDetail();
-            case Category.TABLE_NAME:
-                return new Category();
+        try {
+            List<Class<?>> classes = ClassUtils.getClasses("vn.codegym.qlbanhang.entity");
+            for (Class<?> clazz : classes) {
+                if (clazz.getAnnotation(Table.class) != null) {
+                    Table table = clazz.getAnnotation(Table.class);
+                    if (table.name().equals(tableName)) {
+                        return (BaseEntity) clazz.getDeclaredConstructor().newInstance();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }

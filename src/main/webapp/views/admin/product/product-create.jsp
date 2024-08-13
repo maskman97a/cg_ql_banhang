@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="col-3 mb-3">
-                            <label for="inp-name">Tên sản phẩm</label>
+                            <label for="inp-product-name">Tên sản phẩm</label>
                         </div>
                         <div class="col-9 mb-3">
                             <input id="inp-product-name" type="text" class="form-control" name="name"
@@ -100,7 +100,7 @@
                             <label for="inp-quantity">Số lượng</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <input id="inp-quantity" type="number" oninput="limitLength(this)"
+                            <input id="inp-quantity" type="number" oninput="limitLength(this)" min="0"
                                    class="form-control"
                                    name="quantity"/>
                         </div>
@@ -108,7 +108,7 @@
                             <label for="inp-price">Giá</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control"
+                            <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control" min="0"
                                    name="price"/>
                         </div>
                         <div class="col-3 mb-3">

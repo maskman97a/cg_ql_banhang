@@ -1,7 +1,10 @@
 package vn.codegym.qlbanhang.utils;
 
-import javax.persistence.Column;
+import vn.codegym.qlbanhang.annotation.Column;
+
+import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,5 +52,27 @@ public class ClassUtils {
         return null;
     }
 
+    public static List<Class<?>> getClasses(String packageName) {
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            String path = packageName.replace('.', '/');
+            URL resource = classLoader.getResource(path);
+            File directory = new File(resource.getFile());
+
+            List<Class<?>> classes = new ArrayList<>();
+            if (directory.exists()) {
+                for (String file : directory.list()) {
+                    if (file.endsWith(".class")) {
+                        String className = packageName + '.' + file.substring(0, file.length() - 6);
+                        classes.add(Class.forName(className));
+                    }
+                }
+            }
+            return classes;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 
 }

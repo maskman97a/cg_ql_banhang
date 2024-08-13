@@ -25,6 +25,10 @@ public class HomeService extends BaseService {
         super(baseModel);
     }
 
+    public BaseModel getBaseModal() {
+        return super.baseModel;
+    }
+
 
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {

@@ -16,9 +16,9 @@
     flex-direction: column;
     justify-content: space-between;">
 <main>
-    <div class="container-fluid pt-3">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-2 bg-light">
+            <div class="col-2">
                 <div class="card card-body">
                     <div class="col-12">
                         <button class="btn" type="button" data-bs-toggle="collapse"
@@ -76,7 +76,7 @@
 
 
             </div>
-            <div class="col-8">
+            <div class="col-8 pt-3" style="background-color: #f0f2f5; min-height: calc(100vh - 150px)">
                 <div class="col-12">
                     <c:forEach var="urlLevel" items="${urlLevelList}">
                         <c:if test="${urlLevel.level > 1}"> > </c:if>

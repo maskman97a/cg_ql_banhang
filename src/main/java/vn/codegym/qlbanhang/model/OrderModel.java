@@ -9,7 +9,7 @@ import java.util.Collections;
 
 public class OrderModel extends BaseModel {
     public OrderModel() {
-        super(Order.getTableName());
+        super(Order.class);
     }
 
     public Order getByCode(String code) throws SQLException {

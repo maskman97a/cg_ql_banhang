@@ -8,7 +8,7 @@ import vn.codegym.qlbanhang.entity.Customer;
 
 public class CustomerModel extends BaseModel {
     public CustomerModel() {
-        super(Customer.getTableName());
+        super(Customer.class);
     }
 
     public Customer findByPhone(String phoneNumber) {

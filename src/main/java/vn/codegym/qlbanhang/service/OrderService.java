@@ -1,10 +1,7 @@
 package vn.codegym.qlbanhang.service;
 
 import vn.codegym.qlbanhang.constants.Const;
-import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
-import vn.codegym.qlbanhang.dto.CustomerDto;
-import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.dto.request.CreateOrderRequest;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.*;
@@ -33,10 +30,10 @@ public class OrderService extends HomeService {
     private final OrderDetailModel orderDetailModel;
 
     public OrderService() {
-        super(new ProductModel());
-        this.productModel = (ProductModel) super.baseModel;
+        super(new OrderModel());
+        this.productModel = new ProductModel();
         this.customerModel = new CustomerModel();
-        this.orderModel = new OrderModel();
+        this.orderModel = (OrderModel) super.getBaseModal();
         this.orderDetailModel = new OrderDetailModel();
     }
 
@@ -249,9 +246,94 @@ public class OrderService extends HomeService {
             req.setAttribute("renderOrder", true);
             req.setAttribute("renderCategory", false);
             req.setAttribute("renderProduct", false);
-//            this.searchCategory(req, resp);
+            this.searchOrderAdmin(req, resp);
             req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public void searchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        BaseSearchDto baseSearchDto = new BaseSearchDto();
+        try {
+            String keyword = DataUtil.safeToString(req.getParameter("keyword"));
+            int size = 5;
+            if (req.getParameter("size") != null) {
+                size = Integer.parseInt(req.getParameter("size"));
+            }
+            int page = 1;
+            if (req.getParameter("page") != null) {
+                page = Integer.parseInt(req.getParameter("page"));
+                if (page == 0) page = 1;
+            }
+            req.setAttribute("currentPage", page);
+            req.getAttribute("currentPage");
+            baseSearchDto.setKeyword(keyword);
+            baseSearchDto.setSize(size);
+            baseSearchDto.setPage(page);
+            if (req.getParameter("status-order-id") != null)
+                baseSearchDto.setStatus(DataUtil.safeToInt(Integer.parseInt(req.getParameter("status-order-id"))));
+            List<OrdersDto> lstData = orderModel.findOrderByKeyword(baseSearchDto);
+            if (lstData != null && !lstData.isEmpty()) {
+                int index = 1;
+                for (OrdersDto ordersDto : lstData) {
+                    ordersDto.setIndex(index++);
+                }
+                req.setAttribute("lstOrder", lstData);
+            }
+            int count = orderModel.countOrder(baseSearchDto);
+            getPaging(req, resp, count, size, page);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp, ex.getMessage());
+        }
+    }
+
+
+    public void detailOrderForAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String orderCode = req.getParameter("orderCode");
+            req.setAttribute("orderCode", orderCode);
+            if (DataUtil.isNullOrEmpty(orderCode)) {
+                req.setAttribute("lookupResponse", "Vui lòng nhập Mã đơn hàng");
+            }
+
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode, "AND"));
+            Customer customer = customerModel.findByPhone(orderCode);
+            if (!DataUtil.isNullObject(customer)) {
+                baseSearchDto.getConditions().add(new Condition("customer_id", "=", customer.getId(), "OR"));
+            }
+            List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
+            if (DataUtil.isNullOrEmpty(baseEntities)) {
+                req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");
+            } else {
+                req.setAttribute("showOrderInfo", true);
+                req.setAttribute("orderList", baseEntities);
+                for (BaseEntity baseEntity : baseEntities) {
+                    Order order = (Order) baseEntity;
+                    if (DataUtil.isNullObject(customer)) {
+                        customer = (Customer) customerModel.findById(order.getCustomerId());
+                    }
+                    order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
+                    BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
+                    baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId(), "AND"));
+                    List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
+                    order.setOrderDetailList(new ArrayList<>());
+                    int totalAmount = 0;
+                    int index = 1;
+                    for (BaseEntity baseE2 : baseEntitiesForDetail) {
+                        OrderDetail orderDetail = (OrderDetail) baseE2;
+                        orderDetail.setIndex(index++);
+                        totalAmount += orderDetail.getAmount();
+                        Product product = (Product) productModel.findById(orderDetail.getProductId());
+                        orderDetail.setProduct(product);
+                        order.getOrderDetailList().add(orderDetail);
+                    }
+                    order.setTotalAmount(totalAmount);
+                }
+                req.setAttribute("customerInfo", customer);
+            }
+        } catch (Exception e) {
             renderErrorPage(req, resp);
         }
     }

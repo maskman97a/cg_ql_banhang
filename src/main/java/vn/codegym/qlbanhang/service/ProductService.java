@@ -1,11 +1,12 @@
 package vn.codegym.qlbanhang.service;
 
 import com.google.gson.Gson;
+import vn.codegym.qlbanhang.dto.Cart;
 import vn.codegym.qlbanhang.dto.CartProductDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
-import vn.codegym.qlbanhang.dto.response.AddCartResponse;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
+import vn.codegym.qlbanhang.dto.response.CartResponse;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Product;
@@ -140,30 +141,50 @@ public class ProductService extends HomeService {
         }
     }
 
+    public void getCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Object cartProductJson = session.getAttribute("cartProductJson");
+        List<CartProductDto> cartProductDtoList = new ArrayList<>();
+        if (!DataUtil.isNullObject(cartProductJson)) {
+            cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
+        }
+        CartResponse cartResponse = new CartResponse(cartProductDtoList);
+        BaseResponse<CartResponse> response = new BaseResponse<>();
+        response.setAdditionalData(cartResponse);
+        resp.getWriter().write(gson.toJson(response));
+        resp.setContentType("application/json");
+        resp.getWriter().close();
+    }
+
     public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id) {
         try {
-            BaseResponse baseResponse = new BaseResponse();
+            BaseResponse<CartResponse> baseResponse = new BaseResponse();
             HttpSession session = req.getSession();
-            Object productList = session.getAttribute("cartProductList");
-            if (DataUtil.isNullObject(productList)) {
-                productList = new ArrayList<>();
+            List<CartProductDto> cartProductDtoList;
+            Object cartProductJson = session.getAttribute("cartProductJson");
+            if (DataUtil.isNullObject(cartProductJson)) {
+                cartProductDtoList = new ArrayList<>();
+            } else {
+                cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
             }
-            List<CartProductDto> cartList = (List<CartProductDto>) productList;
             Product product = productModel.findProductById(id);
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
-            if (cartList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
-                CartProductDto cartProductDto = cartList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
+            if (cartProductDtoList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
+                CartProductDto cartProductDto = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
                 cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
             } else {
-                CartProductDto newCartProductDto = new CartProductDto(cartList.size() + 1, productDto, 1);
-                cartList.add(newCartProductDto);
+                CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);
+                cartProductDtoList.add(newCartProductDto);
             }
-            session.setAttribute("cartProductList", cartList);
+            cartProductJson = gson.toJson(new Cart(cartProductDtoList));
+            log.info((String) cartProductJson);
+            session.setAttribute("cartProductJson", cartProductJson);
+            req.setAttribute("cartProductList", cartProductDtoList);
             resp.setContentType("application/json");
-            AddCartResponse addCartResponse = new AddCartResponse();
-            addCartResponse.setCartCount(cartList.size());
-            addCartResponse.setProductDtoList(cartList);
-            baseResponse.setAdditionalData(addCartResponse);
+            CartResponse cartResponse = new CartResponse();
+            cartResponse.setCartCount(cartProductDtoList.size());
+            cartResponse.setCartProductList(cartProductDtoList);
+            baseResponse.setAdditionalData(cartResponse);
             resp.getWriter().write(new Gson().toJson(baseResponse));
             resp.getWriter().close();
         } catch (Exception ex) {

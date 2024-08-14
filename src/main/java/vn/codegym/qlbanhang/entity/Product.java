@@ -2,11 +2,12 @@ package vn.codegym.qlbanhang.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Column;
+import vn.codegym.qlbanhang.annotation.Column;
+import vn.codegym.qlbanhang.annotation.Table;
 
 @Getter
 @Setter
+@Table(name = "product")
 public class Product extends BaseEntity {
     @Column(name = "product_code")
     private String productCode;
@@ -23,9 +24,4 @@ public class Product extends BaseEntity {
     @Column(name = "category_id")
     private Integer categoryId;
 
-    public static final String TABLE_NAME = "product";
-
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
 }

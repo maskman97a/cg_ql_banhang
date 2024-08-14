@@ -61,23 +61,6 @@
 </footer>
 </body>
 <script>
-    function addToCart(productId) {
-        let contextPath = window.location.origin;
-        let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
-        fetch(fetchUrl, {
-            method: 'GET'
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.errorCode === 0) {
-                    alert("Thêm hàng vào giỏ thành công!");
-                    document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
-                } else {
-                    alert("Thêm vào giỏ hàng thất bại");
-                }
-            })
-            .catch(error => console.error('Error:', error));
 
-    }
 </script>
 </html>

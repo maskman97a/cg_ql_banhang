@@ -4,7 +4,7 @@ import vn.codegym.qlbanhang.entity.OrderDetail;
 
 public class OrderDetailModel extends BaseModel {
     public OrderDetailModel() {
-        super(OrderDetail.getTableName());
+        super(OrderDetail.class);
     }
 
 

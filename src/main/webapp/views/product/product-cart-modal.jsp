@@ -30,19 +30,9 @@
                         <th>Thành tiền</th>
                     </tr>
                     </thead>
-                    <c:forEach var="productCart" items="${cartProductList}">
-                        <tr>
-                            <td>${productCart.index}</td>
-                            <td>${productCart.product.productName}</td>
-                            <td>${productCart.quantity}</td>
-                            <td id="col-price">${productCart.product.price}</td>
-                            <td id="col-amount">${productCart.amount}</td>
-                        </tr>
-                        <script>
-                            document.getElementById("col-price").innerHTML = formatNumber(${productCart.product.price}) + "đ";
-                            document.getElementById("col-amount").innerHTML = formatNumber(${productCart.amount}) + "đ";
-                        </script>
-                    </c:forEach>
+                    <tbody id="tbody-table-cart">
+
+                    </tbody>
                 </table>
                 <span>${(cartProductList == null || cartProductList.size == 0 ) ?'Không có sản phẩm nào được chọn': ''}</span>
             </div>

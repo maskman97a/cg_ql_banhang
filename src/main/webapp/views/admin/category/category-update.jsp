@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
-    <title>Cập nhật sản phẩm</title>
+    <title>Cập nhật Loại sản phẩm</title>
     <style>
         #preview {
             max-width: 100%;
@@ -24,8 +24,7 @@
 </head>
 <body>
 <div class="container">
-    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/category/update"
-          enctype="multipart/form-data">
+    <form class="form form-control p-3" method="post" action="${pageContext.request.contextPath}/admin/category/update">
         <input type="text" class="form-control" name="id"
                value="${category.id}"
                hidden/>

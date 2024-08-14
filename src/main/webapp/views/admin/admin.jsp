@@ -16,13 +16,15 @@
     flex-direction: column;
     justify-content: space-between;">
 <main>
-    <div class="container-fluid pt-3">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-2 bg-light">
+            <div class="col-2">
                 <div class="card card-body">
                     <div class="col-12">
-                        <button class="btn" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#category-list" aria-expanded="false"
+                        <button class="btn" type="button"
+                                onclick="toggleMenu('category-list')"
+                        <%--                                data-bs-target="#category-list" data-bs-toggle="collapse"--%>
+                                aria-expanded="false"
                                 aria-controls="category-list">
                             Danh mục
                         </button>
@@ -32,19 +34,20 @@
                             <div class="row">
                                 <div class="col-12">
                                     <button class="btn" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#div-product-manager-list" aria-expanded="false"
+                                    <%--                                            data-bs-toggle="collapse" data-bs-target="#div-product-manager-list"--%>
+                                            onclick="toggleMenu('div-product-manager-list')"
+                                            aria-expanded="false"
                                             aria-controls="div-product-manager-list">
                                         Sản phẩm
                                     </button>
                                 </div>
                                 <div id="div-product-manager-list" class="collapse">
                                     <div class="card card-body">
-                                        <div class="row">
+                                        <div class="col-12">
                                             <a href="${pageContext.request.contextPath}/admin/category" type="button"
                                                class="btn">Quản lý loại sản phẩm</a>
                                         </div>
-                                        <div class="row text-left">
+                                        <div class="col-12">
                                             <a href="${pageContext.request.contextPath}/admin/product" type="button"
                                                class="btn">Quản lý sản phẩm</a>
                                         </div>
@@ -54,8 +57,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <button class="btn" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#div-order-manager-list" aria-expanded="false"
+                                    <%--                                            data-bs-toggle="collapse" data-bs-target="#div-order-manager-list"--%>
+                                            onclick="toggleMenu('div-order-manager-list')"
+                                            aria-expanded="false"
                                             aria-controls="div-order-manager-list">
                                         Đơn hàng
                                     </button>
@@ -70,13 +74,18 @@
                                 </div>
 
                             </div>
+                            <script>
+                                function toggleMenu(id) {
+                                    var submenu = document.getElementById(id);
+                                    // submenu.style.display = submenu.style.display === "none" ? "block" : "none";
+                                    submenu.style.display = ( submenu.style.display === "none" || !submenu.style.display ) ? "block" : "none";
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
-
-
             </div>
-            <div class="col-8">
+            <div class="col-8 pt-3" style="background-color: #f0f2f5; min-height: calc(100vh - 150px)">
                 <div class="col-12">
                     <c:forEach var="urlLevel" items="${urlLevelList}">
                         <c:if test="${urlLevel.level > 1}"> > </c:if>
@@ -98,8 +107,7 @@
                     </div
                 </div>
             </div>
-            <div class=" col-2
-                        ">
+            <div class="col-2">
 
             </div>
         </div>

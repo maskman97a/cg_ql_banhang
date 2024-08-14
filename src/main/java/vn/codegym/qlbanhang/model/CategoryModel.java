@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CategoryModel extends BaseModel {
     public CategoryModel() {
-        super(Category.getTableName());
+        super(Category.class);
     }
 
 

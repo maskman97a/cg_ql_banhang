@@ -39,6 +39,9 @@ public class ProductController extends HomeController {
             case "/add-to-cart":
                 productService.addToCart(req, resp);
                 break;
+            case "/get-cart":
+                productService.getCart(req, resp);
+                break;
         }
     }
 

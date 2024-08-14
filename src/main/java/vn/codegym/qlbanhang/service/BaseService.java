@@ -1,5 +1,6 @@
 package vn.codegym.qlbanhang.service;
 
+import com.google.gson.Gson;
 import org.modelmapper.ModelMapper;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
@@ -22,10 +23,12 @@ public class BaseService {
     protected final Logger log = Logger.getLogger("System Log");
     protected final BaseModel baseModel;
     protected final ModelMapper modelMapper;
+    protected final Gson gson;
 
     public BaseService(BaseModel baseModel) {
         this.baseModel = baseModel;
         this.modelMapper = new ModelMapper();
+        this.gson = new Gson();
     }
 
     public void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) throws ServletException, IOException {

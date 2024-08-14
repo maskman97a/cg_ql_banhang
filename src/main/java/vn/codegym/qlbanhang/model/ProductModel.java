@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ProductModel extends BaseModel {
     public ProductModel() {
-        super(Product.getTableName());
+        super(Product.class);
     }
 
     public Product findProductById(int id) throws SQLException {

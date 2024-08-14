@@ -24,11 +24,4 @@ public class CartProductDto {
         this.product = product;
         this.quantity = quantity;
     }
-
-    public int getAmount() {
-        if (!DataUtil.isNullObject(product)) {
-            return product.getPrice().intValue() * quantity;
-        }
-        return 0;
-    }
 }

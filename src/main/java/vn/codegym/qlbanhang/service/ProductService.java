@@ -172,8 +172,10 @@ public class ProductService extends HomeService {
             if (cartProductDtoList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
                 CartProductDto cartProductDto = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
                 cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+                cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice().intValue());
             } else {
                 CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);
+                newCartProductDto.setAmount(productDto.getPrice().intValue());
                 cartProductDtoList.add(newCartProductDto);
             }
             cartProductJson = gson.toJson(new Cart(cartProductDtoList));

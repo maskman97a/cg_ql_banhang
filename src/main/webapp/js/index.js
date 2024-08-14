@@ -32,41 +32,52 @@ function formatAllNumbers() {
     })
 })()
 
-function addToCart(productId) {
+const BaseResponse = {
+    errorCode: 0,
+    errorMessage: '',
+    additionalData: {
+        cartCount: 0,
+        cartProductList: []
+    }
+}
+
+async function addToCart(productId) {
     let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
-    let data = callApi(fetchUrl, "GET", null);
+    let data = await callApi(fetchUrl, "GET")
     if (data.errorCode === 0) {
         alert("Thêm hàng vào giỏ thành công!");
         document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
     } else {
         alert("Thêm vào giỏ hàng thất bại");
     }
-
 }
 
 function callApi(apiUrl, method, body) {
     return fetch(apiUrl, {
         method: method, body: body
     })
-        .then(response => response.json)
-        .then(data => data)
-        .catch(error => error);
+        .then(response => response.json())
+        .then(data => {
+            return data
+        })
+        .catch(error => console.log(error));
 }
 
-function openCart() {
+async function openCart() {
     document.getElementById("btn-open-cart").click();
 
     let returnHtml = "";
-    let data = callApiToGetCart()
+    let fetchUrl = contextPath + '/product/get-cart';
+    let data = await callApi(fetchUrl, "GET")
     if (data.errorCode === 0) {
-        let listProductInCart = data.additionalData.cartProductList
+        let listProductInCart = data.additionalData.productList;
         for (let i = 0; i < listProductInCart.length; i++) {
             returnHtml += `<tr>`
-            returnHtml += `<td>${listProductInCart[i].index}</td>`
-            returnHtml += `<td>${listProductInCart[i].product.productName}</td>`
-            returnHtml += `<td>${listProductInCart[i].quantity}</td>`
-            returnHtml += `<td>${listProductInCart[i].product.price}</td>`
-            returnHtml += `<td>${listProductInCart[i].amount}</td>`
+            returnHtml += `<td>` + listProductInCart[i].index + `</td>`
+            returnHtml += `<td>` + listProductInCart[i].product.productName + `</td>`
+            returnHtml += `<td>` + formatNumber(listProductInCart[i].quantity) + `</td>`
+            returnHtml += `<td>` + formatNumber(listProductInCart[i].product.price) + `</td>`
+            returnHtml += `<td>` + formatNumber(listProductInCart[i].amount) + `</td>`
             returnHtml += "</tr>"
         }
         document.getElementById("tbody-table-cart").innerHTML = returnHtml;
@@ -75,10 +86,20 @@ function openCart() {
     }
 }
 
-function callApiToGetCart() {
-    let fetchUrl = contextPath + '/product/get-cart';
-    return callApi(fetchUrl, "GET")
-}
+function encodeHTML(str) {
+    var aStr = str.split(''),
+        i = aStr.length,
+        aRet = [];
 
+    while (--i) {
+        var iC = aStr[i].charCodeAt();
+        if (iC < 65 || iC > 127 || (iC > 90 && iC < 97)) {
+            aRet.push('&#' + iC + ';');
+        } else {
+            aRet.push(aStr[i]);
+        }
+    }
+    return aRet.reverse().join('');
+}
 
 

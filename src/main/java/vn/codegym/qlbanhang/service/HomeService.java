@@ -47,7 +47,11 @@ public class HomeService extends BaseService {
             productList = new ArrayList<ProductDto>();
         }
         req.setAttribute("cartCount", ((List) productList).size());
-        req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
+        if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")){
+            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
+        }else {
+            req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
+        }
     }
 
 

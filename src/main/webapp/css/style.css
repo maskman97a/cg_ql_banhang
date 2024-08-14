@@ -52,3 +52,10 @@
 .div-lookup-order :hover {
     zoom: 130%;
 }
+
+.disabled-link {
+    pointer-events: none;
+    color: grey; /* Màu xám để thể hiện rằng liên kết này bị vô hiệu hóa */
+    cursor: not-allowed; /* Con trỏ sẽ thay đổi để biểu thị không thể nhấn */
+    text-decoration: none; /* Loại bỏ gạch chân nếu muốn */
+}

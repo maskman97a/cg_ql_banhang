@@ -4,6 +4,7 @@ package vn.codegym.qlbanhang.controller;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.UrlLevelDto;
 import vn.codegym.qlbanhang.service.AdminService;
+import vn.codegym.qlbanhang.service.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -75,11 +76,17 @@ public class AdminController extends BaseController {
             case "/transaction/search":
                 adminService.renderSearchOrder(req, resp);
                 break;
-            case "/transaction/update":
-                adminService.renderSearchOrder(req, resp);
+            case "/transaction/detail":
+                adminService.renderDetailOrderForm(req, resp);
+                break;
+            case "/transaction/confirm":
+                adminService.confirmOrder(req, resp, "confirm");
                 break;
             case "/transaction/delete":
-                adminService.renderSearchOrder(req, resp);
+                adminService.confirmOrder(req, resp, "cancel");
+                break;
+            case "/transaction/complete":
+                adminService.confirmOrder(req, resp, "complete");
                 break;
 
 

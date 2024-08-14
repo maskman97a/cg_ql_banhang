@@ -100,8 +100,9 @@
                             <label for="inp-quantity">Số lượng</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <input id="inp-quantity" type="number" oninput="limitLength(this)" min="0"
-                                   class="form-control"
+                            <input id="inp-quantity" type="number" oninput="limitLength(this)" class="form-control" min="0"
+                                   value="0" onchange="formatNumber(this)"
+                                   onkeypress="return isPositiveInteger(event)"
                                    name="quantity"/>
                         </div>
                         <div class="col-3 mb-3">
@@ -109,13 +110,15 @@
                         </div>
                         <div class="col-9 mb-3">
                             <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control" min="0"
+                                   value="0" onchange="formatNumber(this)"
+                                   onkeypress="return isPositiveInteger(event)"
                                    name="price"/>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-description">Mô tả</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <textarea id="inp-description" class="form-control" name="description"></textarea>
+                            <textarea id="inp-description" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
                         </div>
 
                         <script>
@@ -123,6 +126,23 @@
                                 if (input.value.length > 15) {
                                     input.value = input.value.slice(0, 15);
                                 }
+                            }
+                            function isPositiveInteger(event) {
+                                const charCode = (event.which) ? event.which : event.keyCode;
+                                // Allow only numbers (0-9)
+                                if (charCode < 48 || charCode > 57) {
+                                    return false;
+                                }
+                                return true;
+                            }
+                            function formatNumber(input) {
+                                // Remove any non-digit characters
+                                let value = input.value.replace(/\D/g, '');
+
+                                // Format the number with dots as thousands separators
+                                value = new Intl.NumberFormat('de-DE').format(value);
+
+                                input.value = value;
                             }
                         </script>
                     </div>

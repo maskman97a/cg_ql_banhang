@@ -5,8 +5,10 @@ import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.model.CategoryModel;
+import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 import vn.codegym.qlbanhang.utils.SftpUtils;
@@ -24,6 +26,7 @@ public class AdminService extends BaseService {
     private final CategoryModel categoryModel;
     private final CategoryService categoryService;
     private final OrderService orderService;
+    private final OrderModel orderModel;
 
     public AdminService() {
         super(null);
@@ -31,6 +34,7 @@ public class AdminService extends BaseService {
         this.categoryModel = new CategoryModel();
         this.categoryService = new CategoryService();
         this.orderService = new OrderService();
+        this.orderModel = new OrderModel();
     }
 
 
@@ -281,9 +285,53 @@ public class AdminService extends BaseService {
 
     public void renderSearchOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            req.setAttribute("renderOrderAdmin", false);
             orderService.renderSearchOrderAdmin(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
+        }
+    }
+
+
+
+    public void renderDetailOrderForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+
+            req.setAttribute("renderOrder", true);
+            req.setAttribute("renderOrderAdmin", true);
+            orderService.detailOrderForAdmin(req, resp);
+            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp, ex.getMessage());
+        }
+    }
+
+    public void confirmOrder(HttpServletRequest req, HttpServletResponse resp,String action) throws ServletException, IOException {
+        try {
+
+            req.setAttribute("renderOrder", true);
+            Integer orderId = Integer.parseInt(req.getParameter("id"));
+            Order order = (Order) orderModel.findById(orderId);
+            switch (action) {
+                case "confirm":
+                    order.setStatus(Const.OrderStatus.ACCEPTED);
+                    break;
+                case "complete":
+                    order.setStatus(Const.OrderStatus.COMPLETED);
+                    break;
+                case "cancel":
+                    order.setStatus(Const.OrderStatus.CANCELED);
+                    break;
+            }
+            order.setUpdatedBy("admin");
+            int save = orderModel.updateOrder(true, order);
+            if (save == 1) {
+                resp.sendRedirect("/admin/transaction");
+            } else {
+                renderErrorPage(req, resp, "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
+            }
+        } catch (Exception ex) {
+            renderErrorPage(req, resp, ex.getMessage());
         }
     }
 }

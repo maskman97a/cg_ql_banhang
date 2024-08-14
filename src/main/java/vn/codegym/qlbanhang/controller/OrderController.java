@@ -52,7 +52,10 @@ public class OrderController extends HttpServlet {
         }
         switch (request.getPathInfo()) {
             case "/create":
-                orderService.executeCreateOrder(request, response);
+                orderService.executeCreateOrderSingle(request, response);
+                return;
+            case "/create-order-batch":
+                orderService.executeCreateOrderBatch(request, response);
                 return;
             case "/cancel":
                 orderService.executeCancelOrder(request, response);

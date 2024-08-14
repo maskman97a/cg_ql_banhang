@@ -36,31 +36,32 @@
             <div class="col-12 card card-body row">
                 <span class="row">Tên khách hàng: ${customerInfo.name}</span>
                 <span class="row">Số điện thoại: ${customerInfo.phone}</span>
-                <span class="row">Địa chỉ Nhận hàng: ${orderInfo.address}</span>
+                <span class="row">Email: ${customerInfo.email}</span>
+                <span class="row">Địa chỉ khách hàng (Đăng ký lần đặt hàng đầu tiên): ${customerInfo.address}</span>
             </div>
         </div>
 
         <c:forEach var="orderInfo" items="${orderList}">
-            <div class="card card-body row">
+            <div class="card card-body">
                 <div class="col-md-12 mb-3">
                     <h6>Thông tin đơn hàng ${orderInfo.code}</h6>
-                    <div class="col-12 card card-body row">
-                        <span class="row">Mã đơn hàng: ${orderInfo.code}</span>
-                        <span class="row">Ngày đặt hàng: ${orderInfo.orderDateStr}</span>
+                    <div class="col-12 card card-body">
+                        <span class="col-12">Mã đơn hàng: ${orderInfo.code}</span>
+                        <span class="col-12">Ngày đặt hàng: ${orderInfo.orderDateStr}</span>
                         <span id="span-total-amount-${orderInfo.id}"
-                              class="row float-end">Tổng tiền: ${orderInfo.totalAmount}đ</span>
-                        <span class="row">Trạng thái: ${orderInfo.orderStatusName}</span>
-                        <span class="row">Địa chỉ nhận hàng: ${orderInfo.address}</span>
+                              class="col-12 float-end">Tổng tiền: ${orderInfo.totalAmount}đ</span>
+                        <span class="col-12">Trạng thái: ${orderInfo.orderStatusName}</span>
+                        <span class="col-12">Địa chỉ nhận hàng: ${orderInfo.address}</span>
                     </div>
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <h6>Chi tiết đơn hàng</h6>
-                    <div class="col-12 card card-body row">
+                    <h6>Danh sách sản phẩm</h6>
+                    <div class="col-12 card card-body">
                         <table class="table">
                             <thead style="font-weight: bold">
                             <tr>
-                                <td>Sản phẩm</td>
+                                <td>Tên Sản phẩm</td>
                                 <td>Đơn giá</td>
                                 <td>Số lượng</td>
                                 <td>Thành tiền</td>

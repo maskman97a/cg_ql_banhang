@@ -21,6 +21,9 @@ public class CartResponse {
 
     public CartResponse(List<CartProductDto> cartProductList) {
         this.cartProductList = cartProductList;
+        if (cartProductList != null) {
+            this.cartCount = cartProductList.size();
+        }
     }
 
     public int getCartCount() {

@@ -39,6 +39,9 @@ public class ProductController extends HomeController {
             case "/add-to-cart":
                 productService.addToCart(req, resp);
                 break;
+            case "/remove-from-cart":
+                productService.removeProductFromCart(req, resp);
+                break;
             case "/get-cart":
                 productService.getCart(req, resp);
                 break;
@@ -53,10 +56,6 @@ public class ProductController extends HomeController {
         }
         switch (request.getPathInfo()) {
             case "/search":
-                break;
-            case "/create-note":
-                break;
-            case "/update-note":
                 break;
         }
     }

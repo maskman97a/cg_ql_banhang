@@ -65,41 +65,19 @@ function callApi(apiUrl, method, body) {
 
 async function openCart() {
     document.getElementById("btn-open-cart").click();
+    await callApiAndDrawCart();
+}
 
-    let returnHtml = "";
+async function callApiAndDrawCart() {
     let fetchUrl = contextPath + '/product/get-cart';
     let data = await callApi(fetchUrl, "GET")
     if (data.errorCode === 0) {
+        document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
         let listProductInCart = data.additionalData.productList;
-        for (let i = 0; i < listProductInCart.length; i++) {
-            returnHtml += `<tr>`
-            returnHtml += `<td>` + listProductInCart[i].index + `</td>`
-            returnHtml += `<td>` + listProductInCart[i].product.productName + `</td>`
-            returnHtml += `<td>` + formatNumber(listProductInCart[i].quantity) + `</td>`
-            returnHtml += `<td>` + formatNumber(listProductInCart[i].product.price) + `</td>`
-            returnHtml += `<td>` + formatNumber(listProductInCart[i].amount) + `</td>`
-            returnHtml += "</tr>"
-        }
-        document.getElementById("tbody-table-cart").innerHTML = returnHtml;
+        drawProductList(listProductInCart);
     } else {
         alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
     }
-}
-
-function encodeHTML(str) {
-    var aStr = str.split(''),
-        i = aStr.length,
-        aRet = [];
-
-    while (--i) {
-        var iC = aStr[i].charCodeAt();
-        if (iC < 65 || iC > 127 || (iC > 90 && iC < 97)) {
-            aRet.push('&#' + iC + ';');
-        } else {
-            aRet.push(aStr[i]);
-        }
-    }
-    return aRet.reverse().join('');
 }
 
 

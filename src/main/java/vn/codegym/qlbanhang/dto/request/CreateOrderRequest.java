@@ -5,6 +5,7 @@ import lombok.Setter;
 import vn.codegym.qlbanhang.dto.CustomerDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,4 +13,8 @@ import java.util.List;
 public class CreateOrderRequest {
     private CustomerDto customer;
     private List<ProductDto> productList;
+
+    public CreateOrderRequest() {
+        this.productList = new ArrayList<>();
+    }
 }

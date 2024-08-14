@@ -50,7 +50,7 @@
                         </div>
                         <div class="col-8">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
-                                   value="${keyword}">
+                                   value="${keyword}" name="keyword">
                         </div>
                         <div class="col-2">
                             <button class="btn btn-outline-success" type="submit">Search</button>

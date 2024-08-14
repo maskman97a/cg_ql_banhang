@@ -1,7 +1,9 @@
 package vn.codegym.qlbanhang.service;
 
 
-import vn.codegym.qlbanhang.dto.ProductDto;
+import com.google.gson.Gson;
+import vn.codegym.qlbanhang.dto.Cart;
+import vn.codegym.qlbanhang.dto.CartProductDto;
 import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -29,6 +31,10 @@ public class HomeService extends BaseService {
         return super.baseModel;
     }
 
+    protected Gson getGson() {
+        return super.gson;
+    }
+
 
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -42,11 +48,16 @@ public class HomeService extends BaseService {
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
 
-        Object productList = session.getAttribute("cartProductList");
-        if (DataUtil.isNullObject(productList)) {
-            productList = new ArrayList<ProductDto>();
+        Object cartProductJson = session.getAttribute("cartProductJson");
+        Cart cart;
+        if (DataUtil.isNullObject(cartProductJson)) {
+            cart = new Cart(new ArrayList<>());
+        } else {
+            cart = gson.fromJson((String) cartProductJson, Cart.class);
         }
-        req.setAttribute("cartCount", ((List) productList).size());
+        List<CartProductDto> cartProductDtoList = cart.getCartProductList();
+
+        req.setAttribute("cartCount", cartProductDtoList.size());
         req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
     }
 

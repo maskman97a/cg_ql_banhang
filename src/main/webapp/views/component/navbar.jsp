@@ -71,9 +71,7 @@
 </nav>
 <c:import url="../product/product-cart-modal.jsp"/>
 <script>
-    function openCart() {
-        document.getElementById("btn-open-cart").click();
-    }
+
 </script>
 </body>
 </html>

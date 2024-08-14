@@ -16,6 +16,7 @@ import vn.codegym.qlbanhang.utils.DataUtil;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -37,16 +38,60 @@ public class OrderService extends HomeService {
         this.orderDetailModel = new OrderDetailModel();
     }
 
-    public void executeCreateOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            CreateOrderRequest createOrderRequest = new CreateOrderRequest();
-            String customerName = req.getParameter("customer-name");
-            String customerPhoneNumber = req.getParameter("customer-phone");
-            String customerEmail = req.getParameter("customer-email");
-            String customerAddress = req.getParameter("customer-address");
-            CustomerDto customerDto = new CustomerDto(customerName, customerPhoneNumber, customerEmail, customerAddress);
-            createOrderRequest.setCustomer(customerDto);
+            BaseResponse<Order> baseResponse = createOrder(prepareCreateOrderRequest(req, false));
+            if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
+                Order order = baseResponse.getAdditionalData();
+                resp.sendRedirect("/order/success?orderId=" + order.getId());
+            } else {
+                resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
+            }
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
 
+    public void executeCreateOrderBatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            BaseResponse<Order> baseResponse = createOrder(prepareCreateOrderRequest(req, true));
+            if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
+                HttpSession httpSession = req.getSession();
+                httpSession.setAttribute("cartProductJson", "");
+                Order order = baseResponse.getAdditionalData();
+                resp.sendRedirect("/order/success?orderId=" + order.getId());
+            } else {
+                resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
+            }
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
+    }
+
+    public CreateOrderRequest prepareCreateOrderRequest(HttpServletRequest req, boolean isBatch) {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        String customerName = req.getParameter("customer-name");
+        String customerPhoneNumber = req.getParameter("customer-phone");
+        String customerEmail = req.getParameter("customer-email");
+        String customerAddress = req.getParameter("customer-address");
+        CustomerDto customerDto = new CustomerDto(customerName, customerPhoneNumber, customerEmail, customerAddress);
+        createOrderRequest.setCustomer(customerDto);
+        if (isBatch) {
+            String rowCountStr = req.getParameter("rowCount");
+            if (rowCountStr != null && !rowCountStr.isEmpty()) {
+                int rowCount = Integer.parseInt(rowCountStr);
+                for (int i = 1; i <= rowCount; i++) {
+                    String productIdStr = req.getParameter("inp-product-id-" + i);
+                    String quantityStr = req.getParameter("inp-quantity-" + i);
+                    if (productIdStr != null && !productIdStr.isEmpty() && quantityStr != null && !quantityStr.isEmpty()) {
+                        ProductDto productDto = new ProductDto();
+                        productDto.setId(Integer.parseInt(productIdStr));
+                        productDto.setQuantity(Integer.parseInt(quantityStr));
+                        createOrderRequest.getProductList().add(productDto);
+                    }
+                }
+            }
+        } else {
             List<ProductDto> productList = new ArrayList<>();
             ProductDto productDto = new ProductDto();
             String productIdStr = req.getParameter("product-id");
@@ -59,60 +104,12 @@ public class OrderService extends HomeService {
             }
             productList.add(productDto);
             createOrderRequest.setProductList(productList);
-            BaseResponse<Order> baseResponse = createOrder(createOrderRequest);
-            if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
-                Order order = baseResponse.getAdditionalData();
-                resp.sendRedirect("/order/success?orderId=" + order.getId());
-            } else {
-                resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
-            }
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
         }
+        return createOrderRequest;
     }
 
-    public void executeCancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String responseMessage = "";
-        try {
-            String orderIdStr = req.getParameter("orderId");
-            if (!DataUtil.isNullOrEmpty(orderIdStr)) {
-                int orderId = Integer.parseInt(orderIdStr);
-                Order order = (Order) orderModel.findById(orderId);
-                if (order != null) {
-                    String otp = req.getParameter("otp");
-                    if (DataUtil.isNullOrEmpty(otp) || !otp.equals("000000")) {
-                        throw new Exception("Otp không hợp lệ");
-                    }
-                    if (order.getStatus() != OrderStatus.NEW.getValue()) {
-                        throw new Exception("Đơn hàng ở trạng thái không hợp lệ");
-                    }
-                    order.setStatus(OrderStatus.CANCELED.getValue());
-                    order.setUpdatedBy("CUSTOMER");
-                    order.setUpdatedDate(LocalDateTime.now());
-                    int updateRecord = orderModel.save(order);
-                    if (updateRecord == 1) {
-                        req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
-                    } else {
-                        responseMessage = "Hủy đơn hàng " + order.getCode() + " thất bại!";
-                    }
-                } else {
-                    throw new Exception("Mã đơn hàng không tồn tại");
-                }
-            } else {
-                throw new Exception("Mã đơn hàng không tồn tại");
-            }
-
-
-        } catch (Exception ex) {
-            responseMessage = "Hủy đơn hàng thất bại. " + ex.getMessage();
-        }
-        req.setAttribute("errorResponse", responseMessage);
-        renderLookupOrderPage(req, resp);
-    }
-
-
-    public BaseResponse createOrder(CreateOrderRequest createOrderRequest) {
-        BaseResponse baseResponse = new BaseResponse();
+    public BaseResponse<Order> createOrder(CreateOrderRequest createOrderRequest) {
+        BaseResponse<Order> baseResponse = new BaseResponse();
         try {
             CustomerDto customerDto = createOrderRequest.getCustomer();
             Customer customer = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
@@ -154,6 +151,45 @@ public class OrderService extends HomeService {
             baseResponse.setError(ErrorType.INTERNAL_SERVER_ERROR);
         }
         return baseResponse;
+    }
+
+    public void executeCancelOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String responseMessage = "";
+        try {
+            String orderIdStr = req.getParameter("orderId");
+            if (!DataUtil.isNullOrEmpty(orderIdStr)) {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = (Order) orderModel.findById(orderId);
+                if (order != null) {
+                    String otp = req.getParameter("otp");
+                    if (DataUtil.isNullOrEmpty(otp) || !otp.equals("000000")) {
+                        throw new Exception("Otp không hợp lệ");
+                    }
+                    if (order.getStatus() != OrderStatus.NEW.getValue()) {
+                        throw new Exception("Đơn hàng ở trạng thái không hợp lệ");
+                    }
+                    order.setStatus(OrderStatus.CANCELED.getValue());
+                    order.setUpdatedBy("CUSTOMER");
+                    order.setUpdatedDate(LocalDateTime.now());
+                    int updateRecord = orderModel.save(order);
+                    if (updateRecord == 1) {
+                        req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
+                    } else {
+                        responseMessage = "Hủy đơn hàng " + order.getCode() + " thất bại!";
+                    }
+                } else {
+                    throw new Exception("Mã đơn hàng không tồn tại");
+                }
+            } else {
+                throw new Exception("Mã đơn hàng không tồn tại");
+            }
+
+
+        } catch (Exception ex) {
+            responseMessage = "Hủy đơn hàng thất bại. " + ex.getMessage();
+        }
+        req.setAttribute("errorResponse", responseMessage);
+        renderLookupOrderPage(req, resp);
     }
 
     public void renderOrderSuccessPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public class ProductService extends HomeService {
@@ -156,6 +157,31 @@ public class ProductService extends HomeService {
         resp.getWriter().close();
     }
 
+    public void removeProductFromCart(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String productIdStr = req.getParameter("productId");
+            if (productIdStr != null && !productIdStr.isEmpty()) {
+                Integer productId = Integer.parseInt(productIdStr);
+                HttpSession session = req.getSession();
+                List<CartProductDto> cartProductDtoList;
+                Object cartProductJson = session.getAttribute("cartProductJson");
+                if (!DataUtil.isNullObject(cartProductJson)) {
+                    cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
+                    Optional<CartProductDto> optional = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(productId)).findFirst();
+                    if (optional.isPresent()) {
+                        cartProductDtoList.remove(optional.get());
+                        cartProductJson = gson.toJson(new Cart(cartProductDtoList));
+                        session.setAttribute("cartProductJson", cartProductJson);
+                    }
+                }
+                getCart(req, resp);
+
+            }
+        } catch (Exception ex) {
+            log.log(Level.WARNING, ex.getMessage());
+        }
+    }
+
     public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id) {
         try {
             BaseResponse<CartResponse> baseResponse = new BaseResponse();
@@ -179,7 +205,6 @@ public class ProductService extends HomeService {
                 cartProductDtoList.add(newCartProductDto);
             }
             cartProductJson = gson.toJson(new Cart(cartProductDtoList));
-            log.info((String) cartProductJson);
             session.setAttribute("cartProductJson", cartProductJson);
             req.setAttribute("cartProductList", cartProductDtoList);
             resp.setContentType("application/json");

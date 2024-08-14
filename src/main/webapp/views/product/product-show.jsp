@@ -36,14 +36,24 @@
         }
     </script>
     <div class="col-12 row">
+        <%
+            int i = 1;
+        %>
         <c:forEach var="product" items="${lstProduct}">
-            <div class="col-3 p-3">
-                <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <%
+                if (i == 1) {
+            %>
+            <div class="row">
+                <%
+                    }
+                %>
+                <div class="col-3 p-3 bg-body-tertiary">
+                    <div class="shadow p-3 mb-5 rounded" style="height:85%">
                     <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}" class="row">
                         <div class="col-12 ratio ratio-1x1">
                             <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
                                  id="product-image-${product.id}"
-                                 class="img-fluid col-12"
+                                 class="img-fluid col-12 rounded"
                                  alt="${product.name}" width="100%" height="100%" style="z-index: 0">
                         </div>
                     </a>
@@ -63,6 +73,15 @@
                     </div>
                 </div>
             </div>
+                <%
+                    if (i == 4) {
+                        i = 0;
+                %>
+            </div>
+            <%
+                }
+                i++;
+            %>
         </c:forEach>
     </div>
     <div class="text-center col-12">

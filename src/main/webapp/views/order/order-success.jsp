@@ -11,8 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Tạo đơn hàng thành công!</h1>
-<h4>Mã đơn hàng: ${orderCode}</h4>
-<h2>Để đơn hàng được xử lý nhanh hơn, vui lòng liên hệ hotline: 0328760158</h2>
+<h1 style="color:green">Tạo đơn hàng thành công!</h1>
+<h4>Mã đơn hàng: <span style="color:green">${orderCode}</span></h4>
+<h5>Để đơn hàng được xử lý nhanh hơn, vui lòng liên hệ hotline: 0328760158</h5>
 </body>
 </html>

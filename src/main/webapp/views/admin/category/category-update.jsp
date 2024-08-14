@@ -24,8 +24,7 @@
 </head>
 <body>
 <div class="container">
-    <form class="form form-control p-3" method="post" action="${pageContext.request.contextPath}/admin/category/update"
-          enctype="multipart/form-data">
+    <form class="form form-control p-3" method="post" action="${pageContext.request.contextPath}/admin/category/update">
         <input type="text" class="form-control" name="id"
                value="${category.id}"
                hidden/>

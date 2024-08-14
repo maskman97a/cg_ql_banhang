@@ -1,7 +1,6 @@
 package vn.codegym.qlbanhang.utils;
 
 
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -203,8 +202,6 @@ public class DataUtil {
     }
 
 
-
-
     public static String formatMessage(String content) {
         String contentResult = "";
         if (!isNullObject(content)) {
@@ -214,7 +211,6 @@ public class DataUtil {
         }
         return contentResult;
     }
-
 
 
     public static BigDecimal safeToBigDecimal(Object obj1) {
@@ -333,7 +329,6 @@ public class DataUtil {
     }
 
 
-
     public static boolean isStringNullOrEmpty(Object obj1) {
         return obj1 == null || obj1.toString().trim().equals("");
     }
@@ -390,7 +385,6 @@ public class DataUtil {
         String OTP = String.valueOf(random_int);
         return OTP;
     }
-
 
 
     public static boolean isDoubleNullOrEmpty(Double obj1) {
@@ -485,6 +479,30 @@ public class DataUtil {
             return String.format("%d giây trước", diffInSeconds);
         } else {
             return "vài giây trước";
+        }
+    }
+
+    public static int safeToInt(Object obj1) {
+        return safeToInt(obj1, 0);
+    }
+
+    public static int safeToInt(Object obj1, int defaultValue) {
+        if (obj1 == null) {
+            return defaultValue;
+        }
+        try {
+            String data = obj1.toString();
+            if (data.contains(".")) {
+                data = data.substring(0, data.indexOf("."));
+            }
+
+            if (data.contains(",")) {
+                data = data.substring(0, data.indexOf(","));
+            }
+
+            return Integer.parseInt(data);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
         }
     }
 }

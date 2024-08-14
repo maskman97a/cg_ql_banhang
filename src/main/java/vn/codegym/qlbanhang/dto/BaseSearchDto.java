@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class BaseSearchDto {
     private String keyword;
+    private Integer status;
     private Integer page;
     private Integer size;
     private List<Condition> conditions;

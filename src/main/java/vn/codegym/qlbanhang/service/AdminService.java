@@ -18,6 +18,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @MultipartConfig
@@ -111,8 +112,11 @@ public class AdminService extends BaseService {
             List<ProductDto> lstData = productModel.findProductByKeyword(baseSearchDto, categoryId, null);
             if (lstData != null && !lstData.isEmpty()) {
                 int index = 1;
+                DecimalFormat df = new DecimalFormat("#,###");
                 for (ProductDto productDto : lstData) {
                     productDto.setIndex(index++);
+                    productDto.setStrPrice(df.format(productDto.getPrice()));
+                    productDto.setStrQuantity(df.format(productDto.getQuantity()));
                 }
                 req.setAttribute("lstData", lstData);
             }
@@ -293,7 +297,6 @@ public class AdminService extends BaseService {
     }
 
 
-
     public void renderDetailOrderForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
@@ -306,7 +309,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void confirmOrder(HttpServletRequest req, HttpServletResponse resp,String action) throws ServletException, IOException {
+    public void confirmOrder(HttpServletRequest req, HttpServletResponse resp, String action) throws ServletException, IOException {
         try {
 
             req.setAttribute("renderOrder", true);

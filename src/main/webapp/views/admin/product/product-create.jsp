@@ -110,7 +110,8 @@
                         </div>
                         <div class="col-9 mb-3">
                             <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control" min="0"
-                                   value="0" onchange="formatNumber(this)"
+                                   value="0"
+<%--                                   onchange="formatNumber(this)"--%>
                                    onkeypress="return isPositiveInteger(event)"
                                    name="price"/>
                         </div>

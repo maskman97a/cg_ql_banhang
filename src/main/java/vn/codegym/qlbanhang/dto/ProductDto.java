@@ -19,5 +19,7 @@ public class ProductDto extends BaseDto {
     private Integer unitPrice;
     private Integer categoryId;
     private String categoryName;
+    private String strPrice;
+    private String strQuantity;
 
 }

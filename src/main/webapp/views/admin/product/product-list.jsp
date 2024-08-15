@@ -76,8 +76,8 @@
                                         <td>${product.productCode}</td>
                                         <td>${product.productName}</td>
                                         <td>${product.categoryName}</td>
-                                        <td>${product.price}</td>
-                                        <td>${product.quantity}</td>
+                                        <td style="text-align: right">${product.strPrice}</td>
+                                        <td style="text-align: right">${product.strQuantity}</td>
                                         <td>${product.description}</td>
                                         <td>
                                             <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}">Sửa</a>
@@ -86,9 +86,11 @@
                                                href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}">Xóa</a>
                                         </td>
                                     </tr>
+
                                 </c:forEach>
                                 </tbody>
                             </table>
+
                         </div>
                         <div class="text-center col-12">
                             <nav aria-label="Page navigation example">

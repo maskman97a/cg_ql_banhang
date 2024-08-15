@@ -307,7 +307,7 @@ public class OrderService extends HomeService {
             baseSearchDto.setKeyword(keyword);
             baseSearchDto.setSize(size);
             baseSearchDto.setPage(page);
-            if (req.getParameter("status-order-id") != null)
+            if (req.getParameter("status-order-id") != null && !req.getParameter("status-order-id").isEmpty())
                 baseSearchDto.setStatus(DataUtil.safeToInt(Integer.parseInt(req.getParameter("status-order-id"))));
             List<OrdersDto> lstData = orderModel.findOrderByKeyword(baseSearchDto);
             if (lstData != null && !lstData.isEmpty()) {

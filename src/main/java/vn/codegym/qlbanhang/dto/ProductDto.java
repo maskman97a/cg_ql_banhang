@@ -31,5 +31,7 @@ public class ProductDto extends BaseDto {
     private Integer categoryId;
     @SerializedName("categoryName")
     private String categoryName;
+    private String strPrice;
+    private String strQuantity;
 
 }

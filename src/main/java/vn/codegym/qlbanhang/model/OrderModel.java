@@ -42,7 +42,7 @@ public class OrderModel extends BaseModel {
         try {
             conn = DatabaseConnection.getConnection();
             String sql = this.getSearchSQL(baseSearchDto);
-            sql += " order by id desc ";
+            sql += " order by o.order_date desc ";
             sql += " limit ? offset ?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             int index = 1;

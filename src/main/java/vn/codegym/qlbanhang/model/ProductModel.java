@@ -99,7 +99,7 @@ public class ProductModel extends BaseModel {
         try {
             conn = DatabaseConnection.getConnection();
             String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
-            sql += " order by id desc ";
+            sql += " order by p.id desc ";
             sql += " limit ? offset ?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             int index = 1;

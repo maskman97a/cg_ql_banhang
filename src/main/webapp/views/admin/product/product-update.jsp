@@ -93,7 +93,7 @@
                             <label for="inp-code">Mã sản phẩm</label>
                         </div>
                         <div class="col-9">
-                            <input id="inp-code" type="text" disabled value="${product.productCode}"
+                            <input id="inp-code" type="text" readonly value="${product.productCode}"
                                    class="form-control" name="code"/>
                         </div>
                         <div class="col-3 mb-3">
@@ -102,8 +102,27 @@
                         <div class="col-9">
                             <input id="inp-name" type="text" value="${product.productName}"
                                    class="form-control"
+                                   onkeyup="generateProductCodeUpdate()"
                                    name="name"/>
                         </div>
+                        <script>
+                            function limitLength(input) {
+                                if (input.value.length > 15) {
+                                    input.value = input.value.slice(0, 15);
+                                }
+                            }
+                            function removeDiacritics(str) {
+                                return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                            }
+
+                            function generateProductCodeUpdate() {
+                                const name = document.getElementById('inp-name').value.trim().toUpperCase();
+                                let newProductCode = removeDiacritics(name);
+                                newProductCode = newProductCode.replaceAll(" ", "_");
+                                document.getElementById('inp-code').value = newProductCode;
+                                ${product.productCode} = newProductCode;
+                            }
+                        </script>
                         <div class="col-3 mb-3">
                             <label for="inp-quantity">Số lượng</label>
                         </div>
@@ -127,6 +146,7 @@
                         </div>
                         <div class="col-9">
                                 <textarea id="inp-description" class="form-control"
+                                          maxlength="500"
                                           name="description">${product.description}</textarea>
                         </div>
 

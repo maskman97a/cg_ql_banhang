@@ -53,12 +53,14 @@
                                 </div>
                                 <div id="div-product-manager-list" class="collapse">
                                     <div class="card card-body">
-                                        <div class="col-12">
+                                        <div class="col-12" style="text-align: left;">
                                             <a href="${pageContext.request.contextPath}/admin/category" type="button"
+                                               style="text-align:left"
                                                class="btn">Quản lý loại sản phẩm</a>
                                         </div>
                                         <div class="col-12">
                                             <a href="${pageContext.request.contextPath}/admin/product" type="button"
+                                               style="text-align:left"
                                                class="btn">Quản lý sản phẩm</a>
                                         </div>
                                     </div>
@@ -76,8 +78,9 @@
                                 </div>
                                 <div id="div-order-manager-list" class="collapse">
                                     <div class="card card-body">
-                                        <div class="col-12">
+                                        <div class="col-12" style="text-align: left;">
                                             <a href="${pageContext.request.contextPath}/admin/transaction" type="button"
+                                               style="text-align:left"
                                                class="btn">Quản lý đơn hàng</a>
                                         </div>
                                     </div>

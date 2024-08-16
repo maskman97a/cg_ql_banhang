@@ -20,6 +20,19 @@
     <form class="form form-control p-4" method="post"
           action="${pageContext.request.contextPath}/admin/category/category-create"
           enctype="multipart/form-data">
+        <div class="col-12 mb-3">
+            <span>${response}</span>
+            <% if (request.getAttribute("errorMsg") != null) { %>
+            <div class="alert alert-danger">
+                <%= request.getAttribute("errorMsg") %>
+            </div>
+            <% } %>
+            <% if (request.getAttribute("successMsg") != null) { %>
+            <div class="alert alert-success">
+                <%= request.getAttribute("successMsg") %>
+            </div>
+            <% } %>
+        </div>
         <div class="row">
             <div class=" col-3">
             </div>

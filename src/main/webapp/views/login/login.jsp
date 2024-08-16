@@ -45,12 +45,11 @@
                     <div class="form-group mb-3">
                         <label for="pwd-plain-text">Mật khẩu:</label>
                         <input type="password" class="form-control" id="pwd-plain-text"
-                               placeholder="Tối thiểu 5 ký tự" onkeyup="encryptPassword()"
+                               placeholder="Tối thiểu 5 ký tự" name="password"
                                required>
-                        <input type="text" id="pwd-encrypted" name="password" hidden/>
                     </div>
                     <div class="form-group mb-3">
-                        <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2" onclick="encryptPassword()">
+                        <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2">
                     </div>
                 </div>
             </div>
@@ -71,24 +70,24 @@
         }
     }
 
-    async function encryptPassword() {
-        let passwordPlainText = document.getElementById("pwd-plain-text").value;
-        document.getElementById("pwd-encrypted").value = await sha1(passwordPlainText);
-    }
-
-    async function sha1(message) {
-        // Encode the message as a UTF-8 string and convert it to a byte array
-        const msgBuffer = new TextEncoder().encode(message);
-
-        // Hash the message using SHA-1
-        const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
-
-        // Convert the hash to a hexadecimal string
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        return hashHex;
-    }
+    // async function encryptPassword() {
+    //     let passwordPlainText = document.getElementById("pwd-plain-text").value;
+    //     document.getElementById("pwd-encrypted").value = await sha1(passwordPlainText);
+    // }
+    //
+    // async function sha1(message) {
+    //     // Encode the message as a UTF-8 string and convert it to a byte array
+    //     const msgBuffer = new TextEncoder().encode(message);
+    //
+    //     // Hash the message using SHA-1
+    //     const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+    //
+    //     // Convert the hash to a hexadecimal string
+    //     const hashArray = Array.from(new Uint8Array(hashBuffer));
+    //     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    //
+    //     return hashHex;
+    // }
 </script>
 </body>
 </html>

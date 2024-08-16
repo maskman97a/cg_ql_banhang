@@ -7,8 +7,8 @@ import java.util.List;
 
 public class UserModel {
     public List<UserInfoDto> findAll() {
-        UserInfoDto userInfoDto1 = new UserInfoDto("Quản trị viên", "admin", "d033e22ae348aeb5660fc2140aec35850c4da997");
-        UserInfoDto userInfoDto2 = new UserInfoDto("Nhân viên", "employer", "70cafc7ba74a3fc9057e77379a90af15d6578b69");
+        UserInfoDto userInfoDto1 = new UserInfoDto("Quản trị viên", "admin", "admin");
+        UserInfoDto userInfoDto2 = new UserInfoDto("Nhân viên", "employer", "admin");
         return Arrays.asList(userInfoDto1, userInfoDto2);
     }
 

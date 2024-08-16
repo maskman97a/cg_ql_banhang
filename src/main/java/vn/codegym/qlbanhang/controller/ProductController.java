@@ -37,6 +37,7 @@ public class ProductController extends HomeController {
                 productService.renderProductDetailPage(req, resp);
                 break;
             case "/add-to-cart":
+            case "/update-cart":
                 productService.addToCart(req, resp);
                 break;
             case "/remove-from-cart":

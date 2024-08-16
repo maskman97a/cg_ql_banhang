@@ -61,12 +61,8 @@
 </body>
 <script>
     document.getElementById('form-create-order-batch').addEventListener('submit', function (event) {
-        var tbody = document.getElementById("tbody-table-cart");
+        let rowCount = getQuantity()
 
-        var rowCount = tbody.getElementsByTagName("tr").length;
-
-        console.log(rowCount)
-        // Get the number of rows in the tbody
         document.getElementById("cart-row-count").value = rowCount;
     });
 
@@ -95,10 +91,11 @@
             totalAmount += productAmount;
 
             returnHtml += `<tr>`
-            returnHtml += `<input type="hidden" name="inp-product-id-#index" value="#productId"<input>`
+            returnHtml += `<input type="hidden" name="inp-product-id-#index" value="#productId"/>`
+            returnHtml += `<input type="number" id="inp-product-amount-#index" value="#productAmount" hidden/>`
             returnHtml += `<td>#index</td>`
             returnHtml += `<td>#productName</td>`
-            returnHtml += `<td><input id="inp-quantity-#index" type="number" min="1" onchange="updateAmount(#index , #productPrice )"
+            returnHtml += `<td><input id="inp-quantity-#index" type="number" min="1" onchange="updateQuantity(#index , #productPrice, #productId )"
                         name="inp-quantity-#index" value="#productQuantity"></input></td>`
             returnHtml += `<td>` + formatNumber(productPrice) + `</td>`
             returnHtml += `<td id="col-amount-#index">` + formatNumber(productAmount) + `</td>`
@@ -118,9 +115,10 @@
         } else {
             document.getElementById("tfoot-table-cart").innerHTML =
                 `<tr>
-                        <td colspan='4' class="text-left">Tổng</td>
-                        <td colspan='1' class="text-right" style="color:red">` + formatNumber(totalAmount) + `</td>
-                        </tr>`;
+                      <td colspan='4' class="text-left" >Tổng</td>
+                      <td id="total-amount" colspan='1' class="text-right" style="color:red">` + formatNumber(totalAmount) + `</td>
+                 </tr>`
+                + `<input id="total-quantity" type="number" value="#totalQuantity" hidden/>`.replace("#totalQuantity", listProductInCart.length);
             document.getElementById("cart-empty-message").innerHTML = "";
             document.getElementById("btn-render-create-order").disabled = false;
         }
@@ -134,14 +132,47 @@
             let listProductInCart = data.additionalData.productList;
             document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
             drawProductList(listProductInCart);
+            updateTotalAmount()
         } else {
             alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
         }
     }
 
-    function updateAmount(index, price) {
+    async function updateQuantity(index, price, productId) {
         let quantity = document.getElementById("inp-quantity-" + index).value
-        document.getElementById("col-amount-" + index).innerHTML = formatNumber(quantity * price);
+        let apiUrl = contextPath + "/product/update-cart?productId=" + productId + "&quantity=" + quantity;
+        let data = await callApi(apiUrl, "GET", null);
+        if (data.errorCode === 0) {
+            let listProductInCart = data.additionalData.productList;
+            document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
+            drawProductList(listProductInCart);
+            updateTotalAmount()
+        } else {
+            alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
+        }
+        updateAmount(index, price, quantity)
+    }
+
+    function updateAmount(index, price, quantity) {
+        let newAmount = quantity * price;
+        document.getElementById("col-amount-" + index).innerHTML = formatNumber(newAmount);
+        document.getElementById("inp-product-amount-" + index).value = newAmount;
+        updateTotalAmount();
+    }
+
+    function updateTotalAmount() {
+        let totalAmount = 0;
+        for (let index = 1; index <= getQuantity(); index++) {
+            let productAmount = document.getElementById("inp-product-amount-" + index).value;
+            totalAmount = totalAmount + parseInt(productAmount);
+        }
+        document.getElementById("total-amount").innerHTML = formatNumber(totalAmount);
+    }
+
+    function getQuantity() {
+        var tbody = document.getElementById("tbody-table-cart");
+
+        return tbody.getElementsByTagName("tr").length;
     }
 </script>
 </html>

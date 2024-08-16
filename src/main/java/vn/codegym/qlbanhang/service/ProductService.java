@@ -120,7 +120,7 @@ public class ProductService extends HomeService {
     }
 
     public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String productId = req.getParameter("productId");
+            String productId = req.getParameter("productId");
         String newQuantityStr = req.getParameter("quantity");
         if (!DataUtil.isNullObject(productId)) {
             Integer newQuantity = null;
@@ -141,8 +141,9 @@ public class ProductService extends HomeService {
         CartResponse cartResponse = new CartResponse(cartProductDtoList);
         BaseResponse<CartResponse> response = new BaseResponse<>();
         response.setAdditionalData(cartResponse);
+        resp.setContentType("application/json; charset=UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(gson.toJson(response));
-        resp.setContentType("application/json");
         resp.getWriter().close();
     }
 

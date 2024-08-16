@@ -37,6 +37,8 @@
                     <tbody id="tbody-table-cart">
 
                     </tbody>
+                    <tfoot id="tfoot-table-cart">
+                    </tfoot>
                 </table>
                 <span id="cart-empty-message"></span>
                 <input type="hidden" id="cart-row-count" name="rowCount"/>
@@ -82,24 +84,43 @@
 
     function drawProductList(listProductInCart) {
         let returnHtml = "";
+        let totalAmount = 0;
         for (let i = 0; i < listProductInCart.length; i++) {
+            let index = listProductInCart[i].index;
+            let productId = listProductInCart[i].product.id;
+            let productName = listProductInCart[i].product.productName;
+            let productQuantity = listProductInCart[i].quantity;
+            let productPrice = listProductInCart[i].product.price;
+            let productAmount = listProductInCart[i].amount;
+            totalAmount += productAmount;
+
             returnHtml += `<tr>`
-            returnHtml += `<input type="hidden" name="inp-product-id-` + listProductInCart[i].index +
-                `" value="` + listProductInCart[i].product.id + `"<input>`
-            returnHtml += `<td>` + listProductInCart[i].index + `</td>`
-            returnHtml += `<td>` + listProductInCart[i].product.productName + `</td>`
-            returnHtml += `<td><input type="number" min="1" name="inp-quantity-` + listProductInCart[i].index +
-                `" value="` + listProductInCart[i].quantity + `"<input></td>`
-            returnHtml += `<td>` + formatNumber(listProductInCart[i].product.price) + `</td>`
-            returnHtml += `<td>` + formatNumber(listProductInCart[i].amount) + `</td>`
-            returnHtml += `<td><i class="fa-solid fa-trash" onclick="removeProductFromCart(` + listProductInCart[i].product.id + `)"></i></td>`
+            returnHtml += `<input type="hidden" name="inp-product-id-#index" value="#productId"<input>`
+            returnHtml += `<td>#index</td>`
+            returnHtml += `<td>#productName</td>`
+            returnHtml += `<td><input id="inp-quantity-#index" type="number" min="1" onchange="updateAmount(#index , #productPrice )"
+                        name="inp-quantity-#index" value="#productQuantity"></input></td>`
+            returnHtml += `<td>` + formatNumber(productPrice) + `</td>`
+            returnHtml += `<td id="col-amount-#index">` + formatNumber(productAmount) + `</td>`
+            returnHtml += `<td><i class="fa-solid fa-trash" onclick="removeProductFromCart(#productId)"></i></td>`
             returnHtml += "</tr>"
+            returnHtml = returnHtml.replaceAll("#index", index)
+                .replaceAll("#productId", productId)
+                .replaceAll("#productName", productName)
+                .replaceAll("#productQuantity", productQuantity)
+                .replaceAll("#productPrice", productPrice)
+                .replaceAll("#productAmount", productAmount);
         }
         if (listProductInCart.length === 0) {
             document.getElementById("cart-empty-message").innerHTML = "Không có sản phẩm nào được chọn";
             document.getElementById("btn-render-create-order").disabled = true;
             document.getElementById("cart-order-customer-info-input").hidden = true;
         } else {
+            document.getElementById("tfoot-table-cart").innerHTML =
+                `<tr>
+                        <td colspan='4' class="text-left">Tổng</td>
+                        <td colspan='1' class="text-right" style="color:red">` + formatNumber(totalAmount) + `</td>
+                        </tr>`;
             document.getElementById("cart-empty-message").innerHTML = "";
             document.getElementById("btn-render-create-order").disabled = false;
         }
@@ -111,10 +132,16 @@
         let data = await callApi(apiUrl, "GET", null);
         if (data.errorCode === 0) {
             let listProductInCart = data.additionalData.productList;
+            document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
             drawProductList(listProductInCart);
         } else {
             alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
         }
+    }
+
+    function updateAmount(index, price) {
+        let quantity = document.getElementById("inp-quantity-" + index).value
+        document.getElementById("col-amount-" + index).innerHTML = formatNumber(quantity * price);
     }
 </script>
 </html>

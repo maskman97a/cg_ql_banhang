@@ -47,6 +47,7 @@ public class ProductService extends HomeService {
 
     public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            getAllCategory(req);
             Integer id = Integer.parseInt(req.getParameter("id"));
             Product product = (Product) productModel.findById(id);
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
@@ -106,23 +107,6 @@ public class ProductService extends HomeService {
 
         } catch (Exception ex) {
             renderErrorPage(req, resp);
-        }
-    }
-
-    public void getAllCategory(HttpServletRequest req) {
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        try {
-            List<BaseEntity> baseEntities = categoryModel.findAll();
-            for (BaseEntity baseEntity : baseEntities) {
-                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
-            }
-            req.setAttribute("lstCategory", categoryDtoList);
-            String selectedCategoryId = req.getParameter("categoryId");
-            if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
-                req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -216,6 +200,23 @@ public class ProductService extends HomeService {
             resp.getWriter().close();
         } catch (Exception ex) {
             log.log(Level.WARNING, ex.getMessage());
+        }
+    }
+
+    public void getAllCategory(HttpServletRequest req) {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        try {
+            List<BaseEntity> baseEntities = categoryModel.findAll();
+            for (BaseEntity baseEntity : baseEntities) {
+                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
+            }
+            req.setAttribute("lstCategory", categoryDtoList);
+            String selectedCategoryId = req.getParameter("categoryId");
+            if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
+                req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

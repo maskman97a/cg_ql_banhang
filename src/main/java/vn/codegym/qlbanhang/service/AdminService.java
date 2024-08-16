@@ -4,6 +4,7 @@ import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.entity.Category;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.Product;
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -41,6 +43,12 @@ public class AdminService extends BaseService {
 
     public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            HttpSession httpSession = req.getSession();
+            if (httpSession.getAttribute("token") != null) {
+                String userInfoJson = (String) httpSession.getAttribute("userInfo");
+                UserInfoDto userInfo = gson.fromJson(userInfoJson, UserInfoDto.class);
+                req.setAttribute("userInfo", userInfo);
+            }
             req.setAttribute("renderProduct", true);
             req.setAttribute("renderCategory", false);
             req.setAttribute("renderOrder", false);
@@ -311,7 +319,6 @@ public class AdminService extends BaseService {
 
     public void confirmOrder(HttpServletRequest req, HttpServletResponse resp, String action) throws ServletException, IOException {
         try {
-
             req.setAttribute("renderOrder", true);
             Integer orderId = Integer.parseInt(req.getParameter("id"));
             Order order = (Order) orderModel.findById(orderId);
@@ -327,11 +334,16 @@ public class AdminService extends BaseService {
                     break;
             }
             order.setUpdatedBy("admin");
-            int save = orderModel.updateOrder(true, order);
+            int save = orderModel.updateOrder(order, action);
             if (save == 1) {
+                req.setAttribute("successMsg", "Cập nhật đơn hàng thành công");
                 resp.sendRedirect("/admin/transaction");
             } else {
-                renderErrorPage(req, resp, "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
+                req.setAttribute("errorMsg", "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
+//                resp.sendRedirect("/admin/transaction");
+                renderSearchOrder(req, resp);
+//                req.getRequestDispatcher(req.getContextPath() + "/views/admin/transaction/transaction-list.jsp").forward(req, resp);
+//                renderErrorPage(req, resp);
             }
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());

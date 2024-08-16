@@ -17,6 +17,16 @@
     justify-content: space-between;">
 <main>
     <div class="container-fluid">
+        <div class="row  nav-footer p-3">
+            <div class="col-2">
+
+            </div>
+            <div class="col-10">
+                <span>Xin chào: <span style="color: green">${userInfo.fullName}</span>  - <a class=""
+                                                                                             href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
+
+            </div>
+        </div>
         <div class="row">
             <div class="col-2">
                 <div class="card card-body">
@@ -85,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-8 pt-3" style="background-color: #f0f2f5; min-height: calc(100vh - 150px)">
+            <div class="col-10 pt-3" style="background-color: #f0f2f5; min-height: calc(100vh - 150px)">
                 <div class="col-12">
                     <c:forEach var="urlLevel" items="${urlLevelList}">
                         <c:if test="${urlLevel.level > 1}"> > </c:if>

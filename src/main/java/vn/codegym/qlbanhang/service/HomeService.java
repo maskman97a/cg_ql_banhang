@@ -4,6 +4,8 @@ package vn.codegym.qlbanhang.service;
 import com.google.gson.Gson;
 import vn.codegym.qlbanhang.dto.Cart;
 import vn.codegym.qlbanhang.dto.CartProductDto;
+import vn.codegym.qlbanhang.dto.CategoryDto;
+import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -47,7 +49,6 @@ public class HomeService extends BaseService {
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-
         Object cartProductJson = session.getAttribute("cartProductJson");
         Cart cart;
         if (DataUtil.isNullObject(cartProductJson)) {

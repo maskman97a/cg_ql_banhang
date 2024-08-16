@@ -32,14 +32,14 @@
                     </a>
                 </div>
 
-                <div class="col-10">
+                <div class="col-9">
                     <form class="d-flex row" role="search"
                           action="${pageContext.request.contextPath}/product/search">
                         <div class="col-2">
-                            <input type="text" hidden name="sortType" value="${sortType}"/>
-                            <input type="text" hidden name="sortCol" value="${sortCol}"/>
-                            <input type="text" hidden name="page" value="${page}"/>
-                            <input type="text" hidden name="size" value="${size}"/>
+                            <input type="hidden" name="sortType" value="${sortType}"/>
+                            <input type="hidden" name="sortCol" value="${sortCol}"/>
+                            <input type="hidden" name="page" value="${page}"/>
+                            <input type="hidden" name="size" value="${size}"/>
 
                             <select class="form-control" name="categoryId">
                                 <option value="">--Chọn thể loại--</option>
@@ -63,6 +63,12 @@
                         <i class="fa-solid fa-cart-shopping fs-3"></i>
                         <span class="cart-count" id="count-cart">${cartCount}</span>
                     </div>
+                </div>
+                <div class="col-1">
+                    <a class="btn" href="${pageContext.request.contextPath}/order/lookup" data-bs-toggle="tooltip"
+                       data-bs-placement="bottom" data-bs-title="Tra cứu đơn hàng">
+                        <i class="fa-solid fa-magnifying-glass fs-3"></i>
+                    </a>
                 </div>
             </div>
 

@@ -25,26 +25,17 @@
                     style="color: red">(*)</span></label>
             <input id="inp-customer-phone" type="text" class="form-control"
                    name="customer-phone"/>
-            <div class="invalid-feedback">
-                Vui lòng nhập Số diện thoại
-            </div>
         </div>
         <div class="col-md-12">
             <label for="inp-customer-email" class="form-label">Địa chỉ Email</label>
             <input id="inp-customer-email" type="text" class="form-control"
                    name="customer-email"/>
-            <div class="invalid-feedback">
-                Vui lòng nhập Địa chỉ Email
-            </div>
         </div>
         <div class="col-md-12">
             <label for="inp-customer-address" class="form-label">Địa chỉ nhận hàng <span
                     style="color: red">(*)</span></label>
             <input id="inp-customer-address" type="text" class="form-control"
                    name="customer-address"/>
-            <div class="invalid-feedback">
-                Vui lòng nhập Địa chỉ nhận hàng
-            </div>
         </div>
     </div>
 </div>

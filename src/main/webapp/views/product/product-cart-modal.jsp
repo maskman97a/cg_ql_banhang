@@ -71,7 +71,7 @@
             renderCustomerInfo();
             return false;
         }
-        return validateCreateOrder();
+        return validateCreateOrder('batch');
     }
 
     function renderCustomerInfo() {

@@ -16,7 +16,7 @@
      data-bs-keyboard="false" style="">
     <c:import url="../component/alert-modal.jsp"/>
     <form class="form needs-validation" action="${pageContext.request.contextPath}/order/create" method="post"
-          onsubmit="return validateCreateOrder()">
+          onsubmit="return validateCreateOrder('single')">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -89,13 +89,20 @@
     </form>
 </div>
 <script>
-    function validateCreateOrder() {
-        let customerName = document.getElementById("inp-customer-name").value;
+    function validateCreateOrder(orderTyp) {
+        let partnerId = "";
+        if (orderTyp === "batch") {
+            partnerId = "#cart-order-customer-info-input"
+        } else {
+            partnerId = "#modalOrder"
+
+        }
+        let customerName = document.querySelector(partnerId + " #inp-customer-name").value;
         if (customerName === '') {
             window.alert("Vui lòng nhập Họ và tên")
             return false;
         }
-        let customerPhone = document.getElementById("inp-customer-phone").value;
+        let customerPhone = document.querySelector(partnerId + " #inp-customer-phone").value;
         if (customerPhone === '') {
             window.alert("Vui lòng nhập số điện thoại")
             return false;
@@ -104,12 +111,12 @@
             window.alert("Số điện thoại không hợp lệ")
             return false;
         }
-        let customerAddress = document.getElementById("inp-customer-address").value;
+        let customerAddress = document.querySelector(partnerId + " #inp-customer-address").value;
         if (customerAddress.length > 500 || customerAddress.length < 10) {
             window.alert("Vui lòng nhập địa chỉ hợp lệ")
             return false;
         }
-        let customerEmail = document.getElementById("inp-customer-email").value;
+        let customerEmail = document.querySelector(partnerId + " #inp-customer-email").value;
         let quantity = document.getElementById("inp-quantity").value;
         if (quantity === 0) {
             window.alert("Số lượng không hợp lệ")

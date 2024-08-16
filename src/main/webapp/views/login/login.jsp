@@ -47,7 +47,7 @@
                     </div>
                     <div class="form-group mb-3">
                         <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2" onclick="encryptPassword()">
-                        <h3 style="color:red">${loginMessage}</h3>
+                        <div class="alert alert-danger">${loginMessage}</div>
                     </div>
                 </div>
             </div>

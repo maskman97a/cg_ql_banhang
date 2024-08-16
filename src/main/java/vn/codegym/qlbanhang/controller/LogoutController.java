@@ -1,6 +1,6 @@
 package vn.codegym.qlbanhang.controller;
 
-import vn.codegym.qlbanhang.service.LoginService;
+import vn.codegym.qlbanhang.service.LogoutService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,21 +12,19 @@ import java.util.logging.Logger;
 @WebServlet({"/logout"})
 public class LogoutController extends BaseController {
     protected Logger log = Logger.getLogger(LogoutController.class.getName());
-    private LoginService loginService;
+    private LogoutService logoutService;
 
     public void init() {
-        this.loginService = new LoginService();
+        this.logoutService = new LogoutService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logoutService.logout(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getSession().getAttribute("token") != null) {
-            req.getSession().setAttribute("token", null);
-        }
-        resp.sendRedirect(req.getContextPath());
+        logoutService.logout(req, resp);
     }
 }

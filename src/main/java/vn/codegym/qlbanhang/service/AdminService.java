@@ -4,6 +4,7 @@ import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.entity.Category;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.Product;
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -41,6 +43,12 @@ public class AdminService extends BaseService {
 
     public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            HttpSession httpSession = req.getSession();
+            if (httpSession.getAttribute("token") != null) {
+                String userInfoJson = (String) httpSession.getAttribute("userInfo");
+                UserInfoDto userInfo = gson.fromJson(userInfoJson, UserInfoDto.class);
+                req.setAttribute("userInfo", userInfo);
+            }
             req.setAttribute("renderProduct", true);
             req.setAttribute("renderCategory", false);
             req.setAttribute("renderOrder", false);

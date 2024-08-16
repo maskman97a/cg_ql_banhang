@@ -24,33 +24,67 @@
     <link rel="icon" type="image/png" href="../../images/logo.png">
 </head>
 <body>
-<h1 style="color:red">${loginMessage}</h1>
-<form class="form form-control p-5" method="post" action="${pageContext.request.contextPath}/login" style="height: 100%"
-      onsubmit="return validateLogin()">
-    <div class="container">
-        <div class="row">
-            <div class="col-6 offset-3">
-                <h1 class="text-center">Đăng nhập</h1>
-                <div class="form-group mb-3">
-                    <label for="username">Tên đăng nhập:</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="password">Mật khẩu:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="form-group mb-3">
-                    <input type="submit" value="Đăng nhập" class="btn btn-primary">
+<div class="container">
+
+    <form class="form p-5" method="post" action="${pageContext.request.contextPath}/login"
+          style="height: 100%"
+          onsubmit="return validateLogin()">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 offset-3">
+                    <h1 class="text-center">Đăng nhập</h1>
+                    <div class="form-group mb-3">
+                        <label for="username">Tên đăng nhập:</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                               placeholder="Tối thiểu 5 ký tự" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="pwd-plain-text">Mật khẩu:</label>
+                        <input type="password" class="form-control" id="pwd-plain-text"
+                               placeholder="Tối thiểu 5 ký tự" onkeyup="encryptPassword()"
+                               required>
+                        <input type="text" id="pwd-encrypted" name="password" hidden/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2" onclick="encryptPassword()">
+                        <h3 style="color:red">${loginMessage}</h3>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-</form>
+    </form>
+</div>
 
 <script>
-    function validateLogin() {
-        return true;
+    async function validateLogin() {
+        let username = document.getElementById("username").value;
+        if (username.length < 5) {
+            window.alert("Tên đăng nhập không được nhỏ hơn 5 ký tự!");
+            return false;
+        }
+        let passwordPlainText = document.getElementById("pwd-plain-text").value;
+        if (!(passwordPlainText != null && passwordPlainText.length >= 5)) {
+            window.alert("Mật không được nhỏ hơn 6 ký tự!");
+        }
+    }
+
+    async function encryptPassword() {
+        let passwordPlainText = document.getElementById("pwd-plain-text").value;
+        document.getElementById("pwd-encrypted").value = await sha1(passwordPlainText);
+    }
+
+    async function sha1(message) {
+        // Encode the message as a UTF-8 string and convert it to a byte array
+        const msgBuffer = new TextEncoder().encode(message);
+
+        // Hash the message using SHA-1
+        const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
+
+        // Convert the hash to a hexadecimal string
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        return hashHex;
     }
 </script>
 </body>

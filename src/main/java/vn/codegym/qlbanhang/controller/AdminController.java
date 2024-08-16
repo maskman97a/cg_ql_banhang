@@ -1,8 +1,10 @@
 package vn.codegym.qlbanhang.controller;
 
 
+import com.google.gson.Gson;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.UrlLevelDto;
+import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.service.AdminService;
 
 import javax.servlet.ServletException;
@@ -154,6 +156,9 @@ public class AdminController extends BaseController {
         if (httpSession.getAttribute("token") == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return false;
+        } else {
+            UserInfoDto userInfoDto = new Gson().fromJson((String) httpSession.getAttribute("userInfo"), UserInfoDto.class);
+            req.setAttribute("userInfo", userInfoDto);
         }
         return true;
     }

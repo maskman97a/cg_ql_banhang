@@ -50,12 +50,6 @@
             <c:import url="../order/lookup-order.jsp"/>
         </div>
     </div>
-    <div class="div-lookup-order">
-        <a class="" href="${pageContext.request.contextPath}/order/lookup" data-bs-toggle="tooltip"
-           data-bs-placement="bottom" data-bs-title="Tra cứu đơn hàng">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </a>
-    </div>
 </main>
 <footer>
     <c:import url="../component/footer.jsp"/>

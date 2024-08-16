@@ -132,7 +132,7 @@
                             <label for="inp-description">Mô tả</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <textarea id="inp-description" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
+                            <textarea id="inp-description" maxlength="500" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
                         </div>
 
                         <script>

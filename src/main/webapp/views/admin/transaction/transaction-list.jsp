@@ -22,10 +22,14 @@
                 <div class="form-control" style="min-height: 100%">
                     <div class="col-12 mb-3">
                         <span>${response}</span>
-                        <h2 style="color:green">${successMsg}</h2>
                         <% if (request.getAttribute("errorMsg") != null) { %>
                         <div class="alert alert-danger">
                             <%= request.getAttribute("errorMsg") %>
+                        </div>
+                        <% } %>
+                        <% if (request.getAttribute("successMsg") != null) { %>
+                        <div class="alert alert-success">
+                            <%= request.getAttribute("successMsg") %>
                         </div>
                         <% } %>
                     </div>

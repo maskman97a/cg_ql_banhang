@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Title</title>
@@ -32,6 +33,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-6 offset-3">
+                    <c:if test="${loginMessage != null && !loginMessage.isEmpty}">
+                        <div class="alert alert-danger">${loginMessage}</div>
+                    </c:if>
                     <h1 class="text-center">Đăng nhập</h1>
                     <div class="form-group mb-3">
                         <label for="username">Tên đăng nhập:</label>
@@ -47,7 +51,6 @@
                     </div>
                     <div class="form-group mb-3">
                         <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2" onclick="encryptPassword()">
-                        <div class="alert alert-danger">${loginMessage}</div>
                     </div>
                 </div>
             </div>

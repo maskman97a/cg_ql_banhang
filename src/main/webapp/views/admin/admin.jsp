@@ -22,7 +22,8 @@
 
             </div>
             <div class="col-10">
-                <span>Xin chào: ${userInfo.fullName}  - <a class="" href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
+                <span>Xin chào: <span style="color: green">${userInfo.fullName}</span>  - <a class=""
+                                                                                             href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
 
             </div>
         </div>
@@ -101,7 +102,7 @@
                         <a class="" href="${urlLevel.url}">${urlLevel.name}</a>
                     </c:forEach>
                 </div>
-                <div class="pt-5">
+                <div class="container pt-5">
                     <div ${!renderMainAdmin? 'hidden': ''}>
                         <h1>Chào mừng đến với Trang quản trị</h1>
                     </div>

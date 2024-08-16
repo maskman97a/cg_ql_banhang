@@ -1,5 +1,6 @@
 package vn.codegym.qlbanhang.model;
 
+import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.entity.Category;
@@ -131,7 +132,7 @@ public class OrderModel extends BaseModel {
     }
 
 
-    public int updateOrder(Boolean isCancel, Order order) throws SQLException {
+    public int updateOrder( Order order, String action) throws SQLException {
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
@@ -140,33 +141,33 @@ public class OrderModel extends BaseModel {
                     "   SET updated_date = CURRENT_TIMESTAMP , " +
                     "       updated_by = ? ");
             if (!DataUtil.isNullObject(order)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullObject(order.getStatus()))
-                        sb.append(" ,status = ? ");
-                } else {
-                    if (!DataUtil.isNullObject(order.getStatus()))
-                        sb.append(" ,status = ? ");
+                switch (action) {
+                    case "confirm":
+                        sb.append(" ,status = 3 ");
+                        break;
+                    case "complete":
+                        sb.append(" ,status = 1 ");
+                        break;
+                    case "cancel":
+                        sb.append(" ,status = 2 ");
+                        break;
                 }
             }
             sb.append(" WHERE id = ? ");
-            if (isCancel) {
-                sb.append(" AND status = 0 ");
-            } else {
-                sb.append(" AND status = 0 ");
+            switch (action) {
+                case "confirm":
+                    sb.append(" AND status = 0 ");
+                    break;
+                case "complete":
+                    sb.append(" AND status = 3 ");
+                    break;
+                case "cancel":
+                    sb.append(" AND status = 0 ");
+                    break;
             }
             PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
             int index = 1;
             preparedStatement.setString(index++, order.getUpdatedBy());
-            if (!DataUtil.isNullObject(order)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullObject(order.getStatus()))
-                        preparedStatement.setInt(index++, order.getStatus());
-                } else {
-                    if (!DataUtil.isNullObject(order.getStatus()))
-                        preparedStatement.setInt(index++, order.getStatus());
-                }
-
-            }
             preparedStatement.setInt(index++, order.getId());
             return preparedStatement.executeUpdate();
         } catch (Exception ex) {

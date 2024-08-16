@@ -17,11 +17,18 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="row" id="lookup-order-div">
     <div class="row" ${renderOrderAdmin ? 'hidden': ''} >
-        <div class="col-10">
-            <div class="container">
-                <div class="container form-control">
+        <div class="col-12" >
+                <div class="form-control" style="min-height: 100%">
+                    <div class="col-12 mb-3">
+                        <span>${response}</span>
+                        <h2 style="color:green">${successMsg}</h2>
+                        <% if (request.getAttribute("errorMsg") != null) { %>
+                        <div class="alert alert-danger">
+                            <%= request.getAttribute("errorMsg") %>
+                        </div>
+                        <% } %>
+                    </div>
                     <div class="row">
                         <div class="col-12 text-center">
                             <h1>Danh sách đơn hàng</h1>
@@ -140,12 +147,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
     <div class="row" ${!renderOrderAdmin ? 'hidden': ''}>
         <c:import url="/views/admin/transaction/transaction-detail.jsp"/>
     </div>
-</div>
 </body>
 </html>

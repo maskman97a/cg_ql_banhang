@@ -319,7 +319,6 @@ public class AdminService extends BaseService {
 
     public void confirmOrder(HttpServletRequest req, HttpServletResponse resp, String action) throws ServletException, IOException {
         try {
-
             req.setAttribute("renderOrder", true);
             Integer orderId = Integer.parseInt(req.getParameter("id"));
             Order order = (Order) orderModel.findById(orderId);
@@ -335,11 +334,16 @@ public class AdminService extends BaseService {
                     break;
             }
             order.setUpdatedBy("admin");
-            int save = orderModel.updateOrder(true, order);
+            int save = orderModel.updateOrder(order, action);
             if (save == 1) {
+                req.setAttribute("successMsg", "Cập nhật đơn hàng thành công");
                 resp.sendRedirect("/admin/transaction");
             } else {
-                renderErrorPage(req, resp, "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
+                req.setAttribute("errorMsg", "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
+//                resp.sendRedirect("/admin/transaction");
+                renderSearchOrder(req, resp);
+//                req.getRequestDispatcher(req.getContextPath() + "/views/admin/transaction/transaction-list.jsp").forward(req, resp);
+//                renderErrorPage(req, resp);
             }
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());

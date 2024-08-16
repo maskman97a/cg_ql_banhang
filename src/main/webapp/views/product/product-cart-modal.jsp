@@ -82,6 +82,7 @@
         let returnHtml = "";
         let totalAmount = 0;
         for (let i = 0; i < listProductInCart.length; i++) {
+            console.log(listProductInCart[i].product.productName);
             let index = listProductInCart[i].index;
             let productId = listProductInCart[i].product.id;
             let productName = listProductInCart[i].product.productName;
@@ -94,7 +95,7 @@
             returnHtml += `<input type="hidden" name="inp-product-id-#index" value="#productId"/>`
             returnHtml += `<input type="number" id="inp-product-amount-#index" value="#productAmount" hidden/>`
             returnHtml += `<td>#index</td>`
-            returnHtml += `<td>#productName</td>`
+            returnHtml += `<td><span>#productName</span></td>`
             returnHtml += `<td><input id="inp-quantity-#index" type="number" min="1" onchange="updateQuantity(#index , #productPrice, #productId )"
                         name="inp-quantity-#index" value="#productQuantity"></input></td>`
             returnHtml += `<td>` + formatNumber(productPrice) + `</td>`
@@ -123,6 +124,7 @@
             document.getElementById("btn-render-create-order").disabled = false;
         }
         document.getElementById("tbody-table-cart").innerHTML = returnHtml;
+        console.log(returnHtml);
     }
 
     async function removeProductFromCart(productId) {

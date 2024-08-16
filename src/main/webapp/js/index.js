@@ -52,12 +52,22 @@ async function addToCart(productId) {
     }
 }
 
-function callApi(apiUrl, method, body) {
-    return fetch(apiUrl, {
+async function callApi(apiUrl, method, body) {
+    return await fetch(apiUrl, {
         method: method, body: body
     })
-        .then(response => response.json())
+        .then(response => {
+            return response.arrayBuffer();
+        }).then(buffer => {
+            // Decode the ArrayBuffer to a string using TextDecoder
+            const decoder = new TextDecoder('utf-8');
+            const jsonString = decoder.decode(buffer);
+            console.log("json: " + jsonString)
+            // Parse the JSON string into an object
+            return JSON.parse(jsonString)
+        })
         .then(data => {
+            console.log(data)
             return data
         })
         .catch(error => console.log(error));
@@ -74,7 +84,8 @@ async function callApiAndDrawCart() {
     if (data.errorCode === 0) {
         document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
         let listProductInCart = data.additionalData.productList;
-        drawProductList(listProductInCart);
+        console.log(listProductInCart)
+        return drawProductList(listProductInCart);
     } else {
         alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
     }

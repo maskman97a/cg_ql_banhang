@@ -8,10 +8,10 @@ import java.util.List;
 
 @Getter
 public enum ProductSort {
-    NAME_ASC("product_name", "ASC", "Sắp xếp theo ABC tăng dần"),
-    NAME_DESC("product_name", "DESC", "Sắp xếp theo ABC giảm dần"),
-    PRICE_ASC("price", "ASC", "Sắp xếp theo giá tăng dần"),
-    PRICE_DESC("price", "DESC", "Sắp xếp theo giá giảm dần");
+    NAME_ASC("product_name", "ASC", "Sắp xếp theo A-Z"),
+    NAME_DESC("product_name", "DESC", "Sắp xếp theo Z-A"),
+    PRICE_ASC("price", "ASC", "Giá tăng dần"),
+    PRICE_DESC("price", "DESC", "Giá giảm dần");
 
     final String columnName;
     final String sortType;

@@ -140,18 +140,33 @@ public class AdminService extends BaseService {
     public void createNewProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Product product = new Product();
-            String imageUrl = SftpUtils.getPathSFTP(req, resp);
-            product.setImageUrl(imageUrl);
-            product.setProductCode(req.getParameter("code"));
-            product.setProductName(req.getParameter("name"));
-            product.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
-            product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-            product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
-            product.setDescription(req.getParameter("description"));
-            int save = productModel.save(product);
-            if (save == 1) {
-                resp.sendRedirect("/admin/product");
+            if (!DataUtil.isNullObject(req.getPart("file"))) {
+                req.setAttribute("errorMsg", "Ảnh sản phẩm bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("code"))) {
+                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
+                req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
+            } else  if (!DataUtil.isNullOrEmpty(req.getParameter("name"))) {
+                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("quantity"))) {
+                req.setAttribute("errorMsg", "Số lượng bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("price"))) {
+                req.setAttribute("errorMsg", "Giá sản phẩm bắt buộc nhập");
+            } else {
+                Product product = new Product();
+                String imageUrl = SftpUtils.getPathSFTP(req, resp);
+                product.setImageUrl(imageUrl);
+                product.setProductCode(req.getParameter("code"));
+                product.setProductName(req.getParameter("name"));
+                product.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
+                product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
+                product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
+                product.setDescription(req.getParameter("description"));
+                int save = productModel.save(product);
+                if (save == 1) {
+                    req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
+                    resp.sendRedirect("/admin/product");
+                }
             }
         } catch (Exception ex) {
             this.renderAdmin(req, resp);
@@ -161,24 +176,37 @@ public class AdminService extends BaseService {
     public void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Product product = new Product();
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            product.setId(id);
-            if (!DataUtil.isNullObject(req.getPart("file"))) {
-                String imageUrl = SftpUtils.getPathSFTP(req, resp);
-                product.setImageUrl(imageUrl);
-            }
-            product.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
-            product.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
-            product.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-            product.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
-            product.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
-            product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
-            int save = productModel.updateProduct(false, product);
-            if (save == 1) {
-                resp.sendRedirect("/admin/product");
+            if (!DataUtil.isNullOrEmpty(req.getParameter("code"))) {
+                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
+                req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
+            } else  if (!DataUtil.isNullOrEmpty(req.getParameter("name"))) {
+                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("quantity"))) {
+                req.setAttribute("errorMsg", "Số lượng bắt buộc nhập");
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("price"))) {
+                req.setAttribute("errorMsg", "Giá sản phẩm bắt buộc nhập");
             } else {
-                renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
+                Product product = new Product();
+                Integer id = Integer.parseInt(req.getParameter("id"));
+                product.setId(id);
+                if (!DataUtil.isNullObject(req.getPart("file"))) {
+                    String imageUrl = SftpUtils.getPathSFTP(req, resp);
+                    product.setImageUrl(imageUrl);
+                }
+                product.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
+                product.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
+                product.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                product.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
+                product.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
+                product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
+                int save = productModel.updateProduct(false, product);
+                if (save == 1) {
+                    req.setAttribute("successMsg", "Cập nhật sản phẩm thành công");
+                    resp.sendRedirect("/admin/product");
+                } else {
+                    renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -241,11 +269,14 @@ public class AdminService extends BaseService {
         try {
             req.setCharacterEncoding("UTF-8");
             Category category = new Category();
-            category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
-
-            int save = categoryModel.save(category);
-            if (save == 1) {
-                resp.sendRedirect("/admin/category");
+            if (!DataUtil.isNullOrEmpty(req.getParameter("name"))) {
+                req.setAttribute("errorMsg", "Tên loại sản phẩm bắt buộc nhập");
+            } else {
+                category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
+                int save = categoryModel.save(category);
+                if (save == 1) {
+                    resp.sendRedirect("/admin/category");
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -256,16 +287,20 @@ public class AdminService extends BaseService {
     public void updateCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Category category = new Category();
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            category.setId(id);
-            category.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-            category.setUpdatedBy("admin");
-            int save = categoryModel.updateCategory(false, category);
-            if (save == 1) {
-                resp.sendRedirect("/admin/category");
+            if (!DataUtil.isNullOrEmpty(req.getParameter("name"))) {
+                req.setAttribute("errorMsg", "Tên loại sản phẩm bắt buộc nhập");
             } else {
-                renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
+                Category category = new Category();
+                Integer id = Integer.parseInt(req.getParameter("id"));
+                category.setId(id);
+                category.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                category.setUpdatedBy("admin");
+                int save = categoryModel.updateCategory(false, category);
+                if (save == 1) {
+                    resp.sendRedirect("/admin/category");
+                } else {
+                    renderErrorPage(req, resp, "Cập nhật sản phẩm không thành công");
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -342,8 +377,6 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Cập nhật đơn hàng thất bại. Vui lòng kiểm tra lại!");
 //                resp.sendRedirect("/admin/transaction");
                 renderSearchOrder(req, resp);
-//                req.getRequestDispatcher(req.getContextPath() + "/views/admin/transaction/transaction-list.jsp").forward(req, resp);
-//                renderErrorPage(req, resp);
             }
         } catch (Exception ex) {
             renderErrorPage(req, resp, ex.getMessage());

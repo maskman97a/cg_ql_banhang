@@ -102,7 +102,7 @@
                         <a class="" href="${urlLevel.url}">${urlLevel.name}</a>
                     </c:forEach>
                 </div>
-                <div class="container pt-5">
+                <div class="pt-5">
                     <div ${!renderMainAdmin? 'hidden': ''}>
                         <h1>Chào mừng đến với Trang quản trị</h1>
                     </div>

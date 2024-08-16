@@ -33,7 +33,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-6 offset-3">
-                    <c:if test="${loginMessage != null && !loginMessage.isEmpty}">
+                    <c:if test="${loginMessage != null && !loginMessage.isEmpty()}">
                         <div class="alert alert-danger">${loginMessage}</div>
                     </c:if>
                     <h1 class="text-center">Đăng nhập</h1>

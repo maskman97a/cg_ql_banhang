@@ -121,8 +121,13 @@ public class ProductService extends HomeService {
 
     public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productId = req.getParameter("productId");
+        String newQuantityStr = req.getParameter("quantity");
         if (!DataUtil.isNullObject(productId)) {
-            updateCart(req, resp, Integer.parseInt(productId));
+            Integer newQuantity = null;
+            if (newQuantityStr != null) {
+                newQuantity = Integer.parseInt(newQuantityStr);
+            }
+            updateCart(req, resp, Integer.parseInt(productId), newQuantity);
         }
     }
 
@@ -166,7 +171,7 @@ public class ProductService extends HomeService {
         }
     }
 
-    public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id) {
+    public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id, Integer newQuantity) {
         try {
             BaseResponse<CartResponse> baseResponse = new BaseResponse();
             HttpSession session = req.getSession();
@@ -181,7 +186,11 @@ public class ProductService extends HomeService {
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
             if (cartProductDtoList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
                 CartProductDto cartProductDto = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
-                cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+                if (newQuantity != null) {
+                    cartProductDto.setQuantity(newQuantity);
+                } else {
+                    cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+                }
                 cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice().intValue());
             } else {
                 CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);

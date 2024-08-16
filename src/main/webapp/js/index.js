@@ -54,7 +54,11 @@ async function addToCart(productId) {
 
 async function callApi(apiUrl, method, body) {
     return await fetch(apiUrl, {
-        method: method, body: body
+        method: method,
+        body: body,
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        }
     })
         .then(response => {
             return response.arrayBuffer();

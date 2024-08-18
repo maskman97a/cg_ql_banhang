@@ -28,6 +28,19 @@
     <form class="form form-control" method="post"
           action="${pageContext.request.contextPath}/admin/product/product-create"
           enctype="multipart/form-data">
+        <div class="col-12 mb-3">
+            <span>${response}</span>
+            <% if (request.getAttribute("errorMsg") != null) { %>
+            <div class="alert alert-danger">
+                <%= request.getAttribute("errorMsg") %>
+            </div>
+            <% } %>
+            <% if (request.getAttribute("successMsg") != null) { %>
+            <div class="alert alert-success">
+                <%= request.getAttribute("successMsg") %>
+            </div>
+            <% } %>
+        </div>
         <div class="row">
             <div class=" col-3">
             </div>
@@ -119,7 +132,7 @@
                             <label for="inp-description">Mô tả</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <textarea id="inp-description" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
+                            <textarea id="inp-description" maxlength="500" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
                         </div>
 
                         <script>

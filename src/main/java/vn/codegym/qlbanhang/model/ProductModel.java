@@ -91,7 +91,7 @@ public class ProductModel extends BaseModel {
     public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
         List<ProductDto> productDtoList = new ArrayList<>();
         String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
-        sql += " order by id desc ";
+            sql += " order by p.id desc ";
         sql += " limit ? offset ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
         int index = 1;

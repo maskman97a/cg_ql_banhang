@@ -37,7 +37,7 @@ public class OrderModel extends BaseModel {
         List<OrdersDto> lstResult = new ArrayList<>();
         try {
             String sql = this.getSearchSQL(baseSearchDto);
-            sql += " order by id desc ";
+            sql += " order by o.order_date desc ";
             sql += " limit ? offset ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
             int index = 1;

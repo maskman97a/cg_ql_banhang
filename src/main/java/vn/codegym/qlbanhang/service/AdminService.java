@@ -105,7 +105,7 @@ public class AdminService extends BaseService {
             if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
                 categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
             }
-            int size = 5;
+            int size = 10;
             if (req.getParameter("size") != null) {
                 size = Integer.parseInt(req.getParameter("size"));
             }
@@ -300,6 +300,7 @@ public class AdminService extends BaseService {
                 category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
                 category = (Category) categoryModel.save(category);
                 if (!DataUtil.isNullObject(category)) {
+                    req.setAttribute("successMsg", "Thêm Loại sản phẩm thành công");
                     resp.sendRedirect("/admin/category");
                 } else {
                     req.setAttribute("errorMsg", "Thêm Loại sản phẩm không thành công");

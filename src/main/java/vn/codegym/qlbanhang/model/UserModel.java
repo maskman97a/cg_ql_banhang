@@ -6,6 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UserModel {
+    private static final UserModel inst = new UserModel();
+
+    private UserModel() {
+
+    }
+
+    public static UserModel getInstance() {
+        return inst;
+    }
     public List<UserInfoDto> findAll() {
         UserInfoDto userInfoDto1 = new UserInfoDto("Quản trị viên", "admin", "admin");
         UserInfoDto userInfoDto2 = new UserInfoDto("Nhân viên", "employer", "admin");

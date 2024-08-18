@@ -1,13 +1,10 @@
 package vn.codegym.qlbanhang.model;
 
 
-import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.Category;
-import vn.codegym.qlbanhang.entity.Product;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import java.sql.Connection;
@@ -18,14 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryModel extends BaseModel {
-    public CategoryModel() {
+    private static final CategoryModel inst = new CategoryModel();
+
+    private CategoryModel() {
         super(Category.class);
+    }
+
+    public static CategoryModel getInstance() {
+        return inst;
     }
 
 
     public List<Category> findCategory() {
         try {
-            List<BaseEntity> baseEntities = findAll();
+            List<BaseEntity> baseEntities = findAllActive();
             List<Category> productList = new ArrayList<>();
             for (BaseEntity baseEntity : baseEntities) {
                 productList.add((Category) baseEntity);
@@ -43,7 +46,6 @@ public class CategoryModel extends BaseModel {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         Connection conn = null;
         try {
-            conn = DatabaseConnection.getConnection();
             String sql = this.getSearchCategorySQL(baseSearchDto, id);
             sql += " order by id desc ";
             sql += " limit ? offset ?";
@@ -78,55 +80,35 @@ public class CategoryModel extends BaseModel {
     }
 
     public Integer countCategory(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            String sql = " SELECT count(1) from (" + getSearchCategorySQL(baseSearchDto, id) + ") as countLst ";
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            int index = 1;
-            if (baseSearchDto != null) {
-                if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
-                }
+        String sql = " SELECT count(1) from (" + getSearchCategorySQL(baseSearchDto, id) + ") as countLst ";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+        int index = 1;
+        if (baseSearchDto != null) {
+            if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
-            if (!DataUtil.isNullObject(id)) {
-                preparedStatement.setLong(index++, id);
-            }
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
+        }
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setLong(index++, id);
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1);
         }
         return 0;
     }
 
     public List<CategoryDto> getLstCategory() throws SQLException {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
-        Connection conn = null;
-        try {
-            conn = DatabaseConnection.getConnection();
-            String sql = this.getSearchCategorySQL(null, null);
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            int index = 1;
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                CategoryDto categoryDto = new CategoryDto();
-                categoryDto.setId(rs.getInt("id"));
-                categoryDto.setName(rs.getString("name"));
-                categoryDtoList.add(categoryDto);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
+        String sql = this.getSearchCategorySQL(null, null);
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+        int index = 1;
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(rs.getInt("id"));
+            categoryDto.setName(rs.getString("name"));
+            categoryDtoList.add(categoryDto);
         }
         return categoryDtoList;
     }
@@ -148,45 +130,51 @@ public class CategoryModel extends BaseModel {
     }
 
     public int updateCategory(Boolean isCancel, Category category) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            StringBuilder sb = new StringBuilder("");
-            sb.append("UPDATE category " +
-                    "   SET updated_date = CURRENT_TIMESTAMP , " +
-                    "       updated_by = ? ");
-            if (!DataUtil.isNullObject(category)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(category.getName()))
-                        sb.append(" ,name = ? ");
-                }
-                if (!DataUtil.isNullObject(category.getStatus()))
-                    sb.append(" ,status = ? ");
+        StringBuilder sb = new StringBuilder("");
+        sb.append("UPDATE category " +
+                "   SET updated_date = CURRENT_TIMESTAMP , " +
+                "       updated_by = ? ");
+        if (!DataUtil.isNullObject(category)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(category.getName()))
+                    sb.append(" ,name = ? ");
             }
-            sb.append(" WHERE id = ? ");
-            if (isCancel)
-                sb.append(" AND status = 1 ");
-            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
-            int index = 1;
-            preparedStatement.setString(index++, category.getUpdatedBy());
-            if (!DataUtil.isNullObject(category)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(category.getName()))
-                        preparedStatement.setString(index++, category.getName().trim());
-                }
-                if (!DataUtil.isNullObject(category.getStatus()))
-                    preparedStatement.setInt(index++, category.getStatus());
-            }
-            preparedStatement.setInt(index++, category.getId());
-            return preparedStatement.executeUpdate();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
+            if (!DataUtil.isNullObject(category.getStatus()))
+                sb.append(" ,status = ? ");
         }
-        return 0;
+        sb.append(" WHERE id = ? ");
+        if (isCancel)
+            sb.append(" AND status = 1 ");
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
+        int index = 1;
+        preparedStatement.setString(index++, category.getUpdatedBy());
+        if (!DataUtil.isNullObject(category)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(category.getName()))
+                    preparedStatement.setString(index++, category.getName().trim());
+            }
+            if (!DataUtil.isNullObject(category.getStatus()))
+                preparedStatement.setInt(index++, category.getStatus());
+        }
+        preparedStatement.setInt(index++, category.getId());
+        return preparedStatement.executeUpdate();
+    }
+
+    public CategoryDto getDetailCategory(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
+        String sql = getSearchCategorySQL(baseSearchDto, id);
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+        int index = 1;
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setInt(index++, id);
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(rs.getInt("id"));
+            categoryDto.setName(rs.getString("name"));
+
+            return categoryDto;
+        }
+        return null;
     }
 }

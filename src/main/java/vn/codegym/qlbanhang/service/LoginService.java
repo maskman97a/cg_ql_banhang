@@ -15,7 +15,7 @@ public class LoginService {
     private final Gson gson;
 
     public LoginService() {
-        this.userModel = new UserModel();
+        this.userModel = UserModel.getInstance();
         this.gson = new Gson();
     }
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {

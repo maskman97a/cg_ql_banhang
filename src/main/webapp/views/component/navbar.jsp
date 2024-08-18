@@ -35,20 +35,20 @@
                 <div class="col-9">
                     <form class="d-flex row" role="search"
                           action="${pageContext.request.contextPath}/product/search">
-                        <div class="col-2">
+                        <div class="col-3">
                             <input type="hidden" name="sortType" value="${sortType}"/>
                             <input type="hidden" name="sortCol" value="${sortCol}"/>
                             <input type="hidden" name="page" value="${page}"/>
                             <input type="hidden" name="size" value="${size}"/>
 
-                            <select class="form-control" name="categoryId">
-                                <option value="">--Chọn thể loại--</option>
+                            <select class="form-control " name="categoryId">
+                                <option value="">--Chọn loại sản phẩm--</option>
                                 <c:forEach var="category" items="${lstCategory}">
                                     <option value="${category.id}" ${selectedCategoryId == category.id ? 'selected':''} >${category.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="col-8">
+                        <div class="col-7">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
                                    value="${keyword}" name="keyword">
                         </div>

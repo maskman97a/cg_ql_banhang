@@ -4,8 +4,6 @@ package vn.codegym.qlbanhang.service;
 import com.google.gson.Gson;
 import vn.codegym.qlbanhang.dto.Cart;
 import vn.codegym.qlbanhang.dto.CartProductDto;
-import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -29,11 +27,11 @@ public class HomeService extends BaseService {
         super(baseModel);
     }
 
-    public BaseModel getBaseModal() {
+    public BaseModel getBaseModel() {
         return super.baseModel;
     }
 
-    protected Gson getGson() {
+    public Gson getGson() {
         return super.gson;
     }
 

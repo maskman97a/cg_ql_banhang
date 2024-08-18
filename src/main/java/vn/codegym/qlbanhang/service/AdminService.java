@@ -8,6 +8,7 @@ import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.entity.Category;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
@@ -33,11 +34,12 @@ public class AdminService extends BaseService {
 
     public AdminService() {
         super(null);
-        this.productModel = new ProductModel();
-        this.categoryModel = new CategoryModel();
         this.categoryService = new CategoryService();
         this.orderService = new OrderService();
-        this.orderModel = new OrderModel();
+
+        this.productModel = (ProductModel) BaseModel.getInstance(Product.class);
+        this.categoryModel = (CategoryModel) BaseModel.getInstance(Category.class);
+        this.orderModel = (OrderModel) BaseModel.getInstance(Order.class);
     }
 
 
@@ -171,8 +173,8 @@ public class AdminService extends BaseService {
                 product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
                 product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
                 product.setDescription(req.getParameter("description"));
-                int save = productModel.save(product);
-                if (save == 1) {
+                product = (Product) productModel.save(product);
+                if (!DataUtil.isNullObject(product)) {
                     req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
                     resp.sendRedirect("/admin/product");
                 } else {
@@ -296,9 +298,8 @@ public class AdminService extends BaseService {
                 renderCreateCategoryForm(req, resp);
             } else {
                 category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
-                int save = categoryModel.save(category);
-                if (save == 1) {
-                    req.setAttribute("successMsg", "Thêm Loại sản phẩm thành công");
+                category = (Category) categoryModel.save(category);
+                if (!DataUtil.isNullObject(category)) {
                     resp.sendRedirect("/admin/category");
                 } else {
                     req.setAttribute("errorMsg", "Thêm Loại sản phẩm không thành công");

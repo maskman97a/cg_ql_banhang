@@ -1,18 +1,12 @@
 package vn.codegym.qlbanhang.model;
 
-import vn.codegym.qlbanhang.constants.Const;
-import vn.codegym.qlbanhang.database.DatabaseConnection;
-import vn.codegym.qlbanhang.dto.*;
-import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.dto.BaseSearchDto;
+import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.OrdersDto;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.enums.OrderStatus;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,16 +15,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class OrderModel extends BaseModel {
-    public OrderModel() {
+    private static final OrderModel inst = new OrderModel();
+
+    private OrderModel() {
         super(Order.class);
+    }
+
+    public static OrderModel getInstance() {
+        return inst;
     }
 
     public Order getByCode(String code) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition condition = new Condition();
-        condition.setColumnName("code");
-        condition.setOperator("=");
-        condition.setValue(code);
+        Condition condition = Condition.newAndCondition("code", "=", code);
         baseSearchDto.setConditions(Collections.singletonList(condition));
         return (Order) findOne(baseSearchDto);
     }
@@ -38,13 +35,11 @@ public class OrderModel extends BaseModel {
 
     public List<OrdersDto> findOrderByKeyword(BaseSearchDto baseSearchDto) throws SQLException {
         List<OrdersDto> lstResult = new ArrayList<>();
-        Connection conn = null;
         try {
-            conn = DatabaseConnection.getConnection();
             String sql = this.getSearchSQL(baseSearchDto);
             sql += " order by o.order_date desc ";
             sql += " limit ? offset ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
             int index = 1;
             if (baseSearchDto != null) {
                 if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
@@ -74,40 +69,26 @@ public class OrderModel extends BaseModel {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
         }
         return lstResult;
     }
 
     public Integer countOrder(BaseSearchDto baseSearchDto) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            String sql = " SELECT count(1) from (" + getSearchSQL(baseSearchDto) + ") as countLst ";
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            int index = 1;
-            if (baseSearchDto != null) {
-                if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
-                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
-                    preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
-                }
-                if (baseSearchDto.getStatus() != null) {
-                    preparedStatement.setInt(index++, baseSearchDto.getStatus());
-                }
+        String sql = " SELECT count(1) from (" + getSearchSQL(baseSearchDto) + ") as countLst ";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+        int index = 1;
+        if (baseSearchDto != null) {
+            if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
+                preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            if (baseSearchDto.getStatus() != null) {
+                preparedStatement.setInt(index++, baseSearchDto.getStatus());
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1);
         }
         return 0;
     }
@@ -132,51 +113,40 @@ public class OrderModel extends BaseModel {
     }
 
 
-    public int updateOrder( Order order, String action) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            StringBuilder sb = new StringBuilder("");
-            sb.append("UPDATE orders " +
-                    "   SET updated_date = CURRENT_TIMESTAMP , " +
-                    "       updated_by = ? ");
-            if (!DataUtil.isNullObject(order)) {
-                switch (action) {
-                    case "confirm":
-                        sb.append(" ,status = 3 ");
-                        break;
-                    case "complete":
-                        sb.append(" ,status = 1 ");
-                        break;
-                    case "cancel":
-                        sb.append(" ,status = 2 ");
-                        break;
-                }
-            }
-            sb.append(" WHERE id = ? ");
+    public int updateOrder(Order order, String action) throws SQLException {
+        StringBuilder sb = new StringBuilder("");
+        sb.append("UPDATE orders " +
+                "   SET updated_date = CURRENT_TIMESTAMP , " +
+                "       updated_by = ? ");
+        if (!DataUtil.isNullObject(order)) {
             switch (action) {
                 case "confirm":
-                    sb.append(" AND status = 0 ");
+                    sb.append(" ,status = 3 ");
                     break;
                 case "complete":
-                    sb.append(" AND status = 3 ");
+                    sb.append(" ,status = 1 ");
                     break;
                 case "cancel":
-                    sb.append(" AND status = 0 ");
+                    sb.append(" ,status = 2 ");
                     break;
             }
-            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
-            int index = 1;
-            preparedStatement.setString(index++, order.getUpdatedBy());
-            preparedStatement.setInt(index++, order.getId());
-            return preparedStatement.executeUpdate();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
         }
-        return 0;
+        sb.append(" WHERE id = ? ");
+        switch (action) {
+            case "confirm":
+                sb.append(" AND status = 0 ");
+                break;
+            case "complete":
+                sb.append(" AND status = 3 ");
+                break;
+            case "cancel":
+                sb.append(" AND status = 0 ");
+                break;
+        }
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
+        int index = 1;
+        preparedStatement.setString(index++, order.getUpdatedBy());
+        preparedStatement.setInt(index++, order.getId());
+        return preparedStatement.executeUpdate();
     }
 }

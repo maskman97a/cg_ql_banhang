@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ErrorType {
     SUCCESS(0, "Thành công"),
     UNKNOWN(-1, "Lỗi không xác định"),
-    INTERNAL_SERVER_ERROR(99, "Lỗi hệ thống");
+    INTERNAL_SERVER_ERROR(99, "Lỗi hệ thống"),
+    INVALID_DATA(1, "Lỗi");
 
     final int errorCode;
     final String errorMessage;

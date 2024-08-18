@@ -1,5 +1,7 @@
 package vn.codegym.qlbanhang.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import vn.codegym.qlbanhang.annotation.Column;
 import vn.codegym.qlbanhang.annotation.Table;
 import vn.codegym.qlbanhang.database.DatabaseConnection;
@@ -14,27 +16,50 @@ import vn.codegym.qlbanhang.utils.DataUtil;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Getter
+@Setter
 public class BaseModel {
-    private final String tableName;
 
-    public BaseModel(Class<?> cl) {
+
+    private DatabaseConnection databaseConnection;
+    private Connection connection;
+    private Class entityClass;
+    private String tableName;
+
+    protected BaseModel(Class<?> cl) {
         Table tableAnnotation = cl.getDeclaredAnnotation(Table.class);
-        this.tableName = tableAnnotation.name();
+        if (!DataUtil.isNullObject(tableAnnotation) && !DataUtil.isNullObject(tableAnnotation.name())) {
+            this.tableName = tableAnnotation.name();
+            this.databaseConnection = DatabaseConnection.getInstance();
+            this.connection = databaseConnection.getConnection();
+            this.entityClass = cl;
+        }
     }
+
+
+    public static BaseModel getInstance(Class<?> cl) {
+        Map<Class<?>, BaseModel> mapInstance = new HashMap<>();
+        List<Class<?>> entityClassList = ClassUtils.getClasses("vn.codegym.qlbanhang.entity");
+        for (Class<?> entityClass : entityClassList) {
+            mapInstance.put(entityClass, new BaseModel(entityClass));
+        }
+        return mapInstance.get(cl);
+    }
+
 
     public List<BaseEntity> search(BaseSearchDto baseSearchDto) throws SQLException {
         List<BaseEntity> baseEntities = new ArrayList<>();
-        Connection con = null;
         try {
-            con = DatabaseConnection.getConnection();
             String sql = getSelectSQL(baseSearchDto);
             if (!DataUtil.isNullObject(baseSearchDto.getPage()) && !DataUtil.isNullObject(baseSearchDto.getSize())) {
                 sql += " limit ? offset ?";
             }
             System.out.println("Search SQL: " + sql);
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
                 for (Condition condition : baseSearchDto.getConditions()) {
@@ -49,20 +74,15 @@ public class BaseModel {
             baseEntities = executeSelect(preparedStatement);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
         }
         return baseEntities;
     }
 
     public Integer count(BaseSearchDto baseSearchDto) throws SQLException {
-        Connection con = null;
         try {
-            con = DatabaseConnection.getConnection();
+            Connection conn = DatabaseConnection.getInstance().getConnection();
             String countSQL = "SELECT COUNT(1) FROM (" + getSelectSQL(baseSearchDto) + ") a";
-            PreparedStatement preparedStatement = con.prepareStatement(countSQL);
+            PreparedStatement preparedStatement = conn.prepareStatement(countSQL);
             int index = 1;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
                 for (Condition condition : baseSearchDto.getConditions()) {
@@ -77,9 +97,7 @@ public class BaseModel {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            if (con != null) {
-                con.close();
-            }
+
         }
         return 0;
     }
@@ -136,38 +154,48 @@ public class BaseModel {
     }
 
     public List<BaseEntity> findAll() throws SQLException {
-        Connection con = null;
         try {
-            con = DatabaseConnection.getConnection();
+            Connection con = DatabaseConnection.getInstance().getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(getSelectSQL(null));
             return executeSelect(preparedStatement);
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BaseEntity> findAllActive() throws SQLException {
+
+        try {
+            Connection con = DatabaseConnection.getInstance().getConnection();
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getConditions().add(Condition.newAndCondition("status", "=", "1"));
+            PreparedStatement preparedStatement = con.prepareStatement(getSelectSQL(baseSearchDto));
+            int index = 1;
+            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
+                for (Condition condition : baseSearchDto.getConditions()) {
+                    preparedStatement.setObject(index++, condition.getValue());
+                }
             }
+            return executeSelect(preparedStatement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return new ArrayList<>();
     }
 
     public BaseEntity findById(int id) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition condition = new Condition();
-        condition.setColumnName("id");
-        condition.setOperator("=");
-        condition.setValue(id);
+        Condition condition = Condition.newAndCondition("id", "= ", id);
         baseSearchDto.getConditions().add(condition);
         return findOne(baseSearchDto);
     }
 
     public BaseEntity findOne(BaseSearchDto baseSearchDto) throws SQLException {
-        Connection con = null;
         try {
-            con = DatabaseConnection.getConnection();
             String sql = getSelectSQL(baseSearchDto);
             System.out.println("Execute sql: " + sql);
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
             if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
                 for (Condition condition : baseSearchDto.getConditions()) {
@@ -180,10 +208,6 @@ public class BaseModel {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
         }
         return null;
     }
@@ -217,82 +241,76 @@ public class BaseModel {
         return baseEntities;
     }
 
-    public int save(BaseEntity baseEntity) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            List<String> lstColName = ClassUtils.getAllColumnName(baseEntity);
-            boolean exists = false;
-            if (!DataUtil.isNullObject(baseEntity.getId())) {
-                BaseEntity baseEntityDB = findById(baseEntity.getId());
-                if (baseEntityDB != null) {
-                    exists = true;
-                }
-            }
-            int index = 0;
-            StringBuilder sb = new StringBuilder();
-            if (!exists) {
-                sb.append("INSERT INTO ");
-                sb.append(tableName);
-                sb.append("(");
-                for (String colName : lstColName) {
-                    if (colName.equals("id")) {
-                        continue;
-                    }
-                    if (index > 0) {
-                        sb.append(",");
-                    }
-                    index++;
-                    sb.append(colName);
-                }
-                sb.append(") VALUE (");
-                index = 0;
-                for (String colName : lstColName) {
-                    if (colName.equals("id")) {
-                        continue;
-                    }
-                    if (index > 0) {
-                        sb.append(",");
-                    }
-                    index++;
-                    sb.append("?");
-                }
-                sb.append(")");
-            } else {
-                sb.append(" UPDATE ");
-                sb.append(tableName);
-                sb.append(" SET ");
-                for (String colName : lstColName) {
-                    if (colName.equals("id")) {
-                        continue;
-                    }
-                    if (index > 0) {
-                        sb.append(",");
-                    }
-                    index++;
-                    sb.append(colName).append(" = ").append(" ? ");
-                }
-                sb.append(" WHERE id = ? ");
-            }
-            PreparedStatement preparedStatement = con.prepareStatement(sb.toString());
-            index = 1;
-            for (String columnName : lstColName) {
-                if (columnName.equals("id")) {
+    public BaseEntity save(BaseEntity baseEntity) throws SQLException {
+        List<String> lstColName = ClassUtils.getAllColumnName(baseEntity);
+        boolean exists = false;
+        int index = 0;
+        StringBuilder sb = new StringBuilder();
+        if (!DataUtil.isNullObject(baseEntity.getId())) {
+            //Update
+            sb.append(" UPDATE ");
+            sb.append(tableName);
+            sb.append(" SET ");
+            for (String colName : lstColName) {
+                if (colName.equals("id")) {
                     continue;
                 }
-                preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
+                if (index > 0) {
+                    sb.append(",");
+                }
+                index++;
+                sb.append(colName).append(" = ").append(" ? ");
             }
-            if (exists) {
-                preparedStatement.setObject(index, baseEntity.getId());
+            sb.append(" WHERE id = ? ");
+        } else {
+            Integer nextId = getNextID();
+            baseEntity.setId(nextId);
+            sb.append("INSERT INTO ");
+            sb.append(tableName);
+            sb.append("(");
+            for (String colName : lstColName) {
+                if (index > 0) {
+                    sb.append(",");
+                }
+                index++;
+                sb.append(colName);
             }
-            return preparedStatement.executeUpdate();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
+            sb.append(") VALUE (");
+            index = 0;
+            for (String colName : lstColName) {
+                if (index > 0) {
+                    sb.append(",");
+                }
+                index++;
+                sb.append("?");
             }
+            sb.append(")");
         }
-        return 0;
+        PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+        index = 1;
+        for (String columnName : lstColName) {
+            preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
+        }
+        if (exists) {
+            preparedStatement.setObject(index, baseEntity.getId());
+        }
+        int updateResult = preparedStatement.executeUpdate();
+        if (updateResult == 1) {
+            return findById(baseEntity.getId());
+        } else {
+            throw new SQLException("Save failed");
+        }
+    }
+
+    public Integer getNextID() throws SQLException {
+        String sql = "SELECT `AUTO_INCREMENT` " + "FROM  `information_schema`.`TABLES` " + "WHERE `TABLE_SCHEMA` = ? " + "AND   `TABLE_NAME` = ? ";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, databaseConnection.getSchemaName());
+        ps.setString(2, tableName);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return null;
     }
 }

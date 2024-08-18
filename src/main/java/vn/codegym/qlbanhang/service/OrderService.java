@@ -31,11 +31,12 @@ public class OrderService extends HomeService {
     private final OrderDetailModel orderDetailModel;
 
     public OrderService() {
-        super(new OrderModel());
-        this.productModel = new ProductModel();
-        this.customerModel = new CustomerModel();
-        this.orderModel = (OrderModel) super.getBaseModal();
-        this.orderDetailModel = new OrderDetailModel();
+        super(OrderModel.getInstance());
+
+        this.orderModel = (OrderModel) super.getBaseModel();
+        this.productModel = ProductModel.getInstance();
+        this.customerModel = CustomerModel.getInstance();
+        this.orderDetailModel = OrderDetailModel.getInstance();
     }
 
     public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -171,8 +172,8 @@ public class OrderService extends HomeService {
                     order.setStatus(OrderStatus.CANCELED.getValue());
                     order.setUpdatedBy("CUSTOMER");
                     order.setUpdatedDate(LocalDateTime.now());
-                    int updateRecord = orderModel.save(order);
-                    if (updateRecord == 1) {
+                    order = (Order) orderModel.save(order);
+                    if (!DataUtil.isNullObject(order)) {
                         req.setAttribute("successResponse", "Hủy đơn hàng " + order.getCode() + " thành công!");
                     } else {
                         responseMessage = "Hủy đơn hàng " + order.getCode() + " thất bại!";
@@ -234,10 +235,10 @@ public class OrderService extends HomeService {
             }
 
             BaseSearchDto baseSearchDto = new BaseSearchDto();
-            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode, "AND"));
+            baseSearchDto.getConditions().add(Condition.newAndCondition("code", "=", orderCode));
             Customer customer = customerModel.findByPhone(orderCode);
             if (!DataUtil.isNullObject(customer)) {
-                baseSearchDto.getConditions().add(new Condition("customer_id", "=", customer.getId(), "OR"));
+                baseSearchDto.getConditions().add(Condition.newOrCondition("customer_id", "=", customer.getId()));
             }
             List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
             if (DataUtil.isNullOrEmpty(baseEntities)) {
@@ -252,7 +253,7 @@ public class OrderService extends HomeService {
                     }
                     order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
                     BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
-                    baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId(), "AND"));
+                    baseSearchDtoForDetail.getConditions().add(Condition.newAndCondition("order_id", "=", order.getId()));
                     List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
                     order.setOrderDetailList(new ArrayList<>());
                     int totalAmount = 0;
@@ -334,10 +335,10 @@ public class OrderService extends HomeService {
             }
 
             BaseSearchDto baseSearchDto = new BaseSearchDto();
-            baseSearchDto.getConditions().add(new Condition("code", "=", orderCode, "AND"));
+            baseSearchDto.getConditions().add(Condition.newAndCondition("code", "=", orderCode));
             Customer customer = customerModel.findByPhone(orderCode);
             if (!DataUtil.isNullObject(customer)) {
-                baseSearchDto.getConditions().add(new Condition("customer_id", "=", customer.getId(), "OR"));
+                baseSearchDto.getConditions().add(Condition.newOrCondition("customer_id", "=", customer.getId()));
             }
             List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
             if (DataUtil.isNullOrEmpty(baseEntities)) {
@@ -352,7 +353,7 @@ public class OrderService extends HomeService {
                     }
                     order.setOrderStatusName(OrderStatus.getDescription(order.getStatus()));
                     BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
-                    baseSearchDtoForDetail.getConditions().add(new Condition("order_id", "=", order.getId(), "AND"));
+                    baseSearchDtoForDetail.getConditions().add(Condition.newAndCondition("order_id", "=", order.getId()));
                     List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
                     order.setOrderDetailList(new ArrayList<>());
                     int totalAmount = 0;

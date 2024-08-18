@@ -1,6 +1,8 @@
 package vn.codegym.qlbanhang.service;
 
 import com.google.gson.Gson;
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.Condition;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Getter
+@Setter
 public class BaseService {
     protected final Logger log = Logger.getLogger("System Log");
     protected final BaseModel baseModel;
@@ -51,10 +55,7 @@ public class BaseService {
             baseSearchDto.setSize(size);
             baseSearchDto.setPage(page);
             if (keyword != null && !keyword.isEmpty()) {
-                Condition condition = new Condition();
-                condition.setColumnName(columnName);
-                condition.setOperator("LIKE");
-                condition.setValue("%" + keyword + "%");
+                Condition condition = Condition.newAndCondition(columnName, "LIKE", "%" + keyword + "%");
                 baseSearchDto.getConditions().add(condition);
             }
             List<BaseEntity> lstData = baseModel.search(baseSearchDto);
@@ -117,9 +118,5 @@ public class BaseService {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public int save(BaseEntity entity) throws SQLException {
-        return baseModel.save(entity);
     }
 }

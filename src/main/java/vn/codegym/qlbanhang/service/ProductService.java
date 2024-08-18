@@ -30,9 +30,9 @@ public class ProductService extends HomeService {
     private final CategoryModel categoryModel;
 
     public ProductService() {
-        super(new ProductModel());
-        this.productModel = (ProductModel) super.baseModel;
-        this.categoryModel = new CategoryModel();
+        super(ProductModel.getInstance());
+        this.productModel = ProductModel.getInstance();
+        this.categoryModel = CategoryModel.getInstance();
     }
 
     public void findListProduct(HttpServletRequest req, HttpServletResponse resp) {
@@ -216,7 +216,7 @@ public class ProductService extends HomeService {
     public void getAllCategory(HttpServletRequest req) {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         try {
-            List<BaseEntity> baseEntities = categoryModel.findAll();
+            List<BaseEntity> baseEntities = categoryModel.findAllActive();
             for (BaseEntity baseEntity : baseEntities) {
                 categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
             }

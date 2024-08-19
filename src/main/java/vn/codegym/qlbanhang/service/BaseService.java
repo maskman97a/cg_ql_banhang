@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.PagingDto;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -40,39 +38,18 @@ public class BaseService {
             req.setAttribute("message", message);
     }
 
-    protected BaseData doSearch(HttpServletRequest req, HttpServletResponse resp, BaseSearchDto baseSearchDto, String columnName) throws SQLException {
-            String keyword = req.getParameter("keyword");
-            int size = 10;
-            if (req.getParameter("size") != null) {
-                size = Integer.parseInt(req.getParameter("size"));
-            }
-            int page = 1;
-            if (req.getParameter("page") != null) {
-                page = Integer.parseInt(req.getParameter("page"));
-            }
-            req.setAttribute("currentPage", page);
-            baseSearchDto.setKeyword(keyword);
-            baseSearchDto.setSize(size);
-            baseSearchDto.setPage(page);
-            if (keyword != null && !keyword.isEmpty()) {
-                Condition condition = Condition.newAndCondition(columnName, "LIKE", "%" + keyword + "%");
-                baseSearchDto.getConditions().add(condition);
-            }
-            List<BaseEntity> lstData = baseModel.search(baseSearchDto);
-            int count = baseModel.count(baseSearchDto);
-            getPaging(req, resp, count, size, page);
-            req.setAttribute("keyword", keyword);
-            return new BaseData(count, lstData);
-    }
-
-    protected void getPaging(HttpServletRequest req, HttpServletResponse resp, int count, int size, int page) {
+    protected PagingDto getPaging(HttpServletRequest req, HttpServletResponse resp, int count, int size, int page) {
+        PagingDto pagingDto = new PagingDto();
         req.setAttribute("totalRow", count);
+        pagingDto.setTotalRow(count);
         req.setAttribute("currentPage", page);
+        pagingDto.setCurrentPage(page);
         BigDecimal bCount = new BigDecimal(count);
         BigDecimal bSize = new BigDecimal(size);
         // Thực hiện phép chia và làm tròn lên
         BigDecimal totalPage = bCount.divide(bSize, 0, RoundingMode.CEILING);
         req.setAttribute("totalPage", totalPage);
+        pagingDto.setTotalPage(totalPage.intValue());
 
         int tabSize = 5;
         BigDecimal bTabSize = new BigDecimal(tabSize);
@@ -83,9 +60,11 @@ public class BaseService {
             if (page >= startValue && page <= endValue) {
                 if (tabIndex == 0) {
                     req.setAttribute("firstTab", true);
+                    pagingDto.setFirstTab(true);
                 }
                 if (tabIndex == countTab.intValue() - 1) {
                     req.setAttribute("lastTab", true);
+                    pagingDto.setLastTab(true);
                 }
 
                 if (tabIndex == 0) {
@@ -95,10 +74,13 @@ public class BaseService {
                     endValue = startValue + totalPage.intValue() % tabSize - 1;
                 }
                 req.setAttribute("beginPage", startValue);
+                pagingDto.setBeginPage(startValue);
                 req.setAttribute("endPage", endValue);
+                pagingDto.setEndPage(endValue);
                 break;
             }
         }
+        return pagingDto;
     }
 
     public BaseData findAll() {

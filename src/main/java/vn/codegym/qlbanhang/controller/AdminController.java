@@ -23,7 +23,7 @@ public class AdminController extends BaseController {
     private AdminService adminService;
 
     public void init() {
-        this.adminService = new AdminService();
+        this.adminService = AdminService.getInstance();
     }
 
     @Override

@@ -36,79 +36,76 @@
         }
     </script>
     <div class="col-12 row">
-        <%
-            int i = 1;
-        %>
-        <c:forEach var="product" items="${lstProduct}">
+        <c:forEach var="productPerCategory" items="${productPerCategoryList}">
             <%
-                if (i == 1) {
+                int i = 1;
             %>
-            <div class="row">
-                <%
-                    }
-                %>
-                <div class="col-3 p-3 bg-body-tertiary">
-                    <div class="shadow p-3 mb-5 rounded" style="height:85%">
-                    <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}" class="row">
-                        <div class="col-12 ratio ratio-1x1">
-                            <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
-                                 id="product-image-${product.id}"
-                                 class="img-fluid col-12 rounded"
-                                 alt="${product.name}" width="100%" height="100%" style="z-index: 0">
-                        </div>
-                    </a>
-                    <div class="row">
-                        <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}" class="row col-10">
-                            <span class="col-12" style="font-weight: bold">${product.name}</span>
+            <div class=" col-12 text-left">
+                <a href="${pageContext.request.contextPath}/product/search?categoryId=${productPerCategory.categoryId}"
+                   class="btn border"> <span class="col-12">${productPerCategory.categoryName}</span></a>
+            </div>
+            <c:forEach var="productPaging" items="${productPerCategory.productPagingList}">
+                <div class="row">
+                    <c:forEach var="product" items="${productPaging.productList}">
+                        <div class="col-3 p-3">
+                            <div class="shadow p-3 mb-5 rounded" style="height:85%">
+                                <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
+                                   class="row">
+                                    <div class="col-12 ratio ratio-1x1">
+                                        <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
+                                             id="product-image-${product.id}"
+                                             class="img-fluid col-12 rounded"
+                                             alt="${product.name}" width="100%" height="100%" style="z-index: 0">
+                                    </div>
+                                </a>
+                                <div class="row">
+                                    <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
+                                       class="row col-10">
+                                        <span class="col-12" style="font-weight: bold">${product.name}</span>
 
-                            <span id="col-price-${product.id}" class="col-12 formatted-number"
-                                  style="font-weight: bold; color:red;"></span>
-                            <script>
-                                document.getElementById("col-price-${product.id}").innerHTML = formatNumber(${product.price}) + " đ"
-                            </script>
-                        </a>
-                        <div class="col-2 text-center align-self-center">
-                            <i class="fa-solid fa-cart-plus fs-3" onclick="addToCart(${product.id})"></i>
+                                        <span id="col-price-${product.id}" class="col-12 formatted-number"
+                                              style="font-weight: bold; color:red;"></span>
+                                        <script>
+                                            document.getElementById("col-price-${product.id}").innerHTML = formatNumber(${product.price}) + " đ"
+                                        </script>
+                                    </a>
+                                    <div class="col-2 text-center align-self-center">
+                                        <i class="fa-solid fa-cart-plus fs-3" onclick="addToCart(${product.id})"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </c:forEach>
                 </div>
+            </c:forEach>
+            <div class="text-center col-12">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination" style="justify-content: center">
+                        <c:if test="${!productPerCategory.paging.firstTab}">
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage-1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
+                                    Previous</a></li>
+                        </c:if>
+                            <%----%>
+                        <c:forEach begin="${productPerCategory.paging.beginPage}" end="${endPage}" var="page">
+                            <li class="page-item ${currentPage == page ? 'active' : ''}">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/product/search?page=${page}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">${page}</a>
+                            </li>
+                        </c:forEach>
+                        <c:if test="${!productPerCategory.paging.lastTab}">
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage+1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
+                                    Next</a></li>
+                        </c:if>
+                    </ul>
+                </nav>
             </div>
-                <%
-                    if (i == 4) {
-                        i = 0;
-                %>
-            </div>
-            <%
-                }
-                i++;
-            %>
         </c:forEach>
     </div>
-    <div class="text-center col-12">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination" style="justify-content: center">
-                <c:if test="${!firstTab}">
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="${pageContext.request.contextPath}/product/search?page=${currentPage-1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
-                            Previous</a></li>
-                </c:if>
-                <%----%>
-                <c:forEach begin="${beginPage}" end="${endPage}" var="page">
-                    <li class="page-item ${currentPage == page ? 'active' : ''}">
-                        <a class="page-link"
-                           href="${pageContext.request.contextPath}/product/search?page=${page}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">${page}</a>
-                    </li>
-                </c:forEach>
-                <c:if test="${!lastTab}">
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="${pageContext.request.contextPath}/product/search?page=${currentPage+1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
-                            Next</a></li>
-                </c:if>
-            </ul>
-        </nav>
-    </div>
+
 </div>
 
 </body>

@@ -18,13 +18,19 @@ import java.util.List;
 
 @MultipartConfig
 public class CategoryService extends BaseService {
+    public static final CategoryService inst = new CategoryService();
+
     public final ProductModel productModel;
     public final CategoryModel categoryModel;
 
-    public CategoryService() {
+    private CategoryService() {
         super(CategoryModel.getInstance());
         this.categoryModel = (CategoryModel) super.getBaseModel();
         this.productModel = ProductModel.getInstance();
+    }
+
+    public static CategoryService getInstance() {
+        return inst;
     }
 
 

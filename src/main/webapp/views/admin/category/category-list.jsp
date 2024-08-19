@@ -18,9 +18,6 @@
         body {
             background-color: #f8f9fa;
         }
-        .container {
-            margin-top: 20px;
-        }
         .card {
             border: none;
             border-radius: 10px;
@@ -102,7 +99,8 @@
                         <tr>
                             <th>STT</th>
                             <th>Tên Loại sản phẩm</th>
-                            <th>Tác động</th>
+                            <th>Sửa</th>
+                            <th>Xóa</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -115,7 +113,8 @@
                                        title="Sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    |
+                                </td>
+                                <td>
                                     <a class="btn-delete" onclick="return confirm('Bạn muốn xóa thể loại này')"
                                        href="${pageContext.request.contextPath}/admin/category/delete?id=${category.id}"
                                        title="Xóa">

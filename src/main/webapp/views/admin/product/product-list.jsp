@@ -15,14 +15,6 @@
             font-family: 'Roboto', sans-serif; /* Modern font for better readability */
         }
 
-        .container {
-            background: #ffffff;
-            padding: 30px; /* Increased padding for a more spacious layout */
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
-            margin-top: 30px; /* Increased margin for better spacing */
-        }
-
         h1 {
             color: #212529; /* Slightly darker grey for headings */
             font-weight: 700; /* Bolder heading for emphasis */
@@ -178,7 +170,7 @@
                                    value="${keyword}">
                         </div>
                         <div class="col-2">
-                            <input type="submit" class="btn btn-success" value="Tìm"/>
+                            <input type="submit" class="btn btn-success col-12" value="Tìm"/>
                         </div>
 
                     </form>
@@ -200,7 +192,8 @@
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Mô tả</th>
-                            <th>Action</th>
+                            <th>Sửa</th>
+                            <th>Xóa</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -218,7 +211,8 @@
                                        title="Sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    |
+                                </td>
+                                <td>
                                     <a class="btn-delete" onclick="return confirm('Bạn muốn xóa sản phẩm này')"
                                        href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}"
                                        title="Xóa">

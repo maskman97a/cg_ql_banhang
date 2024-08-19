@@ -49,7 +49,7 @@ public class CategoryModel extends BaseModel {
             String sql = this.getSearchCategorySQL(baseSearchDto, id);
             sql += " order by id desc ";
             sql += " limit ? offset ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
             int index = 1;
             if (baseSearchDto != null) {
                 if (baseSearchDto.getKeyword() != null && !baseSearchDto.getKeyword().isEmpty()) {

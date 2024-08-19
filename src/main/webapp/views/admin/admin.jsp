@@ -22,9 +22,7 @@
 
             </div>
             <div class="col-10">
-                <span>Xin chào: <span style="color: green">${userInfo.fullName}</span>  - <a class=""
-                                                                                             href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
-
+                <span>Xin chào: <span style="color: green">${userInfo.fullName}</span>  - <a class=""href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
             </div>
         </div>
         <div class="row">
@@ -91,7 +89,7 @@
                                 function toggleMenu(id) {
                                     var submenu = document.getElementById(id);
                                     // submenu.style.display = submenu.style.display === "none" ? "block" : "none";
-                                    submenu.style.display = ( submenu.style.display === "none" || !submenu.style.display ) ? "block" : "none";
+                                    submenu.style.display = (submenu.style.display === "none" || !submenu.style.display) ? "block" : "none";
                                 }
                             </script>
                         </div>

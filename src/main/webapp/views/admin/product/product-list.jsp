@@ -8,131 +8,258 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-            crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-color: #f4f7f9; /* Softer light grey background */
+            font-family: 'Roboto', sans-serif; /* Modern font for better readability */
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px; /* Increased padding for a more spacious layout */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+            margin-top: 30px; /* Increased margin for better spacing */
+        }
+
+        h1 {
+            color: #212529; /* Slightly darker grey for headings */
+            font-weight: 700; /* Bolder heading for emphasis */
+            margin-bottom: 25px;
+        }
+
+        .form-control, .table, .btn {
+            border-radius: 8px; /* Slightly rounded corners */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: 600; /* Slightly bolder button text */
+            padding: 10px 20px; /* Added padding for a more prominent button */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #e9ecef; /* Softer hover color */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .pagination .page-link {
+            color: #007bff;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            color: #0056b3;
+            background-color: #e9ecef; /* Light grey background on hover */
+        }
+
+        .alert {
+            font-size: 1rem; /* Slightly larger font size for alerts */
+            margin-top: 20px;
+        }
+
+        .table thead th {
+            background-color: #007bff;
+            color: white;
+            text-align: center; /* Centered text in the header */
+        }
+
+        .table td, .table th {
+            padding: 20px; /* Increased padding for better spacing */
+            vertical-align: middle;
+            text-align: center; /* Center text in table cells */
+        }
+
+        .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-hover tbody tr:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .form-control {
+            padding: 12px; /* Increased padding for better input field size */
+            border: 1px solid #ced4da;
+        }
+
+        .form .col-2, .form .col-7, .form .col-1 {
+            margin-bottom: 15px; /* Increased margin for better spacing */
+        }
+
+        .pagination {
+            margin-top: 25px;
+        }
+
+        /* Enhanced button styles */
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        /* Custom styles for the search form */
+        .form {
+            margin-bottom: 20px; /* Spacing between form and other elements */
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #e3b942;
+            color: #ffffff;
+            border-radius: 10px 10px 0 0;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row"  ${!renderProductList ? 'hidden': ''}>
-        <div class="col-12">
-            <div class="container">
-                <div class="container form-control">
-                    <div class="col-12 mb-3">
-                        <span>${response}</span>
-                        <% if (request.getAttribute("errorMsg") != null) { %>
-                        <div class="alert alert-danger">
-                            <%= request.getAttribute("errorMsg") %>
+    <div class="card" ${!renderProductList ? 'hidden': ''} >
+        <div class="card-header text-center">
+            <h1>Danh sách sản phẩm</h1>
+        </div>
+        <div class="card-body">
+            <div class="col-12 mb-3">
+                <% if (request.getAttribute("errorMsg") != null) { %>
+                <div class="alert alert-danger">
+                    <%= request.getAttribute("errorMsg") %>
+                </div>
+                <% } %>
+                <% if (request.getAttribute("successMsg") != null) { %>
+                <div class="alert alert-success">
+                    <%= request.getAttribute("successMsg") %>
+                </div>
+                <% } %>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <form class="form row justify-content-center" method="get"
+                          action="${pageContext.request.contextPath}/admin/product/search">
+                        <input type="text" class="form-control" name="size" value="5" hidden/>
+                        <input type="text" class="form-control" name="page" value="1" hidden/>
+                        <div class="col-2">
+                            <select class="form-control" name="category-id">
+                                <option value="0">--Chọn thể loại--</option>
+                                <c:forEach var="category" items="${lstCategory}">
+                                    <option value="${category.id}">${category.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
-                        <% } %>
-                        <% if (request.getAttribute("successMsg") != null) { %>
-                        <div class="alert alert-success">
-                            <%= request.getAttribute("successMsg") %>
-                        </div>
-                        <% } %>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h1>Danh sách sản phẩm</h1>
-                        </div>
-
-                        <div class="col-12 mb-3">
-                            <form class="form row justify-content-center" method="get"
-                                  action="${pageContext.request.contextPath}/admin/product/search">
-                                <input type="text" class="form-control" name="size" value="10" hidden/>
-                                <input type="text" class="form-control" name="page" value="1" hidden/>
-                                <div class="col-2">
-                                    <select class="form-control" name="category-id">
-                                        <option value="0">--Chọn thể loại--</option>
-                                        <c:forEach var="category" items="${lstCategory}">
-                                            <option value="${category.id}">${category.name}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                                <div class="col-7">
-                                    <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
-                                           value="${keyword}">
-                                </div>
-                                <div class="col-1">
-                                    <input type="submit" class="btn btn-success" value="Tìm"/>
-                                </div>
-
-                            </form>
+                        <div class="col-7">
+                            <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
+                                   value="${keyword}">
                         </div>
                         <div class="col-2">
+                            <input type="submit" class="btn btn-success" value="Tìm"/>
                         </div>
-                        <div class="col-12 mb-3">
-                            <a href="${pageContext.request.contextPath}/admin/product/product-create"
-                               class="btn btn-primary">Thêm mới</a>
-                        </div>
-                        <div class="col-12">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã sản phẩm</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Thể loại</th>
-                                    <th>Giá</th>
-                                    <th>Số lượng</th>
-                                    <th>Mô tả</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="product" items="${lstData}">
-                                    <tr>
-                                        <td>${product.index}</td>
-                                        <td>${product.productCode}</td>
-                                        <td>${product.productName}</td>
-                                        <td>${product.categoryName}</td>
-                                        <td style="text-align: right">${product.strPrice}</td>
-                                        <td style="text-align: right">${product.strQuantity}</td>
-                                        <td>${product.description}</td>
-                                        <td>
-                                            <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}">Sửa</a>
-                                            |
-                                            <a class="btn-delete" onclick="return confirm('Bạn muốn xóa sản phẩm này')"
-                                               href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}">Xóa</a>
-                                        </td>
-                                    </tr>
 
-                                </c:forEach>
-                                </tbody>
-                            </table>
+                    </form>
+                </div>
+                <div class="col-2">
+                </div>
+                <div class="col-12 mb-3">
+                    <a href="${pageContext.request.contextPath}/admin/product/product-create"
+                       class="btn btn-primary">Thêm mới</a>
+                </div>
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Thể loại</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Mô tả</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="product" items="${lstData}">
+                            <tr>
+                                <td>${product.index}</td>
+                                <td>${product.productCode}</td>
+                                <td>${product.productName}</td>
+                                <td>${product.categoryName}</td>
+                                <td style="text-align: right">${product.strPrice}</td>
+                                <td style="text-align: right">${product.strQuantity}</td>
+                                <td>${product.description}</td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}"
+                                       title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    |
+                                    <a class="btn-delete" onclick="return confirm('Bạn muốn xóa sản phẩm này')"
+                                       href="${pageContext.request.contextPath}/admin/product/delete?id=${product.id}"
+                                       title="Xóa">
+                                        <i class="fas fa-trash-alt"></i></a>
+                                    </a>
+                                </td>
+                            </tr>
 
-                        </div>
-                        <div class="text-center col-12">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination" style="justify-content: center">
-                                    <c:if test="${!firstTab}">
-                                        <li class="page-item"><a class="page-link"
-                                                                 href="${pageContext.request.contextPath}/admin/search?page=${currentPage-1}&size=5">
-                                            Previous</a></li>
-                                    </c:if>
+                        </c:forEach>
+                        </tbody>
+                    </table>
 
-                                    <c:forEach begin="${beginPage}" end="${endPage}" var="page">
-                                        <li class="page-item ${currentPage == page ? 'active' : ''}">
-                                            <a class="page-link"
-                                               href="${pageContext.request.contextPath}/admin/search?page=${page}&size=5">${page}</a>
-                                        </li>
-                                    </c:forEach>
-                                    <c:if test="${!lastTab}">
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="${pageContext.request.contextPath}/admin/search?page=${currentPage+1}&size=5">
-                                                Next</a></li>
-                                    </c:if>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
+                </div>
+                <div class="text-center col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" style="justify-content: center">
+                            <c:if test="${!firstTab}">
+                                <li class="page-item"><a class="page-link"
+                                                         href="${pageContext.request.contextPath}/admin/search?page=${currentPage-1}&size=5">
+                                    Previous</a></li>
+                            </c:if>
+
+                            <c:forEach begin="${beginPage}" end="${endPage}" var="page">
+                                <li class="page-item ${currentPage == page ? 'active' : ''}">
+                                    <a class="page-link"
+                                       href="${pageContext.request.contextPath}/admin/search?page=${page}&size=5">${page}</a>
+                                </li>
+                            </c:forEach>
+                            <c:if test="${!lastTab}">
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="${pageContext.request.contextPath}/admin/search?page=${currentPage+1}&size=5">
+                                        Next</a></li>
+                            </c:if>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
+        <%--            </div>--%>
+        <%--        </div>--%>
     </div>
     <div class="row" ${!renderProductCreate ? 'hidden': ''}>
         <c:import url="/views/admin/product/product-create.jsp"/>

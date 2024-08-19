@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Getter
 @Setter
 public class BaseModel {
-
-
+    protected final Logger log = Logger.getLogger("System Log");
     private DatabaseConnection databaseConnection;
     private Connection connection;
     private Class entityClass;

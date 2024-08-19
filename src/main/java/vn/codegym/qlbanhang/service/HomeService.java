@@ -42,6 +42,7 @@ public class HomeService extends BaseService {
             productService.executeSearch(req, resp);
             renderPage(req, resp);
         } catch (Exception ex) {
+            ex.printStackTrace();
             renderErrorPage(req, resp);
         }
         log.info("-----end-----");

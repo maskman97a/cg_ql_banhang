@@ -83,7 +83,6 @@ public class ProductModel extends BaseModel {
             baseSearchDto.getOrderByConditions().add(orderByCondition);
         }
 
-        List<Product> productList = new ArrayList<>();
         List<BaseEntity> baseEntities = super.search(baseSearchDto);
         int count = super.count(baseSearchDto);
         log.info("-----end-----");

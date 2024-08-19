@@ -7,7 +7,7 @@ import vn.codegym.qlbanhang.annotation.Table;
 
 @Getter
 @Setter
-@Table(name = "product")
+@Table(name = "stock")
 public class Stock extends BaseEntity {
     @Column(name = "product_id")
     private int productId;

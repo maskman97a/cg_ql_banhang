@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 
 public class ProductService extends HomeService {
     private final ProductModel productModel;
@@ -58,6 +57,7 @@ public class ProductService extends HomeService {
     }
 
     public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        log.info("-----start-----");
         List<CategoryDto> categoryDtoList = getAllCategory(req);
         getAllProductSortType(req);
         String keyword = req.getParameter("keyword");
@@ -150,6 +150,7 @@ public class ProductService extends HomeService {
         req.setAttribute("showListProduct", true);
         req.setAttribute("keyword", keyword);
         req.setAttribute("categoryId", categoryId);
+        log.info("-----end-----");
     }
 
     public void getAllProductSortType(HttpServletRequest req) {
@@ -165,7 +166,8 @@ public class ProductService extends HomeService {
         }
     }
 
-    public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+
         String productId = req.getParameter("productId");
         String newQuantityStr = req.getParameter("quantity");
         if (!DataUtil.isNullObject(productId)) {
@@ -178,6 +180,7 @@ public class ProductService extends HomeService {
     }
 
     public void getCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("-----start-----");
         HttpSession session = req.getSession();
         Object cartProductJson = session.getAttribute("cartProductJson");
         List<CartProductDto> cartProductDtoList = new ArrayList<>();
@@ -191,90 +194,85 @@ public class ProductService extends HomeService {
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(gson.toJson(response));
         resp.getWriter().close();
+        log.info("-----end-----");
     }
 
-    public void removeProductFromCart(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            String productIdStr = req.getParameter("productId");
-            if (productIdStr != null && !productIdStr.isEmpty()) {
-                Integer productId = Integer.parseInt(productIdStr);
-                HttpSession session = req.getSession();
-                List<CartProductDto> cartProductDtoList;
-                Object cartProductJson = session.getAttribute("cartProductJson");
-                if (!DataUtil.isNullObject(cartProductJson)) {
-                    cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
-                    Optional<CartProductDto> optional = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(productId)).findFirst();
-                    if (optional.isPresent()) {
-                        cartProductDtoList.remove(optional.get());
-                        cartProductJson = gson.toJson(new Cart(cartProductDtoList));
-                        session.setAttribute("cartProductJson", cartProductJson);
-                    }
-                }
-                getCart(req, resp);
-
-            }
-        } catch (Exception ex) {
-            log.log(Level.WARNING, ex.getMessage());
-        }
-    }
-
-    public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id, Integer newQuantity) {
-        try {
-            BaseResponse<CartResponse> baseResponse = new BaseResponse();
+    public void removeProductFromCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("-----start-----");
+        String productIdStr = req.getParameter("productId");
+        if (productIdStr != null && !productIdStr.isEmpty()) {
+            Integer productId = Integer.parseInt(productIdStr);
             HttpSession session = req.getSession();
             List<CartProductDto> cartProductDtoList;
             Object cartProductJson = session.getAttribute("cartProductJson");
-            if (DataUtil.isNullObject(cartProductJson)) {
-                cartProductDtoList = new ArrayList<>();
-            } else {
+            if (!DataUtil.isNullObject(cartProductJson)) {
                 cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
-            }
-            Product product = productModel.findProductById(id);
-            ProductDto productDto = modelMapper.map(product, ProductDto.class);
-            if (cartProductDtoList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
-                CartProductDto cartProductDto = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
-                if (newQuantity != null) {
-                    cartProductDto.setQuantity(newQuantity);
-                } else {
-                    cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+                Optional<CartProductDto> optional = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(productId)).findFirst();
+                if (optional.isPresent()) {
+                    cartProductDtoList.remove(optional.get());
+                    cartProductJson = gson.toJson(new Cart(cartProductDtoList));
+                    session.setAttribute("cartProductJson", cartProductJson);
                 }
-                cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice().intValue());
-            } else {
-                CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);
-                newCartProductDto.setAmount(productDto.getPrice().intValue());
-                cartProductDtoList.add(newCartProductDto);
             }
-            cartProductJson = gson.toJson(new Cart(cartProductDtoList));
-            session.setAttribute("cartProductJson", cartProductJson);
-            req.setAttribute("cartProductList", cartProductDtoList);
-            resp.setContentType("application/json");
-            CartResponse cartResponse = new CartResponse();
-            cartResponse.setCartCount(cartProductDtoList.size());
-            cartResponse.setCartProductList(cartProductDtoList);
-            baseResponse.setAdditionalData(cartResponse);
-            resp.getWriter().write(new Gson().toJson(baseResponse));
-            resp.getWriter().close();
-        } catch (Exception ex) {
-            log.log(Level.WARNING, ex.getMessage());
+            getCart(req, resp);
+
         }
+        log.info("-----end-----");
     }
 
-    public List<CategoryDto> getAllCategory(HttpServletRequest req) {
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        try {
-            List<BaseEntity> baseEntities = categoryModel.findAllActive();
-            for (BaseEntity baseEntity : baseEntities) {
-                categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
-            }
-            req.setAttribute("lstCategory", categoryDtoList);
-            String selectedCategoryId = req.getParameter("categoryId");
-            if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
-                req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
-            }
-            return categoryDtoList;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id, Integer newQuantity) throws SQLException, IOException {
+        log.info("-----start-----");
+        BaseResponse<CartResponse> baseResponse = new BaseResponse();
+        HttpSession session = req.getSession();
+        List<CartProductDto> cartProductDtoList;
+        Object cartProductJson = session.getAttribute("cartProductJson");
+        if (DataUtil.isNullObject(cartProductJson)) {
+            cartProductDtoList = new ArrayList<>();
+        } else {
+            cartProductDtoList = gson.fromJson((String) cartProductJson, Cart.class).getCartProductList();
         }
-        return new ArrayList<>();
+        Product product = productModel.findProductById(id);
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        if (cartProductDtoList.stream().anyMatch(x -> x.getProduct().getId().equals(id))) {
+            CartProductDto cartProductDto = cartProductDtoList.stream().filter(x -> x.getProduct().getId().equals(id)).findFirst().get();
+            if (newQuantity != null) {
+                cartProductDto.setQuantity(newQuantity);
+            } else {
+                cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
+            }
+            cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice().intValue());
+        } else {
+            CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);
+            newCartProductDto.setAmount(productDto.getPrice().intValue());
+            cartProductDtoList.add(newCartProductDto);
+        }
+        cartProductJson = gson.toJson(new Cart(cartProductDtoList));
+        session.setAttribute("cartProductJson", cartProductJson);
+        req.setAttribute("cartProductList", cartProductDtoList);
+        resp.setContentType("application/json");
+        CartResponse cartResponse = new CartResponse();
+        cartResponse.setCartCount(cartProductDtoList.size());
+        cartResponse.setCartProductList(cartProductDtoList);
+        baseResponse.setAdditionalData(cartResponse);
+        resp.getWriter().write(new Gson().toJson(baseResponse));
+        resp.getWriter().close();
+        log.info("-----end-----");
+    }
+
+    public List<CategoryDto> getAllCategory(HttpServletRequest req) throws SQLException {
+        log.info("-----start-----");
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        List<BaseEntity> baseEntities = categoryModel.findAllActive();
+        for (BaseEntity baseEntity : baseEntities) {
+            categoryDtoList.add(modelMapper.map(baseEntity, CategoryDto.class));
+        }
+        req.setAttribute("lstCategory", categoryDtoList);
+        String selectedCategoryId = req.getParameter("categoryId");
+        if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
+            req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
+        }
+        log.info("-----end-----");
+        return categoryDtoList;
+
     }
 }

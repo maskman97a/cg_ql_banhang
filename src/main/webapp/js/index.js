@@ -45,10 +45,8 @@ async function addToCart(productId) {
     let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
     let data = await callApi(fetchUrl, "GET")
     if (data.errorCode === 0) {
-        alert("Thêm hàng vào giỏ thành công!");
         document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
     } else {
-        alert("Thêm vào giỏ hàng thất bại");
     }
 }
 

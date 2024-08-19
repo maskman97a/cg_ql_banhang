@@ -110,13 +110,13 @@ public class ProductService extends HomeService {
                         }
                         productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
                         productPagingDto.setPage(productPage++);
-                        productListPerCategoryDto.getProductPagingList().add(productPagingDto);
                         if (countProductInPage == 4) {
                             countProductInPage = 0;
                             productPage++;
                         }
                         countProductInPage++;
                     }
+                    productListPerCategoryDto.getProductPagingList().add(productPagingDto);
                     productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
                     productListPerCategoryDtos.add(productListPerCategoryDto);
                 }
@@ -134,13 +134,14 @@ public class ProductService extends HomeService {
                     }
                     productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
                     productPagingDto.setPage(productPage++);
-                    productListPerCategoryDto.getProductPagingList().add(productPagingDto);
+
                     if (countProductInPage == 4) {
                         countProductInPage = 0;
                         productPage++;
                     }
                     countProductInPage++;
                 }
+                productListPerCategoryDto.getProductPagingList().add(productPagingDto);
                 productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
                 productListPerCategoryDtos.add(productListPerCategoryDto);
             }

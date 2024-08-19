@@ -42,7 +42,7 @@
             %>
             <div class=" col-12 text-left">
                 <a href="${pageContext.request.contextPath}/product/search?categoryId=${productPerCategory.categoryId}"
-                   class="btn"> <span class="col-12">${productPerCategory.categoryName}</span></a>
+                   class="btn border"> <span class="col-12">${productPerCategory.categoryName}</span></a>
             </div>
             <c:forEach var="productPaging" items="${productPerCategory.productPagingList}">
                 <div class="row">

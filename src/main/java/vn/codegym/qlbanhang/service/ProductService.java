@@ -1,10 +1,7 @@
 package vn.codegym.qlbanhang.service;
 
 import com.google.gson.Gson;
-import vn.codegym.qlbanhang.dto.Cart;
-import vn.codegym.qlbanhang.dto.CartProductDto;
-import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.dto.ProductDto;
+import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.dto.response.CartResponse;
 import vn.codegym.qlbanhang.entity.BaseData;
@@ -61,19 +58,21 @@ public class ProductService extends HomeService {
 
     public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            getAllCategory(req);
+            List<CategoryDto> categoryDtoList = getAllCategory(req);
             getAllProductSortType(req);
             String keyword = req.getParameter("keyword");
-            Integer categoryId = null;
+            Integer categoryId;
             if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
                 categoryId = Integer.parseInt(req.getParameter("categoryId"));
+            } else {
+                categoryId = null;
             }
             Integer page = 1;
             String pageStr = req.getParameter("page");
             if (!DataUtil.isNullOrEmpty(pageStr)) {
                 page = Integer.parseInt(pageStr);
             }
-            Integer size = 8;
+            Integer size = 16;
             String sizeStr = req.getParameter("size");
             if (!DataUtil.isNullOrEmpty(sizeStr)) {
                 size = Integer.parseInt(sizeStr);
@@ -92,17 +91,37 @@ public class ProductService extends HomeService {
                 assert productSort != null;
                 req.setAttribute("selectedSort", productSort.getName());
             }
-            BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryId, sortCol, sortType, page, size);
-            List<ProductDto> productDtoList = new ArrayList<>();
-            for (BaseEntity baseEntity : baseData.getLstData()) {
-                productDtoList.add(modelMapper.map(baseEntity, ProductDto.class));
+            List<ProductListPerCategoryDto> productListPerCategoryDtos = new ArrayList<>();
+            if (DataUtil.isNullObject(categoryId)) {
+                for (CategoryDto categoryDto : categoryDtoList) {
+                    ProductListPerCategoryDto productListPerCategoryDto = new ProductListPerCategoryDto();
+                    productListPerCategoryDto.setCategoryName(categoryDto.getName());
+                    BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryDto.getId(), sortCol, sortType, page, size);
+                    if (DataUtil.isNullOrEmpty(baseData.getLstData())) {
+                        continue;
+                    }
+                    for (BaseEntity baseEntity : baseData.getLstData()) {
+                        productListPerCategoryDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
+                    }
+                    productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
+                    productListPerCategoryDtos.add(productListPerCategoryDto);
+                }
+            } else {
+                CategoryDto categoryDto = categoryDtoList.stream().filter(x -> x.getId().equals(categoryId)).findFirst().get();
+                ProductListPerCategoryDto productListPerCategoryDto = new ProductListPerCategoryDto();
+                productListPerCategoryDto.setCategoryName(categoryDto.getName());
+                BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryDto.getId(), sortCol, sortType, page, size);
+                for (BaseEntity baseEntity : baseData.getLstData()) {
+                    productListPerCategoryDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
+                }
+                productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
+                productListPerCategoryDtos.add(productListPerCategoryDto);
             }
-            req.setAttribute("lstProduct", productDtoList);
+
+            req.setAttribute("productPerCategoryList", productListPerCategoryDtos);
             req.setAttribute("showListProduct", true);
             req.setAttribute("keyword", keyword);
             req.setAttribute("categoryId", categoryId);
-
-            getPaging(req, resp, baseData.getTotalRow(), size, page);
 
 
         } catch (Exception ex) {
@@ -213,7 +232,7 @@ public class ProductService extends HomeService {
         }
     }
 
-    public void getAllCategory(HttpServletRequest req) {
+    public List<CategoryDto> getAllCategory(HttpServletRequest req) {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         try {
             List<BaseEntity> baseEntities = categoryModel.findAllActive();
@@ -225,8 +244,10 @@ public class ProductService extends HomeService {
             if (!DataUtil.isNullOrEmpty(selectedCategoryId)) {
                 req.setAttribute("selectedCategoryId", Integer.parseInt(selectedCategoryId));
             }
+            return categoryDtoList;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return new ArrayList<>();
     }
 }

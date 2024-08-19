@@ -8,7 +8,6 @@ import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.entity.Category;
 import vn.codegym.qlbanhang.entity.Order;
 import vn.codegym.qlbanhang.entity.Product;
-import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
@@ -37,9 +36,9 @@ public class AdminService extends BaseService {
         this.categoryService = new CategoryService();
         this.orderService = new OrderService();
 
-        this.productModel = (ProductModel) BaseModel.getInstance(Product.class);
-        this.categoryModel = (CategoryModel) BaseModel.getInstance(Category.class);
-        this.orderModel = (OrderModel) BaseModel.getInstance(Order.class);
+        this.productModel = ProductModel.getInstance();
+        this.categoryModel = CategoryModel.getInstance();
+        this.orderModel = OrderModel.getInstance();
     }
 
 

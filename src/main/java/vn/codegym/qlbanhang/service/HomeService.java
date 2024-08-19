@@ -46,27 +46,21 @@ public class HomeService extends BaseService {
     }
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            HttpSession session = req.getSession();
-            Object cartProductJson = session.getAttribute("cartProductJson");
-            Cart cart;
-            if (DataUtil.isNullObject(cartProductJson)) {
-                cart = new Cart(new ArrayList<>());
-            } else {
-                cart = gson.fromJson((String) cartProductJson, Cart.class);
-            }
-            List<CartProductDto> cartProductDtoList = cart.getCartProductList();
+        HttpSession session = req.getSession();
+        Object cartProductJson = session.getAttribute("cartProductJson");
+        Cart cart;
+        if (DataUtil.isNullObject(cartProductJson)) {
+            cart = new Cart(new ArrayList<>());
+        } else {
+            cart = gson.fromJson((String) cartProductJson, Cart.class);
+        }
+        List<CartProductDto> cartProductDtoList = cart.getCartProductList();
 
-            req.setAttribute("cartCount", cartProductDtoList.size());
-            if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")) {
-                req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
-            } else {
-                req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        req.setAttribute("cartCount", cartProductDtoList.size());
+        if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")) {
+            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
+        } else {
+            req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
         }
     }
-
-
 }

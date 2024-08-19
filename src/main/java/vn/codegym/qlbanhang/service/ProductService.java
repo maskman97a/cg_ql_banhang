@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,75 +57,50 @@ public class ProductService extends HomeService {
         }
     }
 
-    public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            List<CategoryDto> categoryDtoList = getAllCategory(req);
-            getAllProductSortType(req);
-            String keyword = req.getParameter("keyword");
-            Integer categoryId;
-            if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
-                categoryId = Integer.parseInt(req.getParameter("categoryId"));
-            } else {
-                categoryId = null;
-            }
-            Integer page = 1;
-            String pageStr = req.getParameter("page");
-            if (!DataUtil.isNullOrEmpty(pageStr)) {
-                page = Integer.parseInt(pageStr);
-            }
-            Integer size = 16;
-            String sizeStr = req.getParameter("size");
-            if (!DataUtil.isNullOrEmpty(sizeStr)) {
-                size = Integer.parseInt(sizeStr);
-            }
+    public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        List<CategoryDto> categoryDtoList = getAllCategory(req);
+        getAllProductSortType(req);
+        String keyword = req.getParameter("keyword");
+        Integer categoryId;
+        if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
+            categoryId = Integer.parseInt(req.getParameter("categoryId"));
+        } else {
+            categoryId = null;
+        }
+        Integer page = 1;
+        String pageStr = req.getParameter("page");
+        if (!DataUtil.isNullOrEmpty(pageStr)) {
+            page = Integer.parseInt(pageStr);
+        }
+        Integer size = 16;
+        String sizeStr = req.getParameter("size");
+        if (!DataUtil.isNullOrEmpty(sizeStr)) {
+            size = Integer.parseInt(sizeStr);
+        }
 
-            String sortCol = req.getParameter("sortCol");
-            if (!DataUtil.isNullOrEmpty(sortCol)) {
-                req.setAttribute("sortCol", sortCol);
-            }
-            String sortType = req.getParameter("sortType");
-            if (!DataUtil.isNullOrEmpty(sortType)) {
-                req.setAttribute("sortType", sortType);
-            }
-            if (!DataUtil.isNullOrEmpty(sortCol) && !DataUtil.isNullOrEmpty(sortType)) {
-                ProductSort productSort = ProductSort.getProductSort(sortCol, sortType);
-                assert productSort != null;
-                req.setAttribute("selectedSort", productSort.getName());
-            }
-            List<ProductListPerCategoryDto> productListPerCategoryDtos = new ArrayList<>();
-            if (DataUtil.isNullObject(categoryId)) {
-                for (CategoryDto categoryDto : categoryDtoList) {
-                    ProductListPerCategoryDto productListPerCategoryDto = new ProductListPerCategoryDto();
-                    productListPerCategoryDto.setCategoryId(categoryDto.getId());
-                    productListPerCategoryDto.setCategoryName(categoryDto.getName());
-                    BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryDto.getId(), sortCol, sortType, page, size);
-                    if (DataUtil.isNullOrEmpty(baseData.getLstData())) {
-                        continue;
-                    }
-                    ProductPagingDto productPagingDto = new ProductPagingDto();
-                    int productPage = 1;
-                    int countProductInPage = 1;
-                    for (BaseEntity baseEntity : baseData.getLstData()) {
-                        if (countProductInPage == 1) {
-                            productPagingDto = new ProductPagingDto();
-                        }
-                        productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
-                        productPagingDto.setPage(productPage++);
-                        if (countProductInPage == 4) {
-                            countProductInPage = 0;
-                            productPage++;
-                        }
-                        countProductInPage++;
-                    }
-                    productListPerCategoryDto.getProductPagingList().add(productPagingDto);
-                    productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
-                    productListPerCategoryDtos.add(productListPerCategoryDto);
-                }
-            } else {
-                CategoryDto categoryDto = categoryDtoList.stream().filter(x -> x.getId().equals(categoryId)).findFirst().get();
+        String sortCol = req.getParameter("sortCol");
+        if (!DataUtil.isNullOrEmpty(sortCol)) {
+            req.setAttribute("sortCol", sortCol);
+        }
+        String sortType = req.getParameter("sortType");
+        if (!DataUtil.isNullOrEmpty(sortType)) {
+            req.setAttribute("sortType", sortType);
+        }
+        if (!DataUtil.isNullOrEmpty(sortCol) && !DataUtil.isNullOrEmpty(sortType)) {
+            ProductSort productSort = ProductSort.getProductSort(sortCol, sortType);
+            assert productSort != null;
+            req.setAttribute("selectedSort", productSort.getName());
+        }
+        List<ProductListPerCategoryDto> productListPerCategoryDtos = new ArrayList<>();
+        if (DataUtil.isNullObject(categoryId)) {
+            for (CategoryDto categoryDto : categoryDtoList) {
                 ProductListPerCategoryDto productListPerCategoryDto = new ProductListPerCategoryDto();
+                productListPerCategoryDto.setCategoryId(categoryDto.getId());
                 productListPerCategoryDto.setCategoryName(categoryDto.getName());
                 BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryDto.getId(), sortCol, sortType, page, size);
+                if (DataUtil.isNullOrEmpty(baseData.getLstData())) {
+                    continue;
+                }
                 ProductPagingDto productPagingDto = new ProductPagingDto();
                 int productPage = 1;
                 int countProductInPage = 1;
@@ -134,7 +110,6 @@ public class ProductService extends HomeService {
                     }
                     productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
                     productPagingDto.setPage(productPage++);
-
                     if (countProductInPage == 4) {
                         countProductInPage = 0;
                         productPage++;
@@ -145,16 +120,36 @@ public class ProductService extends HomeService {
                 productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
                 productListPerCategoryDtos.add(productListPerCategoryDto);
             }
+        } else {
+            CategoryDto categoryDto = categoryDtoList.stream().filter(x -> x.getId().equals(categoryId)).findFirst().get();
+            ProductListPerCategoryDto productListPerCategoryDto = new ProductListPerCategoryDto();
+            productListPerCategoryDto.setCategoryName(categoryDto.getName());
+            BaseData baseData = productModel.findProductByKeywordAndCategoryId(keyword, categoryDto.getId(), sortCol, sortType, page, size);
+            ProductPagingDto productPagingDto = new ProductPagingDto();
+            int productPage = 1;
+            int countProductInPage = 1;
+            for (BaseEntity baseEntity : baseData.getLstData()) {
+                if (countProductInPage == 1) {
+                    productPagingDto = new ProductPagingDto();
+                }
+                productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
+                productPagingDto.setPage(productPage++);
 
-            req.setAttribute("productPerCategoryList", productListPerCategoryDtos);
-            req.setAttribute("showListProduct", true);
-            req.setAttribute("keyword", keyword);
-            req.setAttribute("categoryId", categoryId);
-
-
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
+                if (countProductInPage == 4) {
+                    countProductInPage = 0;
+                    productPage++;
+                }
+                countProductInPage++;
+            }
+            productListPerCategoryDto.getProductPagingList().add(productPagingDto);
+            productListPerCategoryDto.setPaging(getPaging(req, resp, baseData.getTotalRow(), size, page));
+            productListPerCategoryDtos.add(productListPerCategoryDto);
         }
+
+        req.setAttribute("productPerCategoryList", productListPerCategoryDtos);
+        req.setAttribute("showListProduct", true);
+        req.setAttribute("keyword", keyword);
+        req.setAttribute("categoryId", categoryId);
     }
 
     public void getAllProductSortType(HttpServletRequest req) {
@@ -162,12 +157,16 @@ public class ProductService extends HomeService {
     }
 
     public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        executeSearch(req, resp);
-        renderPage(req, resp);
+        try {
+            executeSearch(req, resp);
+            renderPage(req, resp);
+        } catch (Exception ex) {
+            renderErrorPage(req, resp);
+        }
     }
 
     public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            String productId = req.getParameter("productId");
+        String productId = req.getParameter("productId");
         String newQuantityStr = req.getParameter("quantity");
         if (!DataUtil.isNullObject(productId)) {
             Integer newQuantity = null;

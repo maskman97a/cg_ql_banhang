@@ -4,7 +4,7 @@ package vn.codegym.qlbanhang.model;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import java.sql.Connection;
@@ -18,7 +18,7 @@ public class CategoryModel extends BaseModel {
     private static final CategoryModel inst = new CategoryModel();
 
     private CategoryModel() {
-        super(Category.class);
+        super(CategoryEntity.class);
     }
 
     public static CategoryModel getInstance() {
@@ -26,12 +26,12 @@ public class CategoryModel extends BaseModel {
     }
 
 
-    public List<Category> findCategory() {
+    public List<CategoryEntity> findCategory() {
         try {
             List<BaseEntity> baseEntities = findAllActive();
-            List<Category> productList = new ArrayList<>();
+            List<CategoryEntity> productList = new ArrayList<>();
             for (BaseEntity baseEntity : baseEntities) {
-                productList.add((Category) baseEntity);
+                productList.add((CategoryEntity) baseEntity);
             }
             return productList;
 
@@ -129,17 +129,17 @@ public class CategoryModel extends BaseModel {
         return sb.toString();
     }
 
-    public int updateCategory(Boolean isCancel, Category category) throws SQLException {
+    public int updateCategory(Boolean isCancel, CategoryEntity categoryEntity) throws SQLException {
         StringBuilder sb = new StringBuilder("");
         sb.append("UPDATE category " +
                 "   SET updated_date = CURRENT_TIMESTAMP , " +
                 "       updated_by = ? ");
-        if (!DataUtil.isNullObject(category)) {
+        if (!DataUtil.isNullObject(categoryEntity)) {
             if (!isCancel) {
-                if (!DataUtil.isNullOrEmpty(category.getName()))
+                if (!DataUtil.isNullOrEmpty(categoryEntity.getName()))
                     sb.append(" ,name = ? ");
             }
-            if (!DataUtil.isNullObject(category.getStatus()))
+            if (!DataUtil.isNullObject(categoryEntity.getStatus()))
                 sb.append(" ,status = ? ");
         }
         sb.append(" WHERE id = ? ");
@@ -147,16 +147,16 @@ public class CategoryModel extends BaseModel {
             sb.append(" AND status = 1 ");
         PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
         int index = 1;
-        preparedStatement.setString(index++, category.getUpdatedBy());
-        if (!DataUtil.isNullObject(category)) {
+        preparedStatement.setString(index++, categoryEntity.getUpdatedBy());
+        if (!DataUtil.isNullObject(categoryEntity)) {
             if (!isCancel) {
-                if (!DataUtil.isNullOrEmpty(category.getName()))
-                    preparedStatement.setString(index++, category.getName().trim());
+                if (!DataUtil.isNullOrEmpty(categoryEntity.getName()))
+                    preparedStatement.setString(index++, categoryEntity.getName().trim());
             }
-            if (!DataUtil.isNullObject(category.getStatus()))
-                preparedStatement.setInt(index++, category.getStatus());
+            if (!DataUtil.isNullObject(categoryEntity.getStatus()))
+                preparedStatement.setInt(index++, categoryEntity.getStatus());
         }
-        preparedStatement.setInt(index++, category.getId());
+        preparedStatement.setInt(index++, categoryEntity.getId());
         return preparedStatement.executeUpdate();
     }
 

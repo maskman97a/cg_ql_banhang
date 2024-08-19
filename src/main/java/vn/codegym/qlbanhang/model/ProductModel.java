@@ -2,12 +2,12 @@ package vn.codegym.qlbanhang.model;
 
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
-import vn.codegym.qlbanhang.dto.OrderByCondition;
+import vn.codegym.qlbanhang.dto.QueryConditionDto;
+import vn.codegym.qlbanhang.dto.OrderByConditionDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.entity.ProductEntity;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import java.sql.PreparedStatement;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ProductModel extends BaseModel {
     private ProductModel() {
-        super(Product.class);
+        super(ProductEntity.class);
     }
 
     private static final ProductModel inst = new ProductModel();
@@ -27,19 +27,19 @@ public class ProductModel extends BaseModel {
         return inst;
     }
 
-    public Product findProductById(int id) throws SQLException {
-        return (Product) findById(id);
+    public ProductEntity findProductById(int id) throws SQLException {
+        return (ProductEntity) findById(id);
     }
 
 
-    public List<Product> findProduct() {
+    public List<ProductEntity> findProduct() {
         try {
             List<BaseEntity> baseEntities = findAllActive();
-            List<Product> productList = new ArrayList<>();
+            List<ProductEntity> productEntityList = new ArrayList<>();
             for (BaseEntity baseEntity : baseEntities) {
-                productList.add((Product) baseEntity);
+                productEntityList.add((ProductEntity) baseEntity);
             }
-            return productList;
+            return productEntityList;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -51,36 +51,36 @@ public class ProductModel extends BaseModel {
         log.info("-----start-----");
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         if (!DataUtil.isNullOrEmpty(keyword)) {
-            Condition condition = Condition.newAndCondition("product_name", "LIKE", "%" + keyword + "%");
-            baseSearchDto.getConditions().add(condition);
+            QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("product_name", "LIKE", "%" + keyword + "%");
+            baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
 
         if (!DataUtil.isNullOrZero(categoryId)) {
-            Condition condition = Condition.newAndCondition("category_id", "=", categoryId);
-            baseSearchDto.getConditions().add(condition);
+            QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("category_id", "=", categoryId);
+            baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
-        Condition condition = Condition.newAndCondition("status", "=", Const.STATUS_ACTIVE);
-        baseSearchDto.getConditions().add(condition);
+        QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("status", "=", Const.STATUS_ACTIVE);
+        baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
 
         baseSearchDto.setSize(size);
         baseSearchDto.setPage(page);
         if (DataUtil.isNullOrEmpty(sortCol)) {
-            OrderByCondition orderByCondition = new OrderByCondition();
-            orderByCondition.setColumnName("category_id");
-            orderByCondition.setOrderType("ASC");
-            baseSearchDto.getOrderByConditions().add(orderByCondition);
+            OrderByConditionDto orderByConditionDto = new OrderByConditionDto();
+            orderByConditionDto.setColumnName("category_id");
+            orderByConditionDto.setOrderType("ASC");
+            baseSearchDto.getOrderByConditionDtos().add(orderByConditionDto);
 
-            OrderByCondition orderByCondition2 = new OrderByCondition();
-            orderByCondition2.setColumnName("product_name");
-            orderByCondition2.setOrderType("ASC");
-            baseSearchDto.getOrderByConditions().add(orderByCondition2);
+            OrderByConditionDto orderByConditionDto2 = new OrderByConditionDto();
+            orderByConditionDto2.setColumnName("product_name");
+            orderByConditionDto2.setOrderType("ASC");
+            baseSearchDto.getOrderByConditionDtos().add(orderByConditionDto2);
         } else {
-            OrderByCondition orderByCondition = new OrderByCondition();
-            orderByCondition.setColumnName(sortCol);
+            OrderByConditionDto orderByConditionDto = new OrderByConditionDto();
+            orderByConditionDto.setColumnName(sortCol);
             if (sortType != null) {
-                orderByCondition.setOrderType(sortType);
+                orderByConditionDto.setOrderType(sortType);
             }
-            baseSearchDto.getOrderByConditions().add(orderByCondition);
+            baseSearchDto.getOrderByConditionDtos().add(orderByConditionDto);
         }
 
         List<BaseEntity> baseEntities = super.search(baseSearchDto);
@@ -213,40 +213,40 @@ public class ProductModel extends BaseModel {
         return sb.toString();
     }
 
-    public int updateProduct(Boolean isCancel, Product product) throws SQLException {
+    public int updateProduct(Boolean isCancel, ProductEntity productEntity) throws SQLException {
             StringBuilder sb = new StringBuilder("");
         sb.append("UPDATE product " + "   SET updated_date = CURRENT_TIMESTAMP , " + "       updated_by = ? ");
-            if (!DataUtil.isNullObject(product)) {
+            if (!DataUtil.isNullObject(productEntity)) {
                 if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(product.getImageUrl())) sb.append(" ,image_url = ? ");
-                    if (!DataUtil.isNullOrEmpty(product.getProductName())) sb.append(" ,product_name = ? ");
-                    if (!DataUtil.isNullOrZero(product.getPrice())) sb.append(" ,price = ? ");
-                    if (!DataUtil.isNullOrZero(product.getQuantity())) sb.append(" ,quantity = ? ");
-                    if (!DataUtil.isNullOrEmpty(product.getDescription())) sb.append(" ,description = ? ");
+                    if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl())) sb.append(" ,image_url = ? ");
+                    if (!DataUtil.isNullOrEmpty(productEntity.getProductName())) sb.append(" ,product_name = ? ");
+                    if (!DataUtil.isNullOrZero(productEntity.getPrice())) sb.append(" ,price = ? ");
+                    if (!DataUtil.isNullOrZero(productEntity.getQuantity())) sb.append(" ,quantity = ? ");
+                    if (!DataUtil.isNullOrEmpty(productEntity.getDescription())) sb.append(" ,description = ? ");
                 }
-                if (!DataUtil.isNullObject(product.getStatus())) sb.append(" ,status = ? ");
+                if (!DataUtil.isNullObject(productEntity.getStatus())) sb.append(" ,status = ? ");
             }
             sb.append(" WHERE id = ? ");
         if (isCancel) sb.append(" AND status = 1 ");
         PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
             int index = 1;
-            preparedStatement.setString(index++, product.getUpdatedBy());
-            if (!DataUtil.isNullObject(product)) {
+            preparedStatement.setString(index++, productEntity.getUpdatedBy());
+            if (!DataUtil.isNullObject(productEntity)) {
                 if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(product.getImageUrl()))
-                        preparedStatement.setString(index++, product.getImageUrl().trim());
-                    if (!DataUtil.isNullOrEmpty(product.getProductName()))
-                        preparedStatement.setString(index++, product.getProductName().trim());
-                    if (!DataUtil.isNullOrZero(product.getPrice()))
-                        preparedStatement.setLong(index++, product.getPrice());
-                    if (!DataUtil.isNullOrZero(product.getQuantity()))
-                        preparedStatement.setInt(index++, product.getQuantity());
-                    if (!DataUtil.isNullOrEmpty(product.getDescription()))
-                        preparedStatement.setString(index++, product.getDescription().trim());
+                    if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl()))
+                        preparedStatement.setString(index++, productEntity.getImageUrl().trim());
+                    if (!DataUtil.isNullOrEmpty(productEntity.getProductName()))
+                        preparedStatement.setString(index++, productEntity.getProductName().trim());
+                    if (!DataUtil.isNullOrZero(productEntity.getPrice()))
+                        preparedStatement.setLong(index++, productEntity.getPrice());
+                    if (!DataUtil.isNullOrZero(productEntity.getQuantity()))
+                        preparedStatement.setInt(index++, productEntity.getQuantity());
+                    if (!DataUtil.isNullOrEmpty(productEntity.getDescription()))
+                        preparedStatement.setString(index++, productEntity.getDescription().trim());
                 }
-                if (!DataUtil.isNullObject(product.getStatus())) preparedStatement.setInt(index++, product.getStatus());
+                if (!DataUtil.isNullObject(productEntity.getStatus())) preparedStatement.setInt(index++, productEntity.getStatus());
             }
-            preparedStatement.setInt(index++, product.getId());
+            preparedStatement.setInt(index++, productEntity.getId());
             return preparedStatement.executeUpdate();
     }
 }

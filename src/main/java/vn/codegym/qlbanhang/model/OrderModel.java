@@ -1,9 +1,9 @@
 package vn.codegym.qlbanhang.model;
 
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.QueryConditionDto;
 import vn.codegym.qlbanhang.dto.OrdersDto;
-import vn.codegym.qlbanhang.entity.Order;
+import vn.codegym.qlbanhang.entity.OrderEntity;
 import vn.codegym.qlbanhang.enums.OrderStatus;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -18,18 +18,18 @@ public class OrderModel extends BaseModel {
     private static final OrderModel inst = new OrderModel();
 
     private OrderModel() {
-        super(Order.class);
+        super(OrderEntity.class);
     }
 
     public static OrderModel getInstance() {
         return inst;
     }
 
-    public Order getByCode(String code) throws SQLException {
+    public OrderEntity getByCode(String code) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition condition = Condition.newAndCondition("code", "=", code);
-        baseSearchDto.setConditions(Collections.singletonList(condition));
-        return (Order) findOne(baseSearchDto);
+        QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("code", "=", code);
+        baseSearchDto.setQueryConditionDtos(Collections.singletonList(queryConditionDto));
+        return (OrderEntity) findOne(baseSearchDto);
     }
 
 
@@ -113,12 +113,12 @@ public class OrderModel extends BaseModel {
     }
 
 
-    public int updateOrder(Order order, String action) throws SQLException {
+    public int updateOrder(OrderEntity orderEntity, String action) throws SQLException {
         StringBuilder sb = new StringBuilder("");
         sb.append("UPDATE orders " +
                 "   SET updated_date = CURRENT_TIMESTAMP , " +
                 "       updated_by = ? ");
-        if (!DataUtil.isNullObject(order)) {
+        if (!DataUtil.isNullObject(orderEntity)) {
             switch (action) {
                 case "confirm":
                     sb.append(" ,status = 3 ");
@@ -145,8 +145,8 @@ public class OrderModel extends BaseModel {
         }
         PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
         int index = 1;
-        preparedStatement.setString(index++, order.getUpdatedBy());
-        preparedStatement.setInt(index++, order.getId());
+        preparedStatement.setString(index++, orderEntity.getUpdatedBy());
+        preparedStatement.setInt(index++, orderEntity.getId());
         return preparedStatement.executeUpdate();
     }
 }

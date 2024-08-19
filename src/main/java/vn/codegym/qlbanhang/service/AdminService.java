@@ -5,9 +5,9 @@ import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.dto.ProductDto;
 import vn.codegym.qlbanhang.dto.UserInfoDto;
-import vn.codegym.qlbanhang.entity.Category;
-import vn.codegym.qlbanhang.entity.Order;
-import vn.codegym.qlbanhang.entity.Product;
+import vn.codegym.qlbanhang.entity.CategoryEntity;
+import vn.codegym.qlbanhang.entity.OrderEntity;
+import vn.codegym.qlbanhang.entity.ProductEntity;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
@@ -169,17 +169,17 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderCreateProductForm(req, resp);
             } else {
-                Product product = new Product();
+                ProductEntity productEntity = new ProductEntity();
                 String imageUrl = SftpUtils.getPathSFTP(req, resp);
-                product.setImageUrl(imageUrl);
-                product.setProductCode(req.getParameter("code"));
-                product.setProductName(req.getParameter("name"));
-                product.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
-                product.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-                product.setPrice(DataUtil.safeToLong(req.getParameter("price")));
-                product.setDescription(req.getParameter("description"));
-                product = (Product) productModel.save(product);
-                if (!DataUtil.isNullObject(product)) {
+                productEntity.setImageUrl(imageUrl);
+                productEntity.setProductCode(req.getParameter("code"));
+                productEntity.setProductName(req.getParameter("name"));
+                productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
+                productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
+                productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
+                productEntity.setDescription(req.getParameter("description"));
+                productEntity = (ProductEntity) productModel.save(productEntity);
+                if (!DataUtil.isNullObject(productEntity)) {
                     req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
                     resp.sendRedirect("/admin/product");
                 } else {
@@ -214,20 +214,20 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderUpdateProductForm(req, resp);
             } else {
-                Product product = new Product();
+                ProductEntity productEntity = new ProductEntity();
                 Integer id = Integer.parseInt(req.getParameter("id"));
-                product.setId(id);
+                productEntity.setId(id);
                 if (!DataUtil.isNullObject(req.getPart("file"))) {
                     String imageUrl = SftpUtils.getPathSFTP(req, resp);
-                    product.setImageUrl(imageUrl);
+                    productEntity.setImageUrl(imageUrl);
                 }
-                product.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
-                product.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
-                product.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-                product.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
-                product.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
-                product.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
-                int save = productModel.updateProduct(false, product);
+                productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
+                productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
+                productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
+                productEntity.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
+                productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
+                int save = productModel.updateProduct(false, productEntity);
                 if (save == 1) {
                     req.setAttribute("successMsg", "Cập nhật sản phẩm thành công");
                     resp.sendRedirect("/admin/product");
@@ -245,11 +245,11 @@ public class AdminService extends BaseService {
     public void cancelProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Integer id = Integer.parseInt(req.getParameter("id"));
-            Product product = new Product();
-            product.setId(id);
-            product.setStatus(Const.STATUS_UNACTIVE);
-            product.setUpdatedBy("admin");
-            int save = productModel.updateProduct(true, product);
+            ProductEntity productEntity = new ProductEntity();
+            productEntity.setId(id);
+            productEntity.setStatus(Const.STATUS_UNACTIVE);
+            productEntity.setUpdatedBy("admin");
+            int save = productModel.updateProduct(true, productEntity);
             if (save == 1) {
                 resp.sendRedirect("/admin/product");
             }  else {
@@ -297,14 +297,14 @@ public class AdminService extends BaseService {
     public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Category category = new Category();
+            CategoryEntity categoryEntity = new CategoryEntity();
             if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
                 req.setAttribute("errorMsg", "Tên loại sản phẩm bắt buộc nhập");
                 renderCreateCategoryForm(req, resp);
             } else {
-                category.setName(DataUtil.safeToString(req.getParameter("name")).trim());
-                category = (Category) categoryModel.save(category);
-                if (!DataUtil.isNullObject(category)) {
+                categoryEntity.setName(DataUtil.safeToString(req.getParameter("name")).trim());
+                categoryEntity = (CategoryEntity) categoryModel.save(categoryEntity);
+                if (!DataUtil.isNullObject(categoryEntity)) {
                     req.setAttribute("successMsg", "Thêm Loại sản phẩm thành công");
                     resp.sendRedirect("/admin/category");
                 } else {
@@ -325,12 +325,12 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Tên loại sản phẩm bắt buộc nhập");
                 renderUpdateCategoryForm(req, resp);
             } else {
-                Category category = new Category();
+                CategoryEntity categoryEntity = new CategoryEntity();
                 Integer id = Integer.parseInt(req.getParameter("id"));
-                category.setId(id);
-                category.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-                category.setUpdatedBy("admin");
-                int save = categoryModel.updateCategory(false, category);
+                categoryEntity.setId(id);
+                categoryEntity.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                categoryEntity.setUpdatedBy("admin");
+                int save = categoryModel.updateCategory(false, categoryEntity);
                 if (save == 1) {
                     req.setAttribute("successMsg", "Cập nhật Loại sản phẩm thành công");
                     resp.sendRedirect("/admin/category");
@@ -351,11 +351,11 @@ public class AdminService extends BaseService {
         req.setAttribute("renderOrder", false);
         try {
             Integer id = Integer.parseInt(req.getParameter("id"));
-            Category category = new Category();
-            category.setId(id);
-            category.setStatus(Const.STATUS_UNACTIVE);
-            category.setUpdatedBy("admin");
-            int save = categoryModel.updateCategory(true, category);
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setId(id);
+            categoryEntity.setStatus(Const.STATUS_UNACTIVE);
+            categoryEntity.setUpdatedBy("admin");
+            int save = categoryModel.updateCategory(true, categoryEntity);
             if (save == 1) {
                 req.setAttribute("successMsg", "Cập nhật Loại sản phẩm thành công");
                 resp.sendRedirect("/admin/category");
@@ -395,20 +395,20 @@ public class AdminService extends BaseService {
         try {
             req.setAttribute("renderOrder", true);
             Integer orderId = Integer.parseInt(req.getParameter("id"));
-            Order order = (Order) orderModel.findById(orderId);
+            OrderEntity orderEntity = (OrderEntity) orderModel.findById(orderId);
             switch (action) {
                 case "confirm":
-                    order.setStatus(Const.OrderStatus.ACCEPTED);
+                    orderEntity.setStatus(Const.OrderStatus.ACCEPTED);
                     break;
                 case "complete":
-                    order.setStatus(Const.OrderStatus.COMPLETED);
+                    orderEntity.setStatus(Const.OrderStatus.COMPLETED);
                     break;
                 case "cancel":
-                    order.setStatus(Const.OrderStatus.CANCELED);
+                    orderEntity.setStatus(Const.OrderStatus.CANCELED);
                     break;
             }
-            order.setUpdatedBy("admin");
-            int save = orderModel.updateOrder(order, action);
+            orderEntity.setUpdatedBy("admin");
+            int save = orderModel.updateOrder(orderEntity, action);
             if (save == 1) {
                 req.setAttribute("successMsg", "Cập nhật đơn hàng thành công");
                 resp.sendRedirect("/admin/transaction");

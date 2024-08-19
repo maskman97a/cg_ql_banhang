@@ -1,6 +1,6 @@
 package vn.codegym.qlbanhang.dto;
 
-public class JoinCondition {
+public class JoinConditionDto {
     private String tableName;
     private String joinType;
 

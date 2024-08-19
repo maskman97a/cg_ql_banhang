@@ -37,12 +37,14 @@ public class HomeService extends BaseService {
 
 
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("-----start-----");
         try {
             productService.executeSearch(req, resp);
             renderPage(req, resp);
         } catch (Exception ex) {
             renderErrorPage(req, resp);
         }
+        log.info("-----end-----");
     }
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

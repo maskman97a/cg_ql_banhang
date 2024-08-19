@@ -25,15 +25,21 @@ import java.util.List;
 
 @MultipartConfig
 public class AdminService extends BaseService {
+    public static AdminService inst = new AdminService();
+
+    public static AdminService getInstance() {
+        return inst;
+    }
+
     public ProductModel productModel;
     private final CategoryModel categoryModel;
     private final CategoryService categoryService;
     private final OrderService orderService;
     private final OrderModel orderModel;
 
-    public AdminService() {
+    private AdminService() {
         super(null);
-        this.categoryService = new CategoryService();
+        this.categoryService = CategoryService.getInstance();
         this.orderService = new OrderService();
 
         this.productModel = ProductModel.getInstance();

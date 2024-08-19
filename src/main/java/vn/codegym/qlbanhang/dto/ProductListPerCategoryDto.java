@@ -9,11 +9,12 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductListPerCategoryDto {
-    private List<ProductDto> productList;
+    private List<ProductPagingDto> productPagingList;
+    private Integer categoryId;
     private String categoryName;
     private PagingDto paging;
 
     public ProductListPerCategoryDto() {
-        this.productList = new ArrayList<>();
+        this.productPagingList = new ArrayList<>();
     }
 }

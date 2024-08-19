@@ -64,7 +64,7 @@ public class HomeService extends BaseService {
                 req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
             }
         } catch (Exception ex) {
-            log.warning(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

@@ -9,7 +9,7 @@ import vn.codegym.qlbanhang.annotation.Table;
 @Getter
 @Setter
 @Table(name = "order_detail")
-public class OrderDetail extends BaseEntity {
+public class OrderDetailEntity extends BaseEntity {
     private int index;
     @Column(name = "order_id")
     private int orderId;
@@ -22,9 +22,9 @@ public class OrderDetail extends BaseEntity {
     @Column(name = "amount")
     private int amount;
 
-    private Product product;
+    private ProductEntity productEntity;
 
-    public OrderDetail() {
+    public OrderDetailEntity() {
 
     }
 

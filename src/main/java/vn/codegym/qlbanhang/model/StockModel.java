@@ -2,8 +2,8 @@ package vn.codegym.qlbanhang.model;
 
 
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
-import vn.codegym.qlbanhang.entity.Stock;
+import vn.codegym.qlbanhang.dto.QueryConditionDto;
+import vn.codegym.qlbanhang.entity.StockEntity;
 import vn.codegym.qlbanhang.enums.StockTransType;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -15,38 +15,38 @@ public class StockModel extends BaseModel {
     private static final StockModel inst = new StockModel();
 
     private StockModel() {
-        super(Stock.class);
+        super(StockEntity.class);
     }
 
     public static StockModel getInstance() {
         return inst;
     }
 
-    public Stock updateStock(Stock stock, int quantity, String type) throws SQLException {
+    public StockEntity updateStock(StockEntity stockEntity, int quantity, String type) throws SQLException {
         if (type.equals(StockTransType.EXPORT.name())) {
-            stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
-            stock.setTotalQuantity(stock.getTotalQuantity() - quantity);
-            stock.setPendingQuantity(stock.getPendingQuantity() - quantity);
+            stockEntity.setAvailableQuantity(stockEntity.getAvailableQuantity() - quantity);
+            stockEntity.setTotalQuantity(stockEntity.getTotalQuantity() - quantity);
+            stockEntity.setPendingQuantity(stockEntity.getPendingQuantity() - quantity);
         } else if (type.equals(StockTransType.IMPORT.name())) {
-            stock.setAvailableQuantity(stock.getAvailableQuantity() + quantity);
-            stock.setTotalQuantity(stock.getTotalQuantity() + quantity);
+            stockEntity.setAvailableQuantity(stockEntity.getAvailableQuantity() + quantity);
+            stockEntity.setTotalQuantity(stockEntity.getTotalQuantity() + quantity);
         } else {
-            stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
-            stock.setPendingQuantity(stock.getPendingQuantity() + quantity);
+            stockEntity.setAvailableQuantity(stockEntity.getAvailableQuantity() - quantity);
+            stockEntity.setPendingQuantity(stockEntity.getPendingQuantity() + quantity);
         }
-        stock.setUpdatedBy("SYSTEM");
-        stock.setUpdatedDate(LocalDateTime.now());
-        return (Stock) save(stock);
+        stockEntity.setUpdatedBy("SYSTEM");
+        stockEntity.setUpdatedDate(LocalDateTime.now());
+        return (StockEntity) save(stockEntity);
     }
 
-    public Stock getValidStock(int productId, int quantity) throws SQLException {
+    public StockEntity getValidStock(int productId, int quantity) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition productCondition = Condition.newAndCondition("product_id", "=", productId);
-        Condition quantityCon = Condition.newAndCondition("available_quantity", ">=", quantity);
-        baseSearchDto.setConditions(Arrays.asList(productCondition, quantityCon));
-        Stock stock = (Stock) findOne(baseSearchDto);
-        if (!DataUtil.isNullObject(stock)) {
-            return stock;
+        QueryConditionDto productQueryConditionDto = QueryConditionDto.newAndCondition("product_id", "=", productId);
+        QueryConditionDto quantityCon = QueryConditionDto.newAndCondition("available_quantity", ">=", quantity);
+        baseSearchDto.setQueryConditionDtos(Arrays.asList(productQueryConditionDto, quantityCon));
+        StockEntity stockEntity = (StockEntity) findOne(baseSearchDto);
+        if (!DataUtil.isNullObject(stockEntity)) {
+            return stockEntity;
         }
         return null;
     }

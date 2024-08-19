@@ -4,7 +4,7 @@ import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.ExecuteStockDto;
 import vn.codegym.qlbanhang.dto.UpdateStockDto;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
-import vn.codegym.qlbanhang.entity.Stock;
+import vn.codegym.qlbanhang.entity.StockEntity;
 import vn.codegym.qlbanhang.enums.ErrorType;
 import vn.codegym.qlbanhang.enums.StockTransType;
 import vn.codegym.qlbanhang.exception.BusinessException;
@@ -26,9 +26,9 @@ public class StockService extends BaseService {
                 case Const.OrderStatus.COMPLETED:
                     //Đơn hàng đã vận chuyển và giao cho khách thành công
                     for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
-                        Stock stock = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
-                        if (!DataUtil.isNullObject(stock)) {
-                            stockModel.updateStock(stock, updateStockDto.getQuantity(), StockTransType.EXPORT.name());
+                        StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
+                        if (!DataUtil.isNullObject(stockEntity)) {
+                            stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.EXPORT.name());
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }
@@ -37,9 +37,9 @@ public class StockService extends BaseService {
                 case Const.OrderStatus.ACCEPTED:
                     //Đơn hàng đã được xác nhận và chờ giao hàng
                     for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
-                        Stock stock = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
-                        if (!DataUtil.isNullObject(stock)) {
-                            stockModel.updateStock(stock, updateStockDto.getQuantity(), StockTransType.PENDING.name());
+                        StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
+                        if (!DataUtil.isNullObject(stockEntity)) {
+                            stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.PENDING.name());
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }
@@ -48,9 +48,9 @@ public class StockService extends BaseService {
                 case Const.OrderStatus.REFUND:
                     //Đơn hàng được yêu cầu hoàn trả
                     for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
-                        Stock stock = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
-                        if (!DataUtil.isNullObject(stock)) {
-                            stockModel.updateStock(stock, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
+                        StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
+                        if (!DataUtil.isNullObject(stockEntity)) {
+                            stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }

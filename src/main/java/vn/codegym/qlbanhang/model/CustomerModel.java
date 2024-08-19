@@ -2,15 +2,15 @@ package vn.codegym.qlbanhang.model;
 
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
+import vn.codegym.qlbanhang.dto.QueryConditionDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Customer;
+import vn.codegym.qlbanhang.entity.CustomerEntity;
 
 public class CustomerModel extends BaseModel {
     private static final CustomerModel instance = new CustomerModel();
 
     private CustomerModel() {
-        super(Customer.class);
+        super(CustomerEntity.class);
     }
 
     public static CustomerModel getInstance() {
@@ -18,17 +18,17 @@ public class CustomerModel extends BaseModel {
     }
 
 
-    public Customer findByPhone(String phoneNumber) {
+    public CustomerEntity findByPhone(String phoneNumber) {
         try {
             BaseSearchDto baseSearchDto = new BaseSearchDto();
-            Condition condition1 = Condition.newAndCondition("phone", "=", phoneNumber);
-            baseSearchDto.getConditions().add(condition1);
+            QueryConditionDto queryConditionDto1 = QueryConditionDto.newAndCondition("phone", "=", phoneNumber);
+            baseSearchDto.getQueryConditionDtos().add(queryConditionDto1);
 
-            Condition condition2 = Condition.newAndCondition("status", "=", Const.STATUS_ACTIVE);
-            baseSearchDto.getConditions().add(condition2);
+            QueryConditionDto queryConditionDto2 = QueryConditionDto.newAndCondition("status", "=", Const.STATUS_ACTIVE);
+            baseSearchDto.getQueryConditionDtos().add(queryConditionDto2);
             BaseEntity baseEntity = findOne(baseSearchDto);
             if (baseEntity != null) {
-                return (Customer) baseEntity;
+                return (CustomerEntity) baseEntity;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

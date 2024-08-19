@@ -13,13 +13,13 @@ public class BaseSearchDto {
     private Integer status;
     private Integer page;
     private Integer size;
-    private List<Condition> conditions;
-    private List<JoinCondition> joinConditions;
-    private List<OrderByCondition> orderByConditions;
+    private List<QueryConditionDto> queryConditionDtos;
+    private List<JoinConditionDto> joinConditionDtos;
+    private List<OrderByConditionDto> orderByConditionDtos;
 
     public BaseSearchDto() {
-        this.conditions = new ArrayList<>();
-        this.joinConditions = new ArrayList<>();
-        this.orderByConditions = new ArrayList<>();
+        this.queryConditionDtos = new ArrayList<>();
+        this.joinConditionDtos = new ArrayList<>();
+        this.orderByConditionDtos = new ArrayList<>();
     }
 }

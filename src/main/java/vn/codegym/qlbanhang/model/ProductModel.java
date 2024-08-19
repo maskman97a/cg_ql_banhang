@@ -48,6 +48,7 @@ public class ProductModel extends BaseModel {
     }
 
     public BaseData findProductByKeywordAndCategoryId(String keyword, Integer categoryId, String sortCol, String sortType, Integer page, Integer size) throws SQLException {
+        log.info("-----start-----");
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         if (!DataUtil.isNullOrEmpty(keyword)) {
             Condition condition = Condition.newAndCondition("product_name", "LIKE", "%" + keyword + "%");
@@ -85,6 +86,7 @@ public class ProductModel extends BaseModel {
         List<Product> productList = new ArrayList<>();
         List<BaseEntity> baseEntities = super.search(baseSearchDto);
         int count = super.count(baseSearchDto);
+        log.info("-----end-----");
         return new BaseData(count, baseEntities);
     }
 

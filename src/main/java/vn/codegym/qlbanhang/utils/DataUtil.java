@@ -254,7 +254,13 @@ public class DataUtil {
      * @return
      */
     public static boolean isNullOrZero(Integer value) {
-        return !(value != null && !value.equals(0));
+        if (value == null) {
+            return true;
+        }
+        if (value == 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

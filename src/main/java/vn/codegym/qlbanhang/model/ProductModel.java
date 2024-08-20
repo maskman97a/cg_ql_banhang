@@ -55,7 +55,7 @@ public class ProductModel extends BaseModel {
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
 
-        if (DataUtil.isNullOrZero(categoryId)) {
+        if (!DataUtil.isNullOrZero(categoryId)) {
             QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("category_id", "=", categoryId);
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }

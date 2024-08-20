@@ -4,11 +4,9 @@ import lombok.SneakyThrows;
 import vn.codegym.qlbanhang.service.HomeService;
 import vn.codegym.qlbanhang.service.ProductService;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @WebServlet({"/product/*"})
@@ -25,6 +23,7 @@ public class ProductController extends HomeController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         req.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
         if (req.getPathInfo() == null) {
             homeService.renderHomePage(req, resp);
             return;
@@ -53,6 +52,7 @@ public class ProductController extends HomeController {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
         if (request.getPathInfo() == null) {
 
         }

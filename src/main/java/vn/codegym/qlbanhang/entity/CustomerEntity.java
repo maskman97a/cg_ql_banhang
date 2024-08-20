@@ -9,7 +9,7 @@ import vn.codegym.qlbanhang.annotation.Table;
 @Getter
 @Setter
 @Table(name = "customer")
-public class Customer extends BaseEntity {
+public class CustomerEntity extends BaseEntity {
     public static final String SEARCH_COLUMN = "name";
     private int index;
     @Column(name = "name")
@@ -21,7 +21,7 @@ public class Customer extends BaseEntity {
     @Column(name = "address")
     private String address;
     
-    public Customer() {
+    public CustomerEntity() {
 
     }
 }

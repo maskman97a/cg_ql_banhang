@@ -1,10 +1,9 @@
 package vn.codegym.qlbanhang.service;
 
-import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -14,28 +13,30 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @MultipartConfig
 public class CategoryService extends BaseService {
-    public ProductModel productModel;
-    private final CategoryModel categoryModel;
+    public static final CategoryService inst = new CategoryService();
 
-    public CategoryService() {
-        super(null);
-        this.productModel = new ProductModel();
-        this.categoryModel = new CategoryModel();
+    public final ProductModel productModel;
+    public final CategoryModel categoryModel;
+
+    private CategoryService() {
+        super(CategoryModel.getInstance());
+        this.categoryModel = (CategoryModel) super.getBaseModel();
+        this.productModel = ProductModel.getInstance();
+    }
+
+    public static CategoryService getInstance() {
+        return inst;
     }
 
 
     public void renderSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<BaseEntity> categoryDtoList = categoryModel.findAll();
+            List<BaseEntity> categoryDtoList = baseModel.findAll();
             req.setAttribute("lstCategory", categoryDtoList);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         } catch (Exception ex) {
@@ -46,11 +47,11 @@ public class CategoryService extends BaseService {
     public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Category category = new Category();
+            CategoryEntity categoryEntity = new CategoryEntity();
 
-            category.setName(req.getParameter("name"));
-            int save = categoryModel.save(category);
-            if (save == 1) {
+            categoryEntity.setName(req.getParameter("name"));
+            categoryEntity = (CategoryEntity) baseModel.save(categoryEntity);
+            if (!DataUtil.isNullObject(categoryEntity)) {
                 this.searchCategory(req, resp);
 //                resp.sendRedirect("/admin");
                 req.getRequestDispatcher("/views/admin/category/transaction-list.jsp").forward(req, resp);
@@ -109,30 +110,6 @@ public class CategoryService extends BaseService {
     }
 
     public CategoryDto getDetailCategory(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
-        Connection con = null;
-        try {
-            con = DatabaseConnection.getConnection();
-            String sql = categoryModel.getSearchCategorySQL(baseSearchDto, id);
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            int index = 1;
-            if (!DataUtil.isNullObject(id)) {
-                preparedStatement.setInt(index++, id);
-            }
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                CategoryDto categoryDto = new CategoryDto();
-                categoryDto.setId(rs.getInt("id"));
-                categoryDto.setName(rs.getString("name"));
-
-                return categoryDto;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
-        }
-        return null;
+        return categoryModel.getDetailCategory(baseSearchDto, id);
     }
 }

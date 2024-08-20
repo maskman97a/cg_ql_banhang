@@ -59,3 +59,7 @@
     cursor: not-allowed; /* Con trỏ sẽ thay đổi để biểu thị không thể nhấn */
     text-decoration: none; /* Loại bỏ gạch chân nếu muốn */
 }
+
+.navbar-text {
+    color: red;
+}

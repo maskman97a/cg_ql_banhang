@@ -4,8 +4,6 @@ package vn.codegym.qlbanhang.service;
 import com.google.gson.Gson;
 import vn.codegym.qlbanhang.dto.Cart;
 import vn.codegym.qlbanhang.dto.CartProductDto;
-import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
@@ -29,22 +27,25 @@ public class HomeService extends BaseService {
         super(baseModel);
     }
 
-    public BaseModel getBaseModal() {
+    public BaseModel getBaseModel() {
         return super.baseModel;
     }
 
-    protected Gson getGson() {
+    public Gson getGson() {
         return super.gson;
     }
 
 
     public void renderHomePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.info("-----start-----");
         try {
             productService.executeSearch(req, resp);
             renderPage(req, resp);
         } catch (Exception ex) {
+            ex.printStackTrace();
             renderErrorPage(req, resp);
         }
+        log.info("-----end-----");
     }
 
     protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -59,12 +60,10 @@ public class HomeService extends BaseService {
         List<CartProductDto> cartProductDtoList = cart.getCartProductList();
 
         req.setAttribute("cartCount", cartProductDtoList.size());
-        if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")){
+        if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")) {
             req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
-        }else {
+        } else {
             req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
         }
     }
-
-
 }

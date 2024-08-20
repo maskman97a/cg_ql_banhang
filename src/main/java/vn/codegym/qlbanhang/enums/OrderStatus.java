@@ -7,10 +7,11 @@ public enum OrderStatus {
     NEW(0, "Tạo mới, chờ xác nhận"),
     COMPLETED(1, "Hoàn thành"),
     CANCELED(2, "Đã hủy"),
-    ACCEPTED(3, "Đã xác nhận");
+    ACCEPTED(3, "Đã xác nhận"),
+    REFUND(4, "Hoàn trả");
 
-    private final int value;
-    private final String description;
+    public final int value;
+    public final String description;
 
     OrderStatus(int value, String description) {
         this.value = value;

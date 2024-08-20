@@ -1,5 +1,6 @@
 package vn.codegym.qlbanhang.controller;
 
+import lombok.SneakyThrows;
 import vn.codegym.qlbanhang.service.HomeService;
 import vn.codegym.qlbanhang.service.ProductService;
 
@@ -21,6 +22,7 @@ public class ProductController extends HomeController {
         this.homeService = new HomeService();
     }
 
+    @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

@@ -51,32 +51,12 @@
                 <div class="modal-footer">
                     <span id="order-validate-message" class="text-danger"></span>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở lại</button>
-                    <button type="button"
+                    <button type="submit"
                             class="btn btn-primary" id="btn-render-create-order">
                         Tiến hành đặt hàng
                     </button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalToggle2">
-                        Launch demo modal
-                    </button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Hide this modal and show the first with the button below.
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#modalCart" data-bs-toggle="modal">Back to first</button>
-            </div>
         </div>
     </div>
 </div>

@@ -11,6 +11,11 @@
     <title>Title</title>
 </head>
 <body>
-<h1>${errorMessage}</h1>
+<div class="row align-items-center">
+    <span class="fs-4 text-danger mb-3">${errorMessage}</span>
+    <div class="col-12">
+        <i class="fa-solid fa-face-sad-tear text-danger" style="font-size:100px"></i>
+    </div>
+</div>
 </body>
 </html>

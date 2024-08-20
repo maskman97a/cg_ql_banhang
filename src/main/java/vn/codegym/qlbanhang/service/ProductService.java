@@ -247,7 +247,6 @@ public class ProductService extends BaseService {
         cartProductJson = gson.toJson(new Cart(cartProductDtoList));
         session.setAttribute("cartProductJson", cartProductJson);
         req.setAttribute("cartProductList", cartProductDtoList);
-        resp.setContentType("application/json");
         CartResponse cartResponse = new CartResponse();
         cartResponse.setCartCount(cartProductDtoList.size());
         cartResponse.setCartProductList(cartProductDtoList);

@@ -20,14 +20,18 @@
             max-height: 300px;
             margin-top: 20px;
         }
+
+        .error {
+            color: red;
+            font-size: 0.875em;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-
     <form class="form form-control" method="post"
           action="${pageContext.request.contextPath}/admin/product/product-create"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="col-12 mb-3">
             <span>${response}</span>
             <% if (request.getAttribute("errorMsg") != null) { %>
@@ -42,8 +46,7 @@
             <% } %>
         </div>
         <div class="row">
-            <div class=" col-3">
-            </div>
+            <div class=" col-3"></div>
             <div class=" col-6">
                 <div class="row">
                     <div class="col-12 text-center">
@@ -57,21 +60,8 @@
                             <input type="file" id="file" name="file" accept="multipart/form-data"/>
                             <br>
                             <img id="preview" src="#" alt="Image Preview" style="display:none;">
+                            <div id="file-error" class="error"></div>
                         </div>
-                        <script>
-                            document.getElementById('file').addEventListener('change', function (event) {
-                                const file = event.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = function (e) {
-                                        const preview = document.getElementById('preview');
-                                        preview.src = e.target.result;
-                                        preview.style.display = 'block';
-                                    }
-                                    reader.readAsDataURL(file);
-                                }
-                            });
-                        </script>
                         <div class="col-3 mb-3">
                             <label for="category-id">Thể loại</label>
                         </div>
@@ -82,6 +72,7 @@
                                     <option value="${category.id}">${category.name}</option>
                                 </c:forEach>
                             </select>
+                            <div id="category-id-error" class="error"></div>
                         </div>
 
                         <div class="col-3 mb-3">
@@ -90,12 +81,9 @@
                         <div class="col-9 mb-3">
                             <input id="inp-product-name" type="text" class="form-control" name="name"
                                    onkeyup="generateProductCode()"/>
+                            <div id="product-name-error" class="error"></div>
                         </div>
                         <script>
-                            function removeDiacritics(str) {
-                                return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                            }
-
                             function generateProductCode() {
                                 const name = document.getElementById('inp-product-name').value.trim().toUpperCase();
                                 let newProductCode = removeDiacritics(name);
@@ -113,60 +101,32 @@
                             <label for="inp-quantity">Số lượng</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <input id="inp-quantity" type="number" oninput="limitLength(this)" class="form-control" min="0"
-                                   value="0" onchange="formatNumber(this)"
-                                   onkeypress="return isPositiveInteger(event)"
-                                   name="quantity"/>
+                            <input id="inp-quantity" type="number" oninput="limitLength(this)" class="form-control"
+                                   min="0"
+                                   value="0" name="quantity"/>
+                            <div id="quantity-error" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-price">Giá</label>
                         </div>
                         <div class="col-9 mb-3">
                             <input id="inp-price" type="number" oninput="limitLength(this)" class="form-control" min="0"
-                                   value="0"
-<%--                                   onchange="formatNumber(this)"--%>
-                                   onkeypress="return isPositiveInteger(event)"
-                                   name="price"/>
+                                   value="0" name="price"/>
+                            <div id="price-error" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-description">Mô tả</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <textarea id="inp-description" maxlength="500" class="form-control" name="description" style="width: 100%; height: 200px;"></textarea>
+                            <textarea id="inp-description" maxlength="500" class="form-control" name="description"
+                                      style="width: 100%; height: 200px;"></textarea>
+                            <div id="description-error" class="error"></div>
                         </div>
-
-                        <script>
-                            function limitLength(input) {
-                                if (input.value.length > 15) {
-                                    input.value = input.value.slice(0, 15);
-                                }
-                            }
-                            function isPositiveInteger(event) {
-                                const charCode = (event.which) ? event.which : event.keyCode;
-                                // Allow only numbers (0-9)
-                                if (charCode < 48 || charCode > 57) {
-                                    return false;
-                                }
-                                return true;
-                            }
-                            function formatNumber(input) {
-                                // Remove any non-digit characters
-                                let value = input.value.replace(/\D/g, '');
-
-                                // Format the number with dots as thousands separators
-                                value = new Intl.NumberFormat('de-DE').format(value);
-
-                                input.value = value;
-                            }
-                        </script>
                     </div>
                     <div class="row col-12">
-                        <div class="col-3">
-                        </div>
+                        <div class="col-3"></div>
                         <div class="col-3  d-grid gap-2">
-                            <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/admin/">Hủy
-                            </a>
+                            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/admin/">Hủy</a>
                         </div>
                         <div class="col-6  d-grid gap-2">
                             <input type="submit" class="btn btn-primary" value="Lưu"/>
@@ -174,10 +134,89 @@
                     </div>
                 </div>
             </div>
-            <div class=" col-3">
-            </div>
+            <div class=" col-3"></div>
         </div>
     </form>
 </div>
+<script>
+    function validateForm() {
+        let isValid = true;
+
+        // Validate file input
+        const fileInput = document.getElementById('file');
+        const fileError = document.getElementById('file-error');
+        if (fileInput.files.length === 0) {
+            fileError.textContent = 'Vui lòng chọn một ảnh.';
+            return false;
+        } else {
+            fileError.textContent = '';
+        }
+
+        // Validate category
+        const categoryId = document.getElementById('category-id').value;
+        const categoryError = document.getElementById('category-id-error');
+        if (categoryId === 0) {
+            categoryError.textContent = 'Vui lòng chọn thể loại.';
+            return false;
+        } else {
+            categoryError.textContent = '';
+        }
+
+        // Validate product name
+        const productName = document.getElementById('inp-product-name').value.trim();
+        const productNameError = document.getElementById('product-name-error');
+        if (productName === '') {
+            productNameError.textContent = 'Vui lòng nhập tên sản phẩm.';
+            return false;
+        } else {
+            productNameError.textContent = '';
+        }
+
+        // Validate quantity
+        const quantity = document.getElementById('inp-quantity').value;
+        const quantityError = document.getElementById('quantity-error');
+        if (quantity === '' || parseInt(quantity) <= 0) {
+            quantityError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
+            return false;
+        } else {
+            quantityError.textContent = '';
+        }
+
+        // Validate price
+        const price = document.getElementById('inp-price').value;
+        const priceError = document.getElementById('price-error');
+        if (price === '' || parseInt(price) <= 0) {
+            priceError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
+            return false;
+        } else {
+            priceError.textContent = '';
+        }
+
+        // Validate description
+        const description = document.getElementById('inp-description').value.trim();
+        const descriptionError = document.getElementById('description-error');
+        if (description !== '' && description.toString().length > 500) {
+            descriptionError.textContent = 'Mô tả nhập quá 500 ký tự';
+            return false;
+        } else {
+            descriptionError.textContent = '';
+        }
+
+        return isValid;
+    }
+
+    document.getElementById('file').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 </body>
 </html>

@@ -20,12 +20,18 @@
             max-height: 300px;
             margin-top: 20px;
         }
+
+        .error {
+            color: red;
+            font-size: 0.875em;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <form class="form" method="post" action="${pageContext.request.contextPath}/admin/product/update"
-          enctype="multipart/form-data">
+    <form class="form form-control" method="post"
+          action="${pageContext.request.contextPath}/admin/product/update"
+          enctype="multipart/form-data" onsubmit="return validateFormUpdate()">
         <input type="text" class="form-control" name="id"
                value="${product.id}"
                hidden/>
@@ -62,6 +68,7 @@
                                  id="product-image-${product.id}"
                                  class="img-fluid col-12"
                                  alt="${product.name}" width="100%" height="100%">
+                            <div id="file-error-update" class="error"></div>
                         </div>
                         <script>
                             document.getElementById('file').addEventListener('change', function (event) {
@@ -81,13 +88,14 @@
                             <label for="inp-category-name-update">Thể loại</label>
                         </div>
                         <div class="col-9">
-                            <input type="text" class="form-control" name="category-id"
-                                   value="${product.categoryId}"
-                                   hidden/>
+                            <input type="hidden" class="form-control" name="category-id"
+                                   id="category-id-update"
+                                   value="${product.categoryId}"/>
                             <input id="inp-category-name-update" type="text" value="${product.categoryName}"
                                    class="form-control"
                                    disabled
                                    name="category-name"/>
+                            <div id="category-id-error-update" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-code">Mã sản phẩm</label>
@@ -97,13 +105,13 @@
                                    class="form-control" name="code"/>
                         </div>
                         <div class="col-3 mb-3">
-                            <label for="inp-name">Tên sản phẩm</label>
+                            <label for="inp-name-update">Tên sản phẩm</label>
                         </div>
                         <div class="col-9">
-                            <input id="inp-name" type="text" value="${product.productName}"
+                            <input id="inp-name-update" type="text" value="${product.productName}"
                                    class="form-control"
-                                   onkeyup="generateProductCodeUpdate()"
                                    name="name"/>
+                            <div id="product-name-error-update" class="error"></div>
                         </div>
                         <script>
                             function limitLength(input) {
@@ -114,42 +122,36 @@
                             function removeDiacritics(str) {
                                 return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                             }
-
-                            function generateProductCodeUpdate() {
-                                const name = document.getElementById('inp-name').value.trim().toUpperCase();
-                                let newProductCode = removeDiacritics(name);
-                                newProductCode = newProductCode.replaceAll(" ", "_");
-                                document.getElementById('inp-code').value = newProductCode;
-                                ${product.productCode} = newProductCode;
-                            }
                         </script>
                         <div class="col-3 mb-3">
-                            <label for="inp-quantity">Số lượng</label>
+                            <label for="inp-quantity-update">Số lượng</label>
                         </div>
                         <div class="col-9">
-                            <input id="inp-quantity" type="number" oninput="limitLength(this)"
+                            <input id="inp-quantity-update" type="number" oninput="limitLength(this)"
                                    class="form-control"
                                    value="${product.quantity}"
                                    name="quantity"/>
+                            <div id="quantity-error-update" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
-                            <label for="inp-price">Giá</label>
+                            <label for="inp-price-update">Giá</label>
                         </div>
                         <div class="col-9">
-                            <input id="inp-price" type="number" oninput="limitLength(this)"
+                            <input id="inp-price-update" type="number" oninput="limitLength(this)"
                                    class="form-control"
                                    value="${product.price}"
                                    name="price"/>
+                            <div id="price-error-update" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
-                            <label for="inp-description">Mô tả</label>
+                            <label for="inp-description-update">Mô tả</label>
                         </div>
                         <div class="col-9">
-                                <textarea id="inp-description" class="form-control"
+                                <textarea id="inp-description-update" class="form-control"
                                           maxlength="500"
                                           name="description">${product.description}</textarea>
+                            <div id="description-error" class="error"></div>
                         </div>
-
                         <script>
                             function limitLength(input) {
                                 if (input.value.length > 15) {
@@ -177,5 +179,64 @@
         </div>
     </form>
 </div>
+<script>
+    function validateFormUpdate() {
+        let isValid = true;
+        // Validate product name
+        const productName = document.getElementById('inp-name-update').value.trim();
+        const productNameError = document.getElementById('product-name-error-update');
+        if (productName === '' || productName.isEmpty()) {
+            productNameError.textContent = 'Vui lòng nhập tên sản phẩm.';
+            return false;
+        } else {
+            productNameError.textContent = '';
+        }
+
+        // Validate quantity
+        const quantity = document.getElementById('inp-quantity-update').value;
+        const quantityError = document.getElementById('quantity-error-update');
+        if (quantity === '' || parseInt(quantity) <= 0) {
+            quantityError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
+            return false;
+        } else {
+            quantityError.textContent = '';
+        }
+
+        // Validate price
+        const price = document.getElementById('inp-price-update').value;
+        const priceError = document.getElementById('price-error-update');
+        if (price === '' || parseInt(price) <= 0) {
+            priceError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
+            return false;
+        } else {
+            priceError.textContent = '';
+        }
+
+        // Validate description
+        const description = document.getElementById('inp-description-update').value.trim();
+        const descriptionError = document.getElementById('description-error');
+        if (description !== '' && description.toString().length > 500) {
+            descriptionError.textContent = 'Mô tả nhập quá 500 ký tự';
+            return false;
+        } else {
+            descriptionError.textContent = '';
+        }
+
+        return isValid;
+    }
+
+    document.getElementById('file').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 </body>
 </html>

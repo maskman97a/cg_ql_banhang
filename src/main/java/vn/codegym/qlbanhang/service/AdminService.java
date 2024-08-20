@@ -157,7 +157,7 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
                 renderCreateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
-                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+                req.setAttribute("errorMsg", "Tên sản phẩm bắt buộc nhập");
                 renderCreateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("quantity"))) {
                 req.setAttribute("errorMsg", "Số lượng bắt buộc nhập");
@@ -165,26 +165,31 @@ public class AdminService extends BaseService {
             } else if (DataUtil.isNullOrEmpty(req.getParameter("price"))) {
                 req.setAttribute("errorMsg", "Giá sản phẩm bắt buộc nhập");
                 renderCreateProductForm(req, resp);
-            }else if (!DataUtil.isNullOrEmpty(req.getParameter("description")) && req.getParameter("description").length()> 500) {
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("description")) && req.getParameter("description").length() > 500) {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderCreateProductForm(req, resp);
             } else {
-                ProductEntity productEntity = new ProductEntity();
-                String imageUrl = SftpUtils.getPathSFTP(req, resp);
-                productEntity.setImageUrl(imageUrl);
-                productEntity.setProductCode(req.getParameter("code"));
-                productEntity.setProductName(req.getParameter("name"));
-                productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
-                productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
-                productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
-                productEntity.setDescription(req.getParameter("description"));
-                productEntity = (ProductEntity) productModel.save(productEntity);
-                if (!DataUtil.isNullObject(productEntity)) {
-                    req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
-                    resp.sendRedirect("/admin/product");
+                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("category-id")), null)) {
+                    req.setAttribute("errorMsg", "Tồn tại sản phẩm có mã " + req.getParameter("code") + " trên hệ thống!");
+                    renderCreateProductForm(req, resp);
                 } else {
-                    req.setAttribute("errorMsg", "Thêm mới sản phẩm không thành công");
-                    renderAdminFistTab(req, resp);
+                    ProductEntity productEntity = new ProductEntity();
+                    String imageUrl = SftpUtils.getPathSFTP(req, resp);
+                    productEntity.setImageUrl(imageUrl);
+                    productEntity.setProductCode(req.getParameter("code"));
+                    productEntity.setProductName(req.getParameter("name"));
+                    productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
+                    productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
+                    productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
+                    productEntity.setDescription(req.getParameter("description"));
+                    productEntity = (ProductEntity) productModel.save(productEntity);
+                    if (!DataUtil.isNullObject(productEntity)) {
+                        req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
+                        resp.sendRedirect("/admin/product");
+                    } else {
+                        req.setAttribute("errorMsg", "Thêm mới sản phẩm không thành công");
+                        renderAdminFistTab(req, resp);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -202,7 +207,7 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
-                req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
+                req.setAttribute("errorMsg", "Tên sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("quantity"))) {
                 req.setAttribute("errorMsg", "Số lượng bắt buộc nhập");
@@ -210,30 +215,35 @@ public class AdminService extends BaseService {
             } else if (DataUtil.isNullOrEmpty(req.getParameter("price"))) {
                 req.setAttribute("errorMsg", "Giá sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
-            } else if (!DataUtil.isNullOrEmpty(req.getParameter("description")) && req.getParameter("description").length()> 500) {
+            } else if (!DataUtil.isNullOrEmpty(req.getParameter("description")) && req.getParameter("description").length() > 500) {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderUpdateProductForm(req, resp);
             } else {
-                ProductEntity productEntity = new ProductEntity();
-                Integer id = Integer.parseInt(req.getParameter("id"));
-                productEntity.setId(id);
-                if (!DataUtil.isNullObject(req.getPart("file"))) {
-                    String imageUrl = SftpUtils.getPathSFTP(req, resp);
-                    productEntity.setImageUrl(imageUrl);
-                }
-                productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
-                productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
-                productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-                productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
-                productEntity.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
-                productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
-                int save = productModel.updateProduct(false, productEntity);
-                if (save == 1) {
-                    req.setAttribute("successMsg", "Cập nhật sản phẩm thành công");
-                    resp.sendRedirect("/admin/product");
+                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("category-id")), Integer.parseInt(req.getParameter("id")))) {
+                    req.setAttribute("errorMsg", "Tồn tại sản phẩm có mã " + req.getParameter("code") + " trên hệ thống!");
+                    renderCreateProductForm(req, resp);
                 } else {
-                    req.setAttribute("errorMsg", "Cập nhật sản phẩm không thành công");
-                    renderUpdateProductForm(req, resp);
+                    ProductEntity productEntity = new ProductEntity();
+                    Integer id = Integer.parseInt(req.getParameter("id"));
+                    productEntity.setId(id);
+                    if (!DataUtil.isNullObject(req.getPart("file"))) {
+                        String imageUrl = SftpUtils.getPathSFTP(req, resp);
+                        productEntity.setImageUrl(imageUrl);
+                    }
+                    productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
+                    productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
+                    productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                    productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
+                    productEntity.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
+                    productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
+                    int save = productModel.updateProduct(false, productEntity);
+                    if (save == 1) {
+                        req.setAttribute("successMsg", "Cập nhật sản phẩm thành công");
+                        resp.sendRedirect("/admin/product");
+                    } else {
+                        req.setAttribute("errorMsg", "Cập nhật sản phẩm không thành công");
+                        renderUpdateProductForm(req, resp);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -252,7 +262,7 @@ public class AdminService extends BaseService {
             int save = productModel.updateProduct(true, productEntity);
             if (save == 1) {
                 resp.sendRedirect("/admin/product");
-            }  else {
+            } else {
                 req.setAttribute("errorMsg", "Cập nhật sản phẩm không thành công");
                 renderAdminFistTab(req, resp);
             }

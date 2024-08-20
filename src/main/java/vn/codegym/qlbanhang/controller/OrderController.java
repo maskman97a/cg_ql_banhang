@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet({"/order/*"})
 public class OrderController extends HttpServlet {
@@ -18,7 +19,7 @@ public class OrderController extends HttpServlet {
     @Override
     public void init() {
         this.orderService = new OrderService();
-        this.homeService = new HomeService();
+        this.homeService = HomeService.getInstance();
     }
 
     @Override
@@ -30,7 +31,11 @@ public class OrderController extends HttpServlet {
         }
         switch (req.getPathInfo()) {
             case "/success":
-                orderService.renderOrderSuccessPage(req, resp);
+                try {
+                    orderService.renderOrderSuccessPage(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "/error":
                 orderService.renderOrderErrorPage(req, resp);
@@ -39,7 +44,11 @@ public class OrderController extends HttpServlet {
                 orderService.renderLookupOrderPage(req, resp);
                 break;
             case "/lookup-by-code":
-                orderService.executeLookupOrder(req, resp);
+                try {
+                    orderService.executeLookupOrder(req, resp);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
         }
     }
@@ -47,9 +56,6 @@ public class OrderController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        if (request.getPathInfo() == null) {
-            orderService.renderErrorPage(request, response);
-        }
         switch (request.getPathInfo()) {
             case "/create":
                 orderService.executeCreateOrderSingle(request, response);
@@ -61,6 +67,5 @@ public class OrderController extends HttpServlet {
                 orderService.executeCancelOrder(request, response);
                 return;
         }
-        orderService.renderErrorPage(request, response);
     }
 }

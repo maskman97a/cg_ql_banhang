@@ -12,7 +12,7 @@ public class Const {
     public static final int STATUS_ACTIVE = 1;
     public static final int STATUS_UNACTIVE = 0;
 
-    public static final String getUrlPathName(String path) {
+    public static String getUrlPathName(String path) {
         switch (path) {
             case "admin":
                 return "Quản trị";

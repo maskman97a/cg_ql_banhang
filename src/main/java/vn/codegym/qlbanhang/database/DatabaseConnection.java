@@ -18,15 +18,12 @@ public class DatabaseConnection {
 
     private final Connection connection;
     private String schemaName;
+    @Getter
     private final static DatabaseConnection instance = new DatabaseConnection();
 
     private DatabaseConnection() {
         this.connection = initConnection();
         this.schemaName = SCHEMA;
-    }
-
-    public static DatabaseConnection getInstance() {
-        return instance;
     }
 
     private static Connection initConnection() {

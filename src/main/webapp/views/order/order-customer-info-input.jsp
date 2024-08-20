@@ -18,24 +18,24 @@
             <label for="inp-customer-name" class="form-label">Họ và tên <span
                     style="color: red">(*)</span></label>
             <input id="inp-customer-name" type="text" class="form-control"
-                   name="customer-name"/>
+                   name="customer-name" placeholder="Nhập Tên người nhận hàng"/>
         </div>
         <div class="col-md-12">
             <label for="inp-customer-phone" class="form-label">Số điện thoại <span
                     style="color: red">(*)</span></label>
             <input id="inp-customer-phone" type="text" class="form-control"
-                   name="customer-phone"/>
+                   name="customer-phone" placeholder="Nhập Số điện thoại nhận hàng"/>
         </div>
         <div class="col-md-12">
             <label for="inp-customer-email" class="form-label">Địa chỉ Email</label>
             <input id="inp-customer-email" type="text" class="form-control"
-                   name="customer-email"/>
+                   name="customer-email" placeholder="Nhập Địa chỉ email "/>
         </div>
         <div class="col-md-12">
             <label for="inp-customer-address" class="form-label">Địa chỉ nhận hàng <span
                     style="color: red">(*)</span></label>
             <input id="inp-customer-address" type="text" class="form-control"
-                   name="customer-address"/>
+                   name="customer-address" placeholder="Nhập địa chỉ nhận hàng"/>
         </div>
     </div>
 </div>

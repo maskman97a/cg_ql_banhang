@@ -33,7 +33,7 @@ public class OrderModel extends BaseModel {
     }
 
 
-    public List<OrdersDto> findOrderByKeyword(BaseSearchDto baseSearchDto) throws SQLException {
+    public List<OrdersDto> findOrderByKeyword(BaseSearchDto baseSearchDto) {
         List<OrdersDto> lstResult = new ArrayList<>();
         try {
             String sql = this.getSearchSQL(baseSearchDto);
@@ -134,13 +134,11 @@ public class OrderModel extends BaseModel {
         sb.append(" WHERE id = ? ");
         switch (action) {
             case "confirm":
+            case "cancel":
                 sb.append(" AND status = 0 ");
                 break;
             case "complete":
                 sb.append(" AND status = 3 ");
-                break;
-            case "cancel":
-                sb.append(" AND status = 0 ");
                 break;
         }
         PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());

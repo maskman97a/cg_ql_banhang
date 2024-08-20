@@ -1,5 +1,6 @@
 package vn.codegym.qlbanhang.controller;
 
+import vn.codegym.qlbanhang.service.HomeService;
 import vn.codegym.qlbanhang.service.LoginService;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 public class LoginController extends BaseController {
     protected Logger log = Logger.getLogger(LoginController.class.getName());
     private LoginService loginService;
+    private HomeService homeService;
 
     public void init() {
         this.loginService = new LoginService();
@@ -23,7 +25,7 @@ public class LoginController extends BaseController {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         if (session.getAttribute("token") == null) {
-            req.getRequestDispatcher("/views/login/login.jsp").forward(req, resp);
+            loginService.renderLogin(req, resp);
         } else {
             resp.sendRedirect(req.getContextPath() + "/admin");
         }

@@ -19,7 +19,7 @@ public class StockService extends BaseService {
         this.stockModel = (StockModel) super.baseModel;
     }
 
-    public BaseResponse executeStock(ExecuteStockDto executeStockDto) throws BusinessException {
+    public BaseResponse executeStock(ExecuteStockDto executeStockDto) {
         BaseResponse baseResponse = new BaseResponse();
         try {
             switch (executeStockDto.getOrderStatus()) {

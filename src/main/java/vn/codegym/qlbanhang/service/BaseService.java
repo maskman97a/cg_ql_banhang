@@ -4,14 +4,18 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+import vn.codegym.qlbanhang.dto.Cart;
+import vn.codegym.qlbanhang.dto.CartProductDto;
 import vn.codegym.qlbanhang.dto.PagingDto;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.model.BaseModel;
+import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,11 +35,6 @@ public class BaseService {
         this.baseModel = baseModel;
         this.modelMapper = new ModelMapper();
         this.gson = new Gson();
-    }
-
-    public void renderErrorPage(HttpServletRequest req, HttpServletResponse resp, String... message) throws ServletException, IOException {
-            req.getRequestDispatcher(req.getContextPath() + "/views/error.jsp").forward(req, resp);
-            req.setAttribute("message", message);
     }
 
     protected PagingDto getPaging(HttpServletRequest req, HttpServletResponse resp, int count, int size, int page) {
@@ -100,5 +99,25 @@ public class BaseService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    protected void renderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Object cartProductJson = session.getAttribute("cartProductJson");
+        Cart cart;
+        if (DataUtil.isNullObject(cartProductJson)) {
+            cart = new Cart(new ArrayList<>());
+        } else {
+            cart = gson.fromJson((String) cartProductJson, Cart.class);
+        }
+        List<CartProductDto> cartProductDtoList = cart.getCartProductList();
+
+        req.setAttribute("cartCount", cartProductDtoList.size());
+        if (DataUtil.safeEqual(req.getAttribute("renderAdmin"), "true")) {
+            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
+        } else {
+            req.getRequestDispatcher(req.getContextPath() + "/views/home/home.jsp").forward(req, resp);
+        }
     }
 }

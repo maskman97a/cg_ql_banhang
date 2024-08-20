@@ -12,13 +12,14 @@
     <title>Title</title>
 </head>
 <body>
-<nav class="navbar navbar-nav navbar-nav-scroll navbar-custom container-fluid">
+<nav class="navbar navbar-nav navbar-nav-scroll navbar-custom container-fluid" style="position: fixed; padding:0">
     <div class="container-fluid nav-header">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-end m-1">
-                    <a class="link" style="color:#860303 !important" href="${pageContext.request.contextPath}/admin">Đăng
-                        nhập Quản trị</a>
+                    <a class="link" style="color:#860303 !important; text-decoration: none"
+                       href="${pageContext.request.contextPath}/admin">Đăng
+                        nhập</a>
                 </div>
             </div>
         </div>
@@ -27,7 +28,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-4">
-                    <a class="navbar-brand row p-3 align-items-center" href="/">
+                    <a class="navbar-brand row p-3 align-items-center" href="${pageContext.request.contextPath}/">
                         <div class="col-3">
                             <img src="../../images/logo.png" alt="logo" class="img-fluid rounded-circle"/>
                         </div>
@@ -54,7 +55,7 @@
                             <div class="row align-items-center navbar-text">
                                 <div class="col-6 text-end">
                                     <div class="cart-icon">
-                                        <i class="fa-solid fa-cart-shopping fs-3 "></i>
+                                        <i class="fa-solid fa-cart-shopping fs-3" id="cart-icon"></i>
                                         <span class="cart-count" id="count-cart">${cartCount}</span>
                                     </div>
 
@@ -85,8 +86,5 @@
     </div>
 </nav>
 <c:import url="../product/product-cart-modal.jsp"/>
-<script>
-
-</script>
 </body>
 </html>

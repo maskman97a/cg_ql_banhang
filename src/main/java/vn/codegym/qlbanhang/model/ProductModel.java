@@ -55,7 +55,7 @@ public class ProductModel extends BaseModel {
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
 
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("category_id", "=", categoryId);
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
@@ -102,7 +102,7 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             preparedStatement.setLong(index++, categoryId);
         }
         if (!DataUtil.isNullObject(id)) {
@@ -137,7 +137,7 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             preparedStatement.setLong(index++, categoryId);
         }
         if (!DataUtil.isNullObject(id)) {
@@ -175,7 +175,7 @@ public class ProductModel extends BaseModel {
             preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
         }
         ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next()) {
+        if (rs.next()) {
             ProductDto productDto = new ProductDto();
             productDto.setId(rs.getInt("id"));
             productDto.setImageUrl(rs.getString("imageUrl"));
@@ -205,7 +205,7 @@ public class ProductModel extends BaseModel {
                 sb.append(" AND ( p.product_code LIKE ? OR p.product_name LIKE ? ) ");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             sb.append(" AND p.category_id = ? ");
         }
         if (!DataUtil.isNullObject(id)) {
@@ -215,7 +215,7 @@ public class ProductModel extends BaseModel {
     }
 
     public int updateProduct(Boolean isCancel, ProductEntity productEntity) throws SQLException {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("UPDATE product " + "   SET updated_date = CURRENT_TIMESTAMP , " + "       updated_by = ? ");
         if (!DataUtil.isNullObject(productEntity)) {
             if (!isCancel) {

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,8 +40,7 @@ public class OrderService extends HomeService {
         this.orderDetailModel = OrderDetailModel.getInstance();
     }
 
-    public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             BaseResponse<OrderEntity> baseResponse = createOrder(prepareCreateOrderRequest(req, false));
             if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
                 OrderEntity orderEntity = baseResponse.getAdditionalData();
@@ -48,13 +48,10 @@ public class OrderService extends HomeService {
             } else {
                 resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
             }
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
-    public void executeCreateOrderBatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void executeCreateOrderBatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             BaseResponse<OrderEntity> baseResponse = createOrder(prepareCreateOrderRequest(req, true));
             if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
                 HttpSession httpSession = req.getSession();
@@ -64,9 +61,7 @@ public class OrderService extends HomeService {
             } else {
                 resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
             }
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
     public CreateOrderRequest prepareCreateOrderRequest(HttpServletRequest req, boolean isBatch) {
@@ -110,7 +105,7 @@ public class OrderService extends HomeService {
     }
 
     public BaseResponse<OrderEntity> createOrder(CreateOrderRequest createOrderRequest) {
-        BaseResponse<OrderEntity> baseResponse = new BaseResponse();
+        BaseResponse<OrderEntity> baseResponse = new BaseResponse<>();
         try {
             CustomerDto customerDto = createOrderRequest.getCustomer();
             CustomerEntity customerEntity = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
@@ -194,41 +189,31 @@ public class OrderService extends HomeService {
         renderLookupOrderPage(req, resp);
     }
 
-    public void renderOrderSuccessPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderOrderSuccessPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             String id = req.getParameter("orderId");
             OrderEntity orderEntity = (OrderEntity) orderModel.findById(Integer.parseInt(id));
             req.setAttribute("showOrderSuccess", true);
             req.setAttribute("orderCode", orderEntity.getCode());
             renderPage(req, resp);
-        } catch (Exception e) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
     public void renderOrderErrorPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
             req.setAttribute("showOrderError", true);
             req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
             renderPage(req, resp);
-        } catch (Exception e) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
     public void renderLookupOrderPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+
             req.setAttribute("showLookupOrder", true);
 
             renderPage(req, resp);
-        } catch (Exception e) {
-            e.printStackTrace();
-            renderErrorPage(req, resp);
-        }
+
     }
 
-    public void executeLookupOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void executeLookupOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             String orderCode = req.getParameter("orderCode");
             req.setAttribute("orderCode", orderCode);
             if (DataUtil.isNullOrEmpty(orderCode)) {
@@ -273,27 +258,21 @@ public class OrderService extends HomeService {
             }
 
             renderLookupOrderPage(req, resp);
-        } catch (Exception e) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
 
-    public void renderSearchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderSearchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderOrder", true);
             req.setAttribute("renderCategory", false);
             req.setAttribute("renderProduct", false);
             this.searchOrderAdmin(req, resp);
             req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
-    public void searchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void searchOrderAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        try {
             String keyword = DataUtil.safeToString(req.getParameter("keyword"));
             int size = 5;
             if (req.getParameter("size") != null) {
@@ -321,14 +300,11 @@ public class OrderService extends HomeService {
             }
             int count = orderModel.countOrder(baseSearchDto);
             getPaging(req, resp, count, size, page);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
 
-    public void detailOrderForAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void detailOrderForAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
             String orderCode = req.getParameter("orderCode");
             req.setAttribute("orderCode", orderCode);
             if (DataUtil.isNullOrEmpty(orderCode)) {
@@ -371,8 +347,6 @@ public class OrderService extends HomeService {
                 }
                 req.setAttribute("customerInfo", customerEntity);
             }
-        } catch (Exception e) {
-            renderErrorPage(req, resp);
-        }
+
     }
 }

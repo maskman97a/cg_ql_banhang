@@ -49,6 +49,10 @@
              <c:if test="${!showLookupOrder}">hidden</c:if> >
             <c:import url="../order/lookup-order.jsp"/>
         </div>
+        <div id="div-login" class="container row" style="margin:0 auto"
+             <c:if test="${!showLoginPage}">hidden</c:if> >
+            <c:import url="../login/login.jsp"/>
+        </div>
     </div>
 </main>
 <footer>

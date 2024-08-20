@@ -10,7 +10,7 @@ import java.sql.SQLException;
 @Getter
 @Setter
 public class DatabaseConnection {
-    private final static String URL = "jdbc:mysql://34.87.23.65:3306/";
+    private final static String URL = "jdbc:mysql://172.17.0.2:3306/";
     private final static String SCHEMA = "sales";
     private final static String DRIVER = "com.mysql.cj.jdbc.Driver";
     private final static String USERNAME = "root";

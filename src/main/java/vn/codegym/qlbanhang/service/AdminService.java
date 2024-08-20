@@ -110,7 +110,7 @@ public class AdminService extends BaseService {
             if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
                 categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
             }
-            int size = 5;
+            int size = 10;
             if (req.getParameter("size") != null) {
                 size = Integer.parseInt(req.getParameter("size"));
             }

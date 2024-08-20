@@ -254,7 +254,7 @@ public class DataUtil {
      * @return
      */
     public static boolean isNullOrZero(Integer value) {
-        return (value != null && !value.equals(0));
+        return !(value != null && !value.equals(0));
     }
 
     /**

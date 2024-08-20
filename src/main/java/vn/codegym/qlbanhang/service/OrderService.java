@@ -122,7 +122,6 @@ public class OrderService extends HomeService {
             OrderEntity orderEntity = new OrderEntity();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
             String orderCode = "ORD_" + simpleDateFormat.format(new Date());
-            int orderID = orderModel.getNextID();
             orderEntity.setStatus(Const.OrderStatus.NEW);
             orderEntity.setCode(orderCode);
             orderEntity.setCustomerId(customerEntity.getId());
@@ -134,7 +133,6 @@ public class OrderService extends HomeService {
             for (ProductDto productDto : createOrderRequest.getProductList()) {
                 ProductEntity productEntity = productModel.findProductById(productDto.getId());
                 OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
-                orderDetailEntity.setOrderId(orderID);
                 orderDetailEntity.setProductId(productDto.getId());
                 orderDetailEntity.setOrderId(orderEntity.getId());
                 orderDetailEntity.setQuantity(productDto.getQuantity());

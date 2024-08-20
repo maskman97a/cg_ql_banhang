@@ -13,8 +13,8 @@
 <body>
 <div class="row align-items-center">
     <span class="fs-4 text-danger mb-3">${errorMessage}</span>
-    <div class="col-12">
-        <i class="fa-solid fa-face-sad-tear text-danger" style="font-size:100px"></i>
+    <div class="col-12 text-danger text-center">
+        <i class="fa-solid fa-face-sad-tear" style="font-size:100px"></i>
     </div>
 </div>
 </body>

@@ -267,7 +267,13 @@ public class BaseModel {
         boolean exists = false;
         int index = 0;
         StringBuilder sb = new StringBuilder();
-        if (!DataUtil.isNullObject(baseEntity.getId())) {
+        if (!DataUtil.isNullOrZero(baseEntity.getId())) {
+            BaseEntity baseEnt = findById(baseEntity.getId());
+            if (!DataUtil.isNullObject(baseEnt)) {
+                exists = true;
+            }
+        }
+        if (exists) {
             //Update
             sb.append(" UPDATE ");
             sb.append(tableName);
@@ -284,8 +290,6 @@ public class BaseModel {
             }
             sb.append(" WHERE id = ? ");
         } else {
-            Integer nextId = getNextID();
-            baseEntity.setId(nextId);
             sb.append("INSERT INTO ");
             sb.append(tableName);
             sb.append("(");
@@ -307,7 +311,7 @@ public class BaseModel {
             }
             sb.append(")");
         }
-        PreparedStatement preparedStatement = connection.prepareStatement(sb.toString());
+        PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(), Statement.RETURN_GENERATED_KEYS);
         index = 1;
         for (String columnName : lstColName) {
             preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
@@ -315,22 +319,23 @@ public class BaseModel {
         if (exists) {
             preparedStatement.setObject(index, baseEntity.getId());
         }
-        int updateResult = preparedStatement.executeUpdate();
-        if (updateResult == 1) {
-            return findById(baseEntity.getId());
+        int affectedRows = preparedStatement.executeUpdate();
+
+        // Check if the insertion was successful
+        if (affectedRows > 0) {
+            if (!exists) {
+                // Retrieve the generated keys (e.g., primary key)
+                ResultSet rs = preparedStatement.getGeneratedKeys();
+                if (rs.next()) {
+                    // Get the ID of the inserted row
+                    int generatedId = rs.getInt(1);
+                    return findById(generatedId);
+                }
+            } else {
+                return baseEntity;
+            }
         } else {
             throw new SQLException("Save failed");
-        }
-    }
-
-    public Integer getNextID() throws SQLException {
-        String sql = "SELECT `AUTO_INCREMENT` " + "FROM  `information_schema`.`TABLES` " + "WHERE `TABLE_SCHEMA` = ? " + "AND   `TABLE_NAME` = ? ";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, databaseConnection.getSchemaName());
-        ps.setString(2, tableName);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1);
         }
         return null;
     }

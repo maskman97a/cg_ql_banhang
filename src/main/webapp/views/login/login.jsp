@@ -45,7 +45,8 @@
                                    placeholder="Tối thiểu 5 ký tự" name="password"
                                    required>
                         </div>
-                        <a href="${pageContext.request.contextPath}/forgot" class="col-12 link text-white text-end">
+                        <a href="${pageContext.request.contextPath}/forgot" class="col-12 link text-white text-end"
+                           data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tài khoản của bạn là: admin/admin">
                             <span>Quên mật khẩu?</span>
                         </a>
                     </div>

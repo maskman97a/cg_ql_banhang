@@ -23,7 +23,7 @@ public class ProductController extends HomeController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         req.setCharacterEncoding("UTF-8");
-        resp.setContentType("application/json");
+        resp.setContentType("application/json; charset=UTF-8");
         if (req.getPathInfo() == null) {
             homeService.renderHomePage(req, resp);
             return;
@@ -52,7 +52,7 @@ public class ProductController extends HomeController {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
+        response.setContentType("application/json; charset=UTF-8");
         if (request.getPathInfo() == null) {
 
         }

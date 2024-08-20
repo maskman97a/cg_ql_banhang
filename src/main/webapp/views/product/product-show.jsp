@@ -13,36 +13,34 @@
 </head>
 <body>
 <div class="row">
-    <div class="col-8"></div>
-    <div class="col-3">
-        <select id="combobox-sort" class="form-control" name="sort-condition" onchange="onSort()">
-            <option value="">--Sắp xếp theo--</option>
-            <c:forEach var="sort" items="${sortList}">
-                <option value="${sort.columnName}-${sort.sortType}" ${sort.name == selectedSort ? 'selected': ''}>${sort.description}</option>
+    <div class="col-12 align-items-center mb-3">
+        <span class="fw-bold fs-3">Sản phẩm nổi bật </span>
+        <div class="col-9">
+            <c:forEach var="category" items="${lstCategory}">
+                <a class="btn btn-outline-info ml-3 shadow"
+                   href="${pageContext.request.contextPath}/product/search?categoryId=${category.id}">${category.name}</a>
             </c:forEach>
-        </select>
-        <a id="link-order" hidden></a>
+        </div>
     </div>
-    <script>
-        function onSort() {
-            let sortCombobox = document.getElementById("combobox-sort").value;
-            let comboValue = sortCombobox.split("-");
-            let columnName = comboValue[0].trim();
-            let sortType = comboValue[1].trim();
-
-            let linkOrder = document.getElementById("link-order");
-            linkOrder.href = "${pageContext.request.contextPath}/product/search?page=${currentPage}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=" + columnName + "&sortType=" + sortType;
-            linkOrder.click();
-        }
-    </script>
+    <c:if test="${categoryId != null}">
+        <div class="col-12 align-items-center mb-3">
+            <span class="fw-bold fs-3">Sắp xếp theo </span>
+            <div class="col-9">
+                <c:forEach var="sort" items="${sortList}">
+                    <button class="btn border"
+                            onclick="onSort('${sort.columnName}', '${sort.sortType}')">
+                        <i class="fa-solid ${sort.fontAwesome}"></i>
+                            ${sort.description}</button>
+                </c:forEach>
+            </div>
+            <a id="link-order" hidden></a>
+        </div>
+    </c:if>
     <div class="col-12 row">
         <c:forEach var="productPerCategory" items="${productPerCategoryList}">
-            <%
-                int i = 1;
-            %>
             <div class=" col-12 text-left">
-                <a href="${pageContext.request.contextPath}/product/search?categoryId=${productPerCategory.categoryId}"
-                   class="btn border"> <span class="col-12">${productPerCategory.categoryName}</span></a>
+                <a href="${pageContext.request.contextPath}/product/search?categoryId=${productPerCategory.categoryId}&keyword=${keyword}"
+                   class="btn"> <span class="col-12 fs-4 fw-bold">${productPerCategory.categoryName}</span></a>
             </div>
             <c:forEach var="productPaging" items="${productPerCategory.productPagingList}">
                 <div class="row">
@@ -61,7 +59,7 @@
                                 <div class="row">
                                     <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
                                        class="row col-10">
-                                        <span class="col-12" style="font-weight: bold">${product.name}</span>
+                                        <span class="col-12" style="font-weight: bold;">${product.name}</span>
 
                                         <span id="col-price-${product.id}" class="col-12 formatted-number"
                                               style="font-weight: bold; color:red;"></span>
@@ -78,35 +76,43 @@
                     </c:forEach>
                 </div>
             </c:forEach>
-            <div class="text-center col-12">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination" style="justify-content: center">
-                        <c:if test="${!productPerCategory.paging.firstTab}">
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage-1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
-                                    Previous</a></li>
-                        </c:if>
-                            <%----%>
-                        <c:forEach begin="${productPerCategory.paging.beginPage}" end="${endPage}" var="page">
-                            <li class="page-item ${currentPage == page ? 'active' : ''}">
-                                <a class="page-link"
-                                   href="${pageContext.request.contextPath}/product/search?page=${page}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">${page}</a>
-                            </li>
-                        </c:forEach>
-                        <c:if test="${!productPerCategory.paging.lastTab}">
-                            <li class="page-item">
-                                <a class="page-link"
-                                   href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage+1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
-                                    Next</a></li>
-                        </c:if>
-                    </ul>
-                </nav>
-            </div>
+            <c:if test="${productPerCategory.paging != null}">
+                <div class="text-center col-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" style="justify-content: center">
+                            <c:if test="${!productPerCategory.paging.firstTab}">
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage-1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
+                                        Previous</a></li>
+                            </c:if>
+                                <%----%>
+                            <c:forEach begin="${productPerCategory.paging.beginPage}" end="${endPage}" var="page">
+                                <li class="page-item ${currentPage == page ? 'active' : ''}">
+                                    <a class="page-link"
+                                       href="${pageContext.request.contextPath}/product/search?page=${page}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">${page}</a>
+                                </li>
+                            </c:forEach>
+                            <c:if test="${!productPerCategory.paging.lastTab}">
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="${pageContext.request.contextPath}/product/search?page=${productPerCategory.paging.currentPage+1}&size=8&keyword=${keyword}&categoryId=${categoryId}&sortCol=${sortCol}&sortType=${sortType}">
+                                        Next</a></li>
+                            </c:if>
+                        </ul>
+                    </nav>
+                </div>
+            </c:if>
         </c:forEach>
     </div>
 
 </div>
-
+<script>
+    function onSort(columnName, sortType) {
+        let linkOrder = document.getElementById("link-order");
+        linkOrder.href = `${pageContext.request.contextPath}/product/search?page=${currentPage}&size=16&keyword=${keyword}&categoryId=${categoryId}&sortCol=` + columnName + "&sortType=" + sortType;
+        linkOrder.click();
+    }
+</script>
 </body>
 </html>

@@ -9,9 +9,11 @@ import vn.codegym.qlbanhang.annotation.Table;
 @Getter
 @Setter
 @Table(name = "category")
-public class Category extends BaseEntity {
+public class CategoryEntity extends BaseEntity {
     private int index;
     @Column(name = "name")
     private String name;
+    @Column(name = "sort")
+    private int sort;
 
 }

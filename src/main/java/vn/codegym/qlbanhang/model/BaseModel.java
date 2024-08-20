@@ -6,9 +6,9 @@ import vn.codegym.qlbanhang.annotation.Column;
 import vn.codegym.qlbanhang.annotation.Table;
 import vn.codegym.qlbanhang.database.DatabaseConnection;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.Condition;
-import vn.codegym.qlbanhang.dto.JoinCondition;
-import vn.codegym.qlbanhang.dto.OrderByCondition;
+import vn.codegym.qlbanhang.dto.JoinConditionDto;
+import vn.codegym.qlbanhang.dto.OrderByConditionDto;
+import vn.codegym.qlbanhang.dto.QueryConditionDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.utils.ClassUtils;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Getter
 @Setter
 public class BaseModel {
-
-
+    protected final Logger log = Logger.getLogger("System Log");
     private DatabaseConnection databaseConnection;
     private Connection connection;
     private Class entityClass;
@@ -61,9 +61,9 @@ public class BaseModel {
             System.out.println("Search SQL: " + sql);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
-            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
-                for (Condition condition : baseSearchDto.getConditions()) {
-                    preparedStatement.setObject(index++, condition.getValue());
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
+                    preparedStatement.setObject(index++, queryConditionDto.getValue());
                 }
             }
             if (!DataUtil.isNullObject(baseSearchDto.getPage()) && !DataUtil.isNullObject(baseSearchDto.getSize())) {
@@ -84,9 +84,9 @@ public class BaseModel {
             String countSQL = "SELECT COUNT(1) FROM (" + getSelectSQL(baseSearchDto) + ") a";
             PreparedStatement preparedStatement = conn.prepareStatement(countSQL);
             int index = 1;
-            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
-                for (Condition condition : baseSearchDto.getConditions()) {
-                    preparedStatement.setObject(index++, condition.getValue());
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
+                    preparedStatement.setObject(index++, queryConditionDto.getValue());
                 }
             }
             System.out.println("Count query: " + countSQL);
@@ -107,43 +107,43 @@ public class BaseModel {
         sb.append("SELECT ").append(tableName).append(".* ");
         sb.append(" FROM ").append(tableName);
         if (baseSearchDto != null) {
-            if (baseSearchDto.getJoinConditions() != null && !baseSearchDto.getJoinConditions().isEmpty()) {
-                for (JoinCondition joinCondition : baseSearchDto.getJoinConditions()) {
-                    sb.append(joinCondition.getJoinType()).append(joinCondition.getTableName());
+            if (baseSearchDto.getJoinConditionDtos() != null && !baseSearchDto.getJoinConditionDtos().isEmpty()) {
+                for (JoinConditionDto joinConditionDto : baseSearchDto.getJoinConditionDtos()) {
+                    sb.append(joinConditionDto.getJoinType()).append(joinConditionDto.getTableName());
                     sb.append(" ON ");
-                    sb.append(tableName + "." + joinCondition.getColumn1());
+                    sb.append(tableName + "." + joinConditionDto.getColumn1());
                     sb.append(" =  ");
-                    sb.append(joinCondition.getTableName() + "." + joinCondition.getColumn2());
+                    sb.append(joinConditionDto.getTableName() + "." + joinConditionDto.getColumn2());
                 }
             }
             int index = 0;
-            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
                 sb.append(" WHERE 1 = 1 AND ");
-                for (Condition condition : baseSearchDto.getConditions()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
                     if (index > 0) {
-                        if (DataUtil.isNullOrEmpty(condition.getAppendLogic())) {
+                        if (DataUtil.isNullOrEmpty(queryConditionDto.getAppendLogic())) {
                             sb.append(" AND ");
                         } else {
-                            sb.append(" ").append(condition.getAppendLogic()).append(" ");
+                            sb.append(" ").append(queryConditionDto.getAppendLogic()).append(" ");
                         }
                     }
                     index++;
-                    sb.append(condition.getColumnName());
-                    sb.append(" ").append(condition.getOperator());
+                    sb.append(queryConditionDto.getColumnName());
+                    sb.append(" ").append(queryConditionDto.getOperator());
                     sb.append(" ? ");
                 }
             }
-            if (!DataUtil.isNullOrEmpty(baseSearchDto.getOrderByConditions())) {
+            if (!DataUtil.isNullOrEmpty(baseSearchDto.getOrderByConditionDtos())) {
                 sb.append(" ORDER BY ");
                 index = 0;
-                for (OrderByCondition orderByCondition : baseSearchDto.getOrderByConditions()) {
+                for (OrderByConditionDto orderByConditionDto : baseSearchDto.getOrderByConditionDtos()) {
                     if (index > 0) {
                         sb.append(", ");
                     }
                     index++;
-                    sb.append(orderByCondition.getColumnName());
-                    if (!DataUtil.isNullOrEmpty(orderByCondition.getOrderType())) {
-                        sb.append(" ").append(orderByCondition.getOrderType()).append(" ");
+                    sb.append(orderByConditionDto.getColumnName());
+                    if (!DataUtil.isNullOrEmpty(orderByConditionDto.getOrderType())) {
+                        sb.append(" ").append(orderByConditionDto.getOrderType()).append(" ");
                     }
 
                 }
@@ -169,12 +169,33 @@ public class BaseModel {
         try {
             Connection con = DatabaseConnection.getInstance().getConnection();
             BaseSearchDto baseSearchDto = new BaseSearchDto();
-            baseSearchDto.getConditions().add(Condition.newAndCondition("status", "=", "1"));
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("status", "=", "1"));
             PreparedStatement preparedStatement = con.prepareStatement(getSelectSQL(baseSearchDto));
             int index = 1;
-            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
-                for (Condition condition : baseSearchDto.getConditions()) {
-                    preparedStatement.setObject(index++, condition.getValue());
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
+                    preparedStatement.setObject(index++, queryConditionDto.getValue());
+                }
+            }
+            return executeSelect(preparedStatement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<BaseEntity> findAllActiveWithSort(String sortCol, String sortType) throws SQLException {
+
+        try {
+            Connection con = DatabaseConnection.getInstance().getConnection();
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("status", "=", "1"));
+            baseSearchDto.getOrderByConditionDtos().add(new OrderByConditionDto(sortCol, sortType));
+            PreparedStatement preparedStatement = con.prepareStatement(getSelectSQL(baseSearchDto));
+            int index = 1;
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
+                    preparedStatement.setObject(index++, queryConditionDto.getValue());
                 }
             }
             return executeSelect(preparedStatement);
@@ -186,8 +207,8 @@ public class BaseModel {
 
     public BaseEntity findById(int id) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        Condition condition = Condition.newAndCondition("id", "= ", id);
-        baseSearchDto.getConditions().add(condition);
+        QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("id", "= ", id);
+        baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         return findOne(baseSearchDto);
     }
 
@@ -197,9 +218,9 @@ public class BaseModel {
             System.out.println("Execute sql: " + sql);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
-            if (baseSearchDto.getConditions() != null && !baseSearchDto.getConditions().isEmpty()) {
-                for (Condition condition : baseSearchDto.getConditions()) {
-                    preparedStatement.setObject(index++, condition.getValue());
+            if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {
+                for (QueryConditionDto queryConditionDto : baseSearchDto.getQueryConditionDtos()) {
+                    preparedStatement.setObject(index++, queryConditionDto.getValue());
                 }
             }
             List<BaseEntity> baseEntities = executeSelect(preparedStatement);

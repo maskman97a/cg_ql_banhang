@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orders")
-public class Order extends BaseEntity {
+public class OrderEntity extends BaseEntity {
     private int index;
     @Column(name = "code")
     private String code;
@@ -28,9 +28,9 @@ public class Order extends BaseEntity {
 
     private String orderDateStr;
 
-    private List<OrderDetail> orderDetailList;
+    private List<OrderDetailEntity> orderDetailEntityList;
 
-    public Order() {
+    public OrderEntity() {
 
     }
 

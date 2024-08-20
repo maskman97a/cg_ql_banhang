@@ -3,7 +3,7 @@ package vn.codegym.qlbanhang.service;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.CategoryDto;
 import vn.codegym.qlbanhang.entity.BaseEntity;
-import vn.codegym.qlbanhang.entity.Category;
+import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
@@ -47,11 +47,11 @@ public class CategoryService extends BaseService {
     public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setCharacterEncoding("UTF-8");
-            Category category = new Category();
+            CategoryEntity categoryEntity = new CategoryEntity();
 
-            category.setName(req.getParameter("name"));
-            category = (Category) baseModel.save(category);
-            if (!DataUtil.isNullObject(category)) {
+            categoryEntity.setName(req.getParameter("name"));
+            categoryEntity = (CategoryEntity) baseModel.save(categoryEntity);
+            if (!DataUtil.isNullObject(categoryEntity)) {
                 this.searchCategory(req, resp);
 //                resp.sendRedirect("/admin");
                 req.getRequestDispatcher("/views/admin/category/transaction-list.jsp").forward(req, resp);

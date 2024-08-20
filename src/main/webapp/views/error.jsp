@@ -12,6 +12,6 @@
     <title>Title</title>
 </head>
 <body>
-<h1><c:out value="${message=='' || message == null ? 'Lỗi hệ thống': message}"/></h1>
+<h1><c:out value="${message.equals('') || message == null ? 'Lỗi hệ thống': message}"/></h1>
 </body>
 </html>

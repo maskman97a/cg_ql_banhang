@@ -20,18 +20,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 
 @MultipartConfig
 public class AdminService extends BaseService {
-    public static AdminService inst = new AdminService();
+    public static final AdminService inst = new AdminService();
 
     public static AdminService getInstance() {
         return inst;
     }
 
-    public ProductModel productModel;
+    public final ProductModel productModel;
     private final CategoryModel categoryModel;
     private final CategoryService categoryService;
     private final OrderService orderService;
@@ -48,8 +49,7 @@ public class AdminService extends BaseService {
     }
 
 
-    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             HttpSession httpSession = req.getSession();
             if (httpSession.getAttribute("token") != null) {
                 String userInfoJson = (String) httpSession.getAttribute("userInfo");
@@ -61,50 +61,36 @@ public class AdminService extends BaseService {
             req.setAttribute("renderOrder", false);
             this.searchProductAdmin(req, resp);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
     }
 
-    public void renderAdminFistTab(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderAdminFistTab(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             this.searchProductAdmin(req, resp);
             req.setAttribute("renderProduct", true);
             req.setAttribute("renderProductList", true);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
     }
 
-    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderCreateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderProductCreate", true);
             req.setAttribute("renderProduct", true);
             List<CategoryDto> categoryDtoList = categoryModel.getLstCategory();
             req.setAttribute("lstCategory", categoryDtoList);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderUpdateProductForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderProductUpdate", true);
             req.setAttribute("renderProduct", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductDto productDto = productModel.getDetailProduct(null, null, id);
             req.setAttribute("product", productDto);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        try {
             String keyword = req.getParameter("keyword");
             Long categoryId = null;
             if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
@@ -139,12 +125,10 @@ public class AdminService extends BaseService {
             req.setAttribute("lstCategory", categoryDtoList);
             int count = productModel.countProduct(baseSearchDto, categoryId, null);
             getPaging(req, resp, count, size, page);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void createNewProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void createNewProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             req.setCharacterEncoding("UTF-8");
             if (DataUtil.isNullObject(req.getPart("file"))) {
@@ -192,7 +176,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             req.setCharacterEncoding("UTF-8");
             if (DataUtil.isNullOrEmpty(req.getParameter("code"))) {
@@ -242,7 +226,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void cancelProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void cancelProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             Integer id = Integer.parseInt(req.getParameter("id"));
             ProductEntity productEntity = new ProductEntity();
@@ -263,38 +247,29 @@ public class AdminService extends BaseService {
     }
 
 
-    public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             categoryService.renderSearchCategory(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
     public void renderCreateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
             req.setAttribute("renderCategory", true);
             req.setAttribute("renderCreateCategory", true);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderUpdateCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderCategory", true);
             req.setAttribute("renderUpdateCategory", true);
             Integer id = Integer.parseInt(req.getParameter("id"));
             CategoryDto category = categoryService.getDetailCategory(null, id);
             req.setAttribute("category", category);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             req.setCharacterEncoding("UTF-8");
             CategoryEntity categoryEntity = new CategoryEntity();
@@ -318,7 +293,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void updateCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void updateCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             req.setCharacterEncoding("UTF-8");
             if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
@@ -345,7 +320,7 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void cancelCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void cancelCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         req.setAttribute("renderCategory", true);
         req.setAttribute("renderProduct", false);
         req.setAttribute("renderOrder", false);
@@ -369,30 +344,23 @@ public class AdminService extends BaseService {
         }
     }
 
-    public void renderSearchOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderSearchOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderOrderAdmin", false);
             orderService.renderSearchOrderAdmin(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
 
-    public void renderDetailOrderForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderDetailOrderForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
 
             req.setAttribute("renderOrder", true);
             req.setAttribute("renderOrderAdmin", true);
             orderService.detailOrderForAdmin(req, resp);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
-    public void confirmOrder(HttpServletRequest req, HttpServletResponse resp, String action) throws ServletException, IOException {
-        try {
+    public void confirmOrder(HttpServletRequest req, HttpServletResponse resp, String action) throws ServletException, IOException, SQLException {
             req.setAttribute("renderOrder", true);
             Integer orderId = Integer.parseInt(req.getParameter("id"));
             OrderEntity orderEntity = (OrderEntity) orderModel.findById(orderId);
@@ -417,8 +385,6 @@ public class AdminService extends BaseService {
 //                resp.sendRedirect("/admin/transaction");
                 renderSearchOrder(req, resp);
             }
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 }

@@ -16,7 +16,7 @@
     <div class="col-6 shadow p-3 mb-5 bg-body-tertiary rounded">
         <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
              id="product-image-${product.id}"
-             class="img-fluid col-12"
+             class="img-fluid col-12  product-image"
              alt="${product.name}" width="100%" height="100%">
     </div>
     <div class="col-6 row">
@@ -34,7 +34,7 @@
                    data-bs-target="#modalOrder" onclick="initOrderForm()"/>
             <input type="button" class="btn btn-secondary"
                    value="Thêm vào giỏ"
-                   onclick="addToCart(${product.id})"/>
+                   onclick="addToCart(${product.id}, 'product-image-${product.id}')"/>
         </div>
         <div class="col-12">
 

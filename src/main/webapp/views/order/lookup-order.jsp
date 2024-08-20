@@ -10,26 +10,30 @@
 <html>
 <head>
     <title>Title</title>
+    <script src="../../js/order/lookup-order.js"></script>
 </head>
 <body>
 <div class="row" id="lookup-order-div">
-    <form class="form row align-items-end mb-3" method="get"
+
+    <form class="form row align-items-end p-3 mb-3 bg-body-secondary rounded" method="get"
           action="${pageContext.request.contextPath}/order/lookup-by-code"
-          oninvalid="validateLookupOrder()">
+          onsubmit="return validateLookupOrder()">
+        <h1>Tra cứu đơn hàng</h1>
         <div class="col-md-8">
             <label class="" for="inp-order-code">Mã đơn hàng/Số điện thoại:</label>
             <input id="inp-order-code" class="form-control" type="text" name="orderCode" value="${orderCode}"
                    placeholder="Nhập Mã đơn hàng hoặc Số điện thoại">
         </div>
         <div class="col-md-4">
-            <button type="submit" class="btn btn-primary">Tra cứu</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
+        </div>
+        <div class="col-12 mb-3">
+            <span>${lookupResponse}</span>
+            <span class="text-danger" id="lookup-order-error-response">${errorResponse}</span>
+            <h2 style="color:green">${successResponse}</h2>
         </div>
     </form>
-    <div class="col-12 mb-3">
-        <span>${lookupResponse}</span>
-        <h2 style="color:red">${errorResponse}</h2>
-        <h2 style="color:green">${successResponse}</h2>
-    </div>
+
     <div class="col-12 row card card-body mb-3" ${!showOrderInfo ? 'hidden' : ''}>
         <div class="col-md-12 mb-3">
             <h6>Thông tin khách hàng</h6>
@@ -129,21 +133,6 @@
     </div>
 </div>
 
-<script>
-    function validateLookupOrder() {
-        let orderCode = document.getElementById("inp-order-code").value
-        if (orderCode === '') {
-            window.alert("Vui lòng nhập Mã đơn hàng");
-        }
-    }
 
-
-    function setData(orderId, orderCode) {
-        document.getElementById("inp-order-id").value = orderId;
-        document.getElementById("inp-otp").value = '';
-        document.getElementById("cancel-order-lb").innerHTML = orderCode;
-    }
-
-</script>
 </body>
 </html>

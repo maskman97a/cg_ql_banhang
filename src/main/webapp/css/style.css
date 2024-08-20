@@ -17,7 +17,6 @@
 
 .footer-div {
     background-color: #fde6ba;
-    height: 150px;
 }
 
 #icon-lookup-order:hover {
@@ -62,4 +61,15 @@
 
 .navbar-text {
     color: red;
+}
+
+.product-image-fly {
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+.product-image {
+    cursor: pointer;
 }

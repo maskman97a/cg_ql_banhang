@@ -34,17 +34,15 @@ public class CategoryService extends BaseService {
     }
 
 
-    public void renderSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+
             List<BaseEntity> categoryDtoList = baseModel.findAll();
             req.setAttribute("lstCategory", categoryDtoList);
             req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
-    public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void createNewCategory(HttpServletRequest req, HttpServletResponse resp) {
         try {
             req.setCharacterEncoding("UTF-8");
             CategoryEntity categoryEntity = new CategoryEntity();
@@ -62,23 +60,19 @@ public class CategoryService extends BaseService {
     }
 
 
-    public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
+    public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
             req.setAttribute("renderCategory", true);
             req.setAttribute("renderCategoryList", true);
             req.setAttribute("renderProduct", false);
             req.setAttribute("renderOrder", false);
             this.searchCategory(req, resp);
             req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+
     }
 
 
-    public void searchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void searchCategory(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-        try {
             String keyword = DataUtil.safeToString(req.getParameter("keyword"));
             int size = 5;
             if (req.getParameter("size") != null) {
@@ -104,9 +98,7 @@ public class CategoryService extends BaseService {
             }
             int count = categoryModel.countCategory(baseSearchDto, null);
             getPaging(req, resp, count, size, page);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp, ex.getMessage());
-        }
+
     }
 
     public CategoryDto getDetailCategory(BaseSearchDto baseSearchDto, Integer id) throws SQLException {

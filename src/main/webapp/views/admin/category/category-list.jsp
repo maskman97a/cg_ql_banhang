@@ -72,8 +72,8 @@
                 <div class="col-12">
                     <form class="form" method="get"
                           action="${pageContext.request.contextPath}/admin/category/search">
-                        <input type="text" class="form-control" name="size" value="5" hidden/>
-                        <input type="text" class="form-control" name="page" value="1" hidden/>
+                        <input type="hidden" class="form-control" name="size" value="5"/>
+                        <input type="hidden" class="form-control" name="page" value="1"/>
                         <div class="row justify-content-center">
                             <div class="col-7">
                                 <input type="text" class="form-control" placeholder="Nhập Loại sản phẩm"

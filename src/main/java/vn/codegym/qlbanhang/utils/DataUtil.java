@@ -139,8 +139,7 @@ public class DataUtil {
             return null;
 
         try {
-            LocalDateTime rtn = convertStringToLocalDateTime(tmp, "yyyy-MM-dd HH:mm:ss.S");
-            return rtn;
+            return convertStringToLocalDateTime(tmp, "yyyy-MM-dd HH:mm:ss.S");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -168,12 +167,12 @@ public class DataUtil {
 
     public static boolean safeEqual(BigInteger obj1, BigInteger obj2) {
         if (obj1 == obj2) return true;
-        return ((obj1 != null) && (obj2 != null) && obj1.equals(obj2));
+        return ((obj1 != null) && obj1.equals(obj2));
     }
 
     public static boolean safeEqual(String obj1, String obj2) {
         if (obj1 == obj2) return true;
-        return ((obj1 != null) && (obj2 != null) && obj1.equals(obj2));
+        return ((obj1 != null) && obj1.equals(obj2));
     }
 
     public static boolean safeEqual(Short obj1, Short obj2) {
@@ -195,7 +194,7 @@ public class DataUtil {
         String contentResult = "";
         if (!isNullObject(content)) {
             contentResult = content.length() > 2000 ?
-                    (content.substring(0, 1900) + "..." + content.substring(content.length() - 3, content.length())) :
+                    (content.substring(0, 1900) + "..." + content.substring(content.length() - 3)) :
                     content;
         }
         return contentResult;
@@ -206,7 +205,7 @@ public class DataUtil {
         String contentResult = "";
         if (!isNullObject(content)) {
             contentResult = content.length() > 500 ?
-                    (content.substring(0, 480) + "..." + content.substring(content.length() - 3, content.length())) :
+                    (content.substring(0, 480) + "..." + content.substring(content.length() - 3)) :
                     content;
         }
         return contentResult;
@@ -225,7 +224,7 @@ public class DataUtil {
     }
 
     public static boolean isNullOrZero(Long value) {
-        return (value == null || value.equals(0L));
+        return (value != null && !value.equals(0L));
     }
 
     /*
@@ -255,7 +254,7 @@ public class DataUtil {
      * @return
      */
     public static boolean isNullOrZero(Integer value) {
-        return (value == null || value.equals(0));
+        return (value != null && !value.equals(0));
     }
 
     /**
@@ -301,29 +300,10 @@ public class DataUtil {
         return strHeader + strDate + result + str;
     }
 
-    public static String formatPhoneNumber(String phoneNumber) {
-        if (phoneNumber.startsWith("856")) {
-            return phoneNumber;
-        } else {
-            if (phoneNumber.startsWith("20") || phoneNumber.startsWith("30") || phoneNumber.startsWith("020") || phoneNumber.startsWith("030")) {
-                if (phoneNumber.startsWith("020") || phoneNumber.startsWith("030")) {
-                    phoneNumber = phoneNumber.substring(1);
-                }
-                return "856" + phoneNumber;
-            } else {
-                if (phoneNumber.startsWith("9") || phoneNumber.startsWith("7")) {
-                    phoneNumber = "20" + phoneNumber;
-                }
-                return "856" + phoneNumber;
-            }
-        }
-    }
-
     public static LocalDateTime stringToLocalDateTme(String date) {
         if (date != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-            LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-            return dateTime;
+            return LocalDateTime.parse(date, formatter);
         }
         return null;
     }
@@ -372,18 +352,14 @@ public class DataUtil {
     }
 
     public static boolean validString(Object temp) {
-        if (temp == null || temp.toString().trim().equals("")) {
-            return false;
-        }
-        return true;
+        return temp != null && !temp.toString().trim().equals("");
     }
 
     public static String genOTP() {
         int min = 100000;
         int max = 999999;
         int random_int = (int) (Math.random() * (max - min + 1) + min);
-        String OTP = String.valueOf(random_int);
-        return OTP;
+        return String.valueOf(random_int);
     }
 
 
@@ -394,8 +370,7 @@ public class DataUtil {
     public static String formatNumber(Long number) {
         if (number != null) {
             DecimalFormat decimalFormat = new DecimalFormat("#,###");
-            String formattedNumber = decimalFormat.format(number);
-            return formattedNumber;
+            return decimalFormat.format(number);
         } else {
             return null;
         }
@@ -419,7 +394,7 @@ public class DataUtil {
         Map<String, Object> map = new HashMap<>();
         int idx = 1;
         for (Object obj : lst) {
-            map.put(prefix + String.valueOf(idx++), obj);
+            map.put(prefix + idx++, obj);
         }
         return map;
     }
@@ -428,7 +403,7 @@ public class DataUtil {
         String contentResult = "";
         if (!isNullObject(content)) {
             contentResult = content.length() > maxLength ?
-                    (content.substring(0, maxLength - 20) + "..." + content.substring(content.length() - 5, content.length())) :
+                    (content.substring(0, maxLength - 20) + "..." + content.substring(content.length() - 5)) :
                     content;
         }
         return contentResult;

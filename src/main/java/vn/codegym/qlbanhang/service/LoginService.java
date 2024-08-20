@@ -13,10 +13,12 @@ import java.io.IOException;
 public class LoginService {
     private final UserModel userModel;
     private final Gson gson;
+    private HomeService homeService;
 
     public LoginService() {
         this.userModel = UserModel.getInstance();
         this.gson = new Gson();
+        this.homeService = HomeService.getInstance();
     }
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String username = req.getParameter("username");
@@ -28,8 +30,13 @@ public class LoginService {
             resp.sendRedirect(req.getContextPath() + "/admin");
         } else {
             req.setAttribute("loginMessage", "Đăng nhập không thành công");
-            req.getRequestDispatcher("/views/login/login.jsp").forward(req, resp);
+            resp.sendRedirect(req.getContextPath() + "/login");
         }
+    }
+
+    public void renderLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("showLoginPage", true);
+        homeService.renderPage(req, resp);
     }
 
     public String generateToken(String username) {

@@ -127,7 +127,7 @@ public class SftpUtils {
                 String[] folders = sftpDir.split("/");
                 String path = "";
                 for (String folder : folders) {
-                    if (folder.length() > 0) {
+                    if (!folder.isEmpty()) {
                         path += "/" + folder;
                         try {
                             channelSftp.cd(path);

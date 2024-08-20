@@ -43,33 +43,47 @@
                    class="btn"> <span class="col-12 fs-4 fw-bold">${productPerCategory.categoryName}</span></a>
             </div>
             <c:forEach var="productPaging" items="${productPerCategory.productPagingList}">
-                <div class="row">
+                <div class="row mb-3">
                     <c:forEach var="product" items="${productPaging.productList}">
                         <div class="col-3 p-3">
-                            <div class="shadow p-3 mb-5 rounded" style="height:85%">
+                            <div class="shadow p-3 rounded mt-3">
                                 <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
-                                   class="row">
+                                   class="row mb-3">
                                     <div class="col-12 ratio ratio-1x1">
                                         <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
                                              id="product-image-${product.id}"
-                                             class="img-fluid col-12 rounded"
+                                             class="img-fluid col-12 rounded product-image"
                                              alt="${product.name}" width="100%" height="100%" style="z-index: 0">
                                     </div>
                                 </a>
-                                <div class="row">
+                                <div class="col-12">
                                     <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
-                                       class="row col-10">
-                                        <span class="col-12" style="font-weight: bold;">${product.name}</span>
-
-                                        <span id="col-price-${product.id}" class="col-12 formatted-number"
-                                              style="font-weight: bold; color:red;"></span>
-                                        <script>
-                                            document.getElementById("col-price-${product.id}").innerHTML = formatNumber(${product.price}) + " đ"
-                                        </script>
+                                       class="col-12" style="text-decoration: none; color:#635c5c">
+                                        <div class="col-12" style="height:60px; line-height: 20px">
+                                            <span class="col-12" style="font-weight: bold;">${product.name}</span>
+                                        </div>
                                     </a>
-                                    <div class="col-2 text-center align-self-center">
-                                        <i class="fa-solid fa-cart-plus fs-3" onclick="addToCart(${product.id})"></i>
+                                    <div class="row align-items-center mb-3">
+                                        <div class="col-10">
+                                            <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
+                                               style="text-decoration: none; color:#635c5c">
+                                                <span id="col-price-${product.id}" class="col-12 formatted-number"
+                                                      style="font-weight: bold; color:red;"></span>
+                                                <script>
+                                                    document.getElementById("col-price-${product.id}").innerHTML = formatNumber(${product.price}) + " đ"
+                                                </script>
+                                            </a>
+                                        </div>
+                                        <div class="col-2 text-center fs-4"
+                                             style="color:green; padding-right:3px">
+                                            <i class="fa-solid fa-cart-plus"
+                                               onclick="addToCart(${product.id}, 'product-image-${product.id}')"></i>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="col-12 ">
+                                    <textarea class="form-control bg-body-secondary"
+                                              style="font-size: 11px">${product.description}</textarea>
                                 </div>
                             </div>
                         </div>

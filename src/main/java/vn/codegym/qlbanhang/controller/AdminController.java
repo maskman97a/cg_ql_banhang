@@ -2,6 +2,7 @@ package vn.codegym.qlbanhang.controller;
 
 
 import com.google.gson.Gson;
+import lombok.SneakyThrows;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.UrlLevelDto;
 import vn.codegym.qlbanhang.dto.UserInfoDto;
@@ -26,8 +27,9 @@ public class AdminController extends BaseController {
         this.adminService = AdminService.getInstance();
     }
 
+    @SneakyThrows
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         boolean valid = validateLogin(req, resp);
         if (valid) {
             List<UrlLevelDto> urlLevelDtos = new ArrayList<>();
@@ -58,8 +60,6 @@ public class AdminController extends BaseController {
             System.out.println(req.getPathInfo());
             switch (req.getPathInfo()) {
                 case "/search":
-                    adminService.renderAdminFistTab(req, resp);
-                    break;
                 case "/product/search":
                     adminService.renderAdminFistTab(req, resp);
                     break;
@@ -123,8 +123,9 @@ public class AdminController extends BaseController {
     }
 
 
+    @SneakyThrows
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         boolean valid = validateLogin(req, resp);
         if (valid) {
             if (req.getPathInfo() == null) {

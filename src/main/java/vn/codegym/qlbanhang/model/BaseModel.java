@@ -51,7 +51,7 @@ public class BaseModel {
     }
 
 
-    public List<BaseEntity> search(BaseSearchDto baseSearchDto) throws SQLException {
+    public List<BaseEntity> search(BaseSearchDto baseSearchDto) {
         List<BaseEntity> baseEntities = new ArrayList<>();
         try {
             String sql = getSelectSQL(baseSearchDto);
@@ -78,7 +78,7 @@ public class BaseModel {
         return baseEntities;
     }
 
-    public Integer count(BaseSearchDto baseSearchDto) throws SQLException {
+    public Integer count(BaseSearchDto baseSearchDto) {
         try {
             Connection conn = DatabaseConnection.getInstance().getConnection();
             String countSQL = "SELECT COUNT(1) FROM (" + getSelectSQL(baseSearchDto) + ") a";
@@ -153,7 +153,7 @@ public class BaseModel {
         return sb.toString();
     }
 
-    public List<BaseEntity> findAll() throws SQLException {
+    public List<BaseEntity> findAll() {
         try {
             Connection con = DatabaseConnection.getInstance().getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(getSelectSQL(null));
@@ -164,7 +164,7 @@ public class BaseModel {
         return new ArrayList<>();
     }
 
-    public List<BaseEntity> findAllActive() throws SQLException {
+    public List<BaseEntity> findAllActive() {
 
         try {
             Connection con = DatabaseConnection.getInstance().getConnection();
@@ -184,7 +184,7 @@ public class BaseModel {
         return new ArrayList<>();
     }
 
-    public List<BaseEntity> findAllActiveWithSort(String sortCol, String sortType) throws SQLException {
+    public List<BaseEntity> findAllActiveWithSort(String sortCol, String sortType) {
 
         try {
             Connection con = DatabaseConnection.getInstance().getConnection();
@@ -212,7 +212,7 @@ public class BaseModel {
         return findOne(baseSearchDto);
     }
 
-    public BaseEntity findOne(BaseSearchDto baseSearchDto) throws SQLException {
+    public BaseEntity findOne(BaseSearchDto baseSearchDto) {
         try {
             String sql = getSelectSQL(baseSearchDto);
             System.out.println("Execute sql: " + sql);

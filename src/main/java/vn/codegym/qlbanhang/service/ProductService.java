@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ProductService extends HomeService {
+public class ProductService extends BaseService {
     private final ProductModel productModel;
     private final CategoryModel categoryModel;
 
@@ -42,21 +42,19 @@ public class ProductService extends HomeService {
         req.setAttribute("showListProduct", true);
     }
 
-    public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            getAllCategory(req);
-            Integer id = Integer.parseInt(req.getParameter("id"));
-            ProductEntity productEntity = (ProductEntity) productModel.findById(id);
-            ProductDto productDto = modelMapper.map(productEntity, ProductDto.class);
-            req.setAttribute("product", productDto);
-            req.setAttribute("showProductDetail", true);
-            renderPage(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+    public void renderProductDetailPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+
+        getAllCategory(req);
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        ProductEntity productEntity = (ProductEntity) productModel.findById(id);
+        ProductDto productDto = modelMapper.map(productEntity, ProductDto.class);
+        req.setAttribute("product", productDto);
+        req.setAttribute("showProductDetail", true);
+        renderPage(req, resp);
+
     }
 
-    public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+    public void executeSearch(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         log.info("-----start-----");
         List<CategoryDto> categoryDtoList = getAllCategory(req);
         getAllProductSortType(req);
@@ -160,16 +158,13 @@ public class ProductService extends HomeService {
         req.setAttribute("sortList", ProductSort.getAllSort());
     }
 
-    public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            executeSearch(req, resp);
-            renderPage(req, resp);
-        } catch (Exception ex) {
-            renderErrorPage(req, resp);
-        }
+    public void searchProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        executeSearch(req, resp);
+        renderPage(req, resp);
+
     }
 
-    public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+    public void addToCart(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
 
         String productId = req.getParameter("productId");
         String newQuantityStr = req.getParameter("quantity");
@@ -182,7 +177,7 @@ public class ProductService extends HomeService {
         }
     }
 
-    public void getCart(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void getCart(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("-----start-----");
         HttpSession session = req.getSession();
         Object cartProductJson = session.getAttribute("cartProductJson");
@@ -225,7 +220,7 @@ public class ProductService extends HomeService {
 
     public void updateCart(HttpServletRequest req, HttpServletResponse resp, Integer id, Integer newQuantity) throws SQLException, IOException {
         log.info("-----start-----");
-        BaseResponse<CartResponse> baseResponse = new BaseResponse();
+        BaseResponse<CartResponse> baseResponse = new BaseResponse<>();
         HttpSession session = req.getSession();
         List<CartProductDto> cartProductDtoList;
         Object cartProductJson = session.getAttribute("cartProductJson");

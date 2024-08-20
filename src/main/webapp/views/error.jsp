@@ -12,6 +12,16 @@
     <title>Title</title>
 </head>
 <body>
-<h1><c:out value="${message.equals('') || message == null ? 'Lỗi hệ thống': message}"/></h1>
+<%--<h1><c:out value="${message.equals('') || message == null ? 'Lỗi hệ thống': message}"/></h1>--%>
+<h1>
+    <c:choose>
+        <c:when test="${empty message}">
+            Lỗi hệ thống
+        </c:when>
+        <c:otherwise>
+            <c:out value="${message}"/>
+        </c:otherwise>
+    </c:choose>
+</h1>
 </body>
 </html>

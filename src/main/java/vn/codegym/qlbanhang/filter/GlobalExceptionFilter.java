@@ -17,8 +17,8 @@ public class GlobalExceptionFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (Exception e) {
-            req.getRequestDispatcher("/views/error.jsp").forward(req, resp);
             req.setAttribute("message", e.getMessage());
+            req.getRequestDispatcher("/views/error.jsp").forward(req, resp);
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.Map;
 @Setter
 public abstract class BaseEntity {
     @Column(name = "id")
-    protected int id;
+    protected Integer id;
     @Column(name = "status")
     protected int status;
     @Column(name = "created_by")

@@ -71,9 +71,9 @@
                                 <td>Thành tiền</td>
                             </tr>
                             </thead>
-                            <c:forEach var="orderDetail" items="${orderInfo.orderDetailList}">
+                            <c:forEach var="orderDetail" items="${orderInfo.orderDetailEntityList}">
                                 <tr>
-                                    <td>${orderDetail.product.productName}</td>
+                                    <td>${orderDetail.productEntity.productName}</td>
                                     <td id="col-unit-price-${orderDetail.id}">${orderDetail.unitPrice}</td>
                                     <td>${orderDetail.quantity}</td>
                                     <td id="col-amount-${orderDetail.id}">${orderDetail.amount}</td>

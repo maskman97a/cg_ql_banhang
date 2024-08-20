@@ -1,5 +1,6 @@
 package vn.codegym.qlbanhang.model;
 
+import lombok.Getter;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.BaseSearchDto;
 import vn.codegym.qlbanhang.dto.QueryConditionDto;
@@ -7,14 +8,11 @@ import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.CustomerEntity;
 
 public class CustomerModel extends BaseModel {
+    @Getter
     private static final CustomerModel instance = new CustomerModel();
 
     private CustomerModel() {
         super(CustomerEntity.class);
-    }
-
-    public static CustomerModel getInstance() {
-        return instance;
     }
 
 

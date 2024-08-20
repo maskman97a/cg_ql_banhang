@@ -41,11 +41,12 @@ const BaseResponse = {
     }
 }
 
-async function addToCart(productId) {
+async function addToCart(productId, productImageElementId) {
     let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
     let data = await callApi(fetchUrl, "GET")
     if (data.errorCode === 0) {
         document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
+        animationCart(productImageElementId);
     } else {
     }
 }
@@ -64,12 +65,10 @@ async function callApi(apiUrl, method, body) {
             // Decode the ArrayBuffer to a string using TextDecoder
             const decoder = new TextDecoder('utf-8');
             const jsonString = decoder.decode(buffer);
-            console.log("json: " + jsonString)
             // Parse the JSON string into an object
             return JSON.parse(jsonString)
         })
         .then(data => {
-            console.log(data)
             return data
         })
         .catch(error => console.log(error));
@@ -86,11 +85,50 @@ async function callApiAndDrawCart() {
     if (data.errorCode === 0) {
         document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
         let listProductInCart = data.additionalData.productList;
-        console.log(listProductInCart)
         return drawProductList(listProductInCart);
     } else {
         alert("Có lỗi khi load giỏ hàng, vui lòng thử lại sau");
     }
 }
 
+function animationCart(productImageElementId) {
+    const productImage = document.getElementById(productImageElementId);
+    const cart = document.getElementById('cart-icon');
+
+    // Clone the product image
+    const flyImage = productImage.cloneNode(true);
+    flyImage.classList.add('product-image-fly');
+    document.body.appendChild(flyImage);
+
+    // Get the position of the image and the cart
+    const productRect = productImage.getBoundingClientRect();
+    const cartRect = cart.getBoundingClientRect();
+
+    // Set the initial position of the fly image
+    flyImage.style.left = productRect.left + 'px';
+    flyImage.style.top = productRect.top + 'px';
+    flyImage.style.width = productRect.width + 'px';
+
+    // Calculate the translation needed
+    const translateX = (cartRect.left + cartRect.width / 2) - (productRect.left + productRect.width / 2);
+    const translateY = (cartRect.top + cartRect.height / 2) - (productRect.top + productRect.height / 2);
+
+    // Apply the translation
+    setTimeout(() => {
+        flyImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.1)`;
+        flyImage.style.opacity = '0';
+        flyImage.style.zIndex = `1000`;
+    }, 100);
+
+    // Remove the fly image after the animation
+    setTimeout(() => {
+        flyImage.remove();
+    }, 3000);
+}
+
+
+function renderErrorMessage(elementId, message) {
+    document.getElementById(elementId).innerHTML = message;
+    return false;
+}
 

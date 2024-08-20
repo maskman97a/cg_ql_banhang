@@ -19,12 +19,11 @@ public class ProductController extends HomeController {
     @Override
     public void init() {
         this.productService = new ProductService();
-        this.homeService = new HomeService();
     }
 
     @SneakyThrows
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         req.setCharacterEncoding("UTF-8");
         if (req.getPathInfo() == null) {
             homeService.renderHomePage(req, resp);

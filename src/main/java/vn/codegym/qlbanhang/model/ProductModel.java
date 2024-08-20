@@ -55,7 +55,7 @@ public class ProductModel extends BaseModel {
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
 
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             QueryConditionDto queryConditionDto = QueryConditionDto.newAndCondition("category_id", "=", categoryId);
             baseSearchDto.getQueryConditionDtos().add(queryConditionDto);
         }
@@ -92,7 +92,7 @@ public class ProductModel extends BaseModel {
     public List<ProductDto> findProductByKeyword(BaseSearchDto baseSearchDto, Long categoryId, Integer id) throws SQLException {
         List<ProductDto> productDtoList = new ArrayList<>();
         String sql = this.getSearchSQL(baseSearchDto, categoryId, id);
-            sql += " order by p.id desc ";
+        sql += " order by p.updated_date desc ";
         sql += " limit ? offset ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
         int index = 1;
@@ -102,7 +102,7 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             preparedStatement.setLong(index++, categoryId);
         }
         if (!DataUtil.isNullObject(id)) {
@@ -137,7 +137,7 @@ public class ProductModel extends BaseModel {
                 preparedStatement.setString(index++, "%" + baseSearchDto.getKeyword() + "%");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             preparedStatement.setLong(index++, categoryId);
         }
         if (!DataUtil.isNullObject(id)) {
@@ -175,7 +175,7 @@ public class ProductModel extends BaseModel {
             preparedStatement.setInt(index, (baseSearchDto.getPage() - 1) * baseSearchDto.getSize());
         }
         ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next()) {
+        if (rs.next()) {
             ProductDto productDto = new ProductDto();
             productDto.setId(rs.getInt("id"));
             productDto.setImageUrl(rs.getString("imageUrl"));
@@ -195,7 +195,8 @@ public class ProductModel extends BaseModel {
 
     public String getSearchSQL(BaseSearchDto baseSearchDto, Long categoryId, Integer id) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT p.id,p.image_url as imageUrl,p.product_code as productCode,p.product_name as productName,p.price,p.quantity,p.description,c.name as categoryName,p.category_id as categoryId ");
+        sb.append(" SELECT p.id,p.image_url as imageUrl,p.product_code as productCode,p.product_name as productName,p.price,p.quantity,p.description,c.name as categoryName,p.category_id as categoryId, ");
+        sb.append("        p.updated_date as updatedDate  ");
         sb.append("  FROM product p ");
         sb.append("       left join category c on c.status = 1 and p.category_id = c.id ");
         sb.append(" WHERE p.status = 1 ");
@@ -204,7 +205,7 @@ public class ProductModel extends BaseModel {
                 sb.append(" AND ( p.product_code LIKE ? OR p.product_name LIKE ? ) ");
             }
         }
-        if (!DataUtil.isNullOrZero(categoryId)) {
+        if (DataUtil.isNullOrZero(categoryId)) {
             sb.append(" AND p.category_id = ? ");
         }
         if (!DataUtil.isNullObject(id)) {
@@ -214,39 +215,75 @@ public class ProductModel extends BaseModel {
     }
 
     public int updateProduct(Boolean isCancel, ProductEntity productEntity) throws SQLException {
-            StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("UPDATE product " + "   SET updated_date = CURRENT_TIMESTAMP , " + "       updated_by = ? ");
-            if (!DataUtil.isNullObject(productEntity)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl())) sb.append(" ,image_url = ? ");
-                    if (!DataUtil.isNullOrEmpty(productEntity.getProductName())) sb.append(" ,product_name = ? ");
-                    if (!DataUtil.isNullOrZero(productEntity.getPrice())) sb.append(" ,price = ? ");
-                    if (!DataUtil.isNullOrZero(productEntity.getQuantity())) sb.append(" ,quantity = ? ");
-                    if (!DataUtil.isNullOrEmpty(productEntity.getDescription())) sb.append(" ,description = ? ");
-                }
-                if (!DataUtil.isNullObject(productEntity.getStatus())) sb.append(" ,status = ? ");
+        if (!DataUtil.isNullObject(productEntity)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl())) sb.append(" ,image_url = ? ");
+                if (!DataUtil.isNullOrEmpty(productEntity.getProductName())) sb.append(" ,product_name = ? ");
+                if (!DataUtil.isNullOrZero(productEntity.getPrice())) sb.append(" ,price = ? ");
+                if (!DataUtil.isNullOrZero(productEntity.getQuantity())) sb.append(" ,quantity = ? ");
+                if (!DataUtil.isNullOrEmpty(productEntity.getDescription())) sb.append(" ,description = ? ");
             }
-            sb.append(" WHERE id = ? ");
+            if (!DataUtil.isNullObject(productEntity.getStatus())) sb.append(" ,status = ? ");
+        }
+        sb.append(" WHERE id = ? ");
         if (isCancel) sb.append(" AND status = 1 ");
         PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
-            int index = 1;
-            preparedStatement.setString(index++, productEntity.getUpdatedBy());
-            if (!DataUtil.isNullObject(productEntity)) {
-                if (!isCancel) {
-                    if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl()))
-                        preparedStatement.setString(index++, productEntity.getImageUrl().trim());
-                    if (!DataUtil.isNullOrEmpty(productEntity.getProductName()))
-                        preparedStatement.setString(index++, productEntity.getProductName().trim());
-                    if (!DataUtil.isNullOrZero(productEntity.getPrice()))
-                        preparedStatement.setLong(index++, productEntity.getPrice());
-                    if (!DataUtil.isNullOrZero(productEntity.getQuantity()))
-                        preparedStatement.setInt(index++, productEntity.getQuantity());
-                    if (!DataUtil.isNullOrEmpty(productEntity.getDescription()))
-                        preparedStatement.setString(index++, productEntity.getDescription().trim());
-                }
-                if (!DataUtil.isNullObject(productEntity.getStatus())) preparedStatement.setInt(index++, productEntity.getStatus());
+        int index = 1;
+        preparedStatement.setString(index++, productEntity.getUpdatedBy());
+        if (!DataUtil.isNullObject(productEntity)) {
+            if (!isCancel) {
+                if (!DataUtil.isNullOrEmpty(productEntity.getImageUrl()))
+                    preparedStatement.setString(index++, productEntity.getImageUrl().trim());
+                if (!DataUtil.isNullOrEmpty(productEntity.getProductName()))
+                    preparedStatement.setString(index++, productEntity.getProductName().trim());
+                if (!DataUtil.isNullOrZero(productEntity.getPrice()))
+                    preparedStatement.setLong(index++, productEntity.getPrice());
+                if (!DataUtil.isNullOrZero(productEntity.getQuantity()))
+                    preparedStatement.setInt(index++, productEntity.getQuantity());
+                if (!DataUtil.isNullOrEmpty(productEntity.getDescription()))
+                    preparedStatement.setString(index++, productEntity.getDescription().trim());
             }
-            preparedStatement.setInt(index++, productEntity.getId());
-            return preparedStatement.executeUpdate();
+            if (!DataUtil.isNullObject(productEntity.getStatus()))
+                preparedStatement.setInt(index++, productEntity.getStatus());
+        }
+        preparedStatement.setInt(index++, productEntity.getId());
+        return preparedStatement.executeUpdate();
     }
+
+    public boolean checkExitsProduct(String code, Integer categoryId, Integer id) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT 1  ");
+        sb.append("  FROM product p, category c  ");
+        sb.append(" WHERE p.status = 1 ");
+        sb.append("       AND c.status = 1 ");
+        sb.append("       AND p.category_id = c.id ");
+        if (!DataUtil.isNullOrEmpty(code)) {
+            sb.append(" AND p.product_code = ?  ");
+        }
+        if (!DataUtil.isNullOrZero(categoryId)) {
+            sb.append(" AND p.category_id = ? ");
+        }
+        if (!DataUtil.isNullObject(id)) {
+            sb.append(" AND p.id != ? ");
+        }
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sb.toString());
+        int index = 1;
+        if (!DataUtil.isNullOrEmpty(code)) {
+            preparedStatement.setString(index++, code);
+        }
+        if (!DataUtil.isNullOrZero(categoryId)) {
+            preparedStatement.setLong(index++, categoryId);
+        }
+        if (!DataUtil.isNullObject(id)) {
+            preparedStatement.setInt(index++, id);
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            return true;
+        }
+        return false;
+    }
+
 }

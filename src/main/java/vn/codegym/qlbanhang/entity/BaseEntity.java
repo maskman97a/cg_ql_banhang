@@ -27,6 +27,8 @@ public abstract class BaseEntity {
     @Column(name = "updated_date")
     protected LocalDateTime updatedDate;
 
+    @Setter
+    @Getter
     private Map<String, Object> mapValue;
 
     public BaseEntity() {
@@ -54,11 +56,4 @@ public abstract class BaseEntity {
         return null;
     }
 
-    public Map<String, Object> getMapValue() {
-        return mapValue;
-    }
-
-    public void setMapValue(Map<String, Object> mapValue) {
-        this.mapValue = mapValue;
-    }
 }

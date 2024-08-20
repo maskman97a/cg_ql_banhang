@@ -9,7 +9,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -22,17 +21,14 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/7fc3852c80.js" crossorigin="anonymous"></script>
-    <link rel="icon" type="image/png" href="../../images/logo.png">
 </head>
 <body>
 <div class="container">
-
-    <form class="form p-5" method="post" action="${pageContext.request.contextPath}/login"
-          style="height: 100%"
+    <form class="form p-5 " method="post" action="${pageContext.request.contextPath}/login"
           onsubmit="return validateLogin()">
         <div class="container">
             <div class="row">
-                <div class="col-6 offset-3">
+                <div class="col-6 offset-3 bg-dark bg-gradient rounded p-3 text-white">
                     <c:if test="${loginMessage != null && !loginMessage.isEmpty()}">
                         <div class="alert alert-danger">${loginMessage}</div>
                     </c:if>
@@ -42,14 +38,19 @@
                         <input type="text" class="form-control" id="username" name="username"
                                placeholder="Tối thiểu 5 ký tự" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="pwd-plain-text">Mật khẩu:</label>
-                        <input type="password" class="form-control" id="pwd-plain-text"
-                               placeholder="Tối thiểu 5 ký tự" name="password"
-                               required>
+                    <div class="form-group mb-3 row">
+                        <div class="col-12">
+                            <label for="pwd-plain-text">Mật khẩu:</label>
+                            <input type="password" class="form-control" id="pwd-plain-text"
+                                   placeholder="Tối thiểu 5 ký tự" name="password"
+                                   required>
+                        </div>
+                        <a href="${pageContext.request.contextPath}/forgot" class="col-12 link text-white text-end">
+                            <span>Quên mật khẩu?</span>
+                        </a>
                     </div>
-                    <div class="form-group mb-3">
-                        <input type="submit" value="Đăng nhập" class="btn btn-primary mb-2">
+                    <div class="d-grid mb-3 col-12">
+                        <input type="submit" value="Đăng nhập" class="btn btn-danger">
                     </div>
                 </div>
             </div>

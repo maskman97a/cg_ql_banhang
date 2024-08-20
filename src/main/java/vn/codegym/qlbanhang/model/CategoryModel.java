@@ -44,7 +44,6 @@ public class CategoryModel extends BaseModel {
 
     public List<CategoryDto> findCategoryByKeyword(BaseSearchDto baseSearchDto, Integer id) throws SQLException {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
-        Connection conn = null;
         try {
             String sql = this.getSearchCategorySQL(baseSearchDto, id);
             sql += " order by id desc ";
@@ -71,10 +70,6 @@ public class CategoryModel extends BaseModel {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
         }
         return categoryDtoList;
     }
@@ -130,7 +125,7 @@ public class CategoryModel extends BaseModel {
     }
 
     public int updateCategory(Boolean isCancel, CategoryEntity categoryEntity) throws SQLException {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("UPDATE category " +
                 "   SET updated_date = CURRENT_TIMESTAMP , " +
                 "       updated_by = ? ");
@@ -168,7 +163,7 @@ public class CategoryModel extends BaseModel {
             preparedStatement.setInt(index++, id);
         }
         ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next()) {
+        if (rs.next()) {
             CategoryDto categoryDto = new CategoryDto();
             categoryDto.setId(rs.getInt("id"));
             categoryDto.setName(rs.getString("name"));

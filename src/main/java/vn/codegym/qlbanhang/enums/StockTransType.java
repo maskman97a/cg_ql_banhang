@@ -5,7 +5,7 @@ public enum StockTransType {
     IMPORT("Nhập kho"),
     EXPORT("Xuất kho");
 
-    private String description;
+    public final String description;
 
     StockTransType(String description) {
         this.description = description;

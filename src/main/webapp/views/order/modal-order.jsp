@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>Title</title>
+    <script src="${pageContext.request.contextPath}/js/order/order.js"></script>
 </head>
 <body>
 <div class="modal modal-xl fade" tabindex="-1" id="modalOrder" data-bs-backdrop="static"
@@ -81,6 +82,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <span id="order-single-validate-message" class="text-danger"></span>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     <input type="submit" class="btn btn-primary" value="Đặt hàng"></input>
                 </div>
@@ -88,41 +90,5 @@
         </div>
     </form>
 </div>
-<script>
-    function validateCreateOrder(orderTyp) {
-        let partnerId = "";
-        if (orderTyp === "batch") {
-            partnerId = "#cart-order-customer-info-input"
-        } else {
-            partnerId = "#modalOrder"
-
-        }
-        let customerName = document.querySelector(partnerId + " #inp-customer-name").value;
-        if (customerName === '') {
-            window.alert("Vui lòng nhập Họ và tên")
-            return false;
-        }
-        let customerPhone = document.querySelector(partnerId + " #inp-customer-phone").value;
-        if (customerPhone === '') {
-            window.alert("Vui lòng nhập số điện thoại")
-            return false;
-        }
-        if (customerPhone.length < 9 || customerPhone.length > 11) {
-            window.alert("Số điện thoại không hợp lệ")
-            return false;
-        }
-        let customerAddress = document.querySelector(partnerId + " #inp-customer-address").value;
-        if (customerAddress.length > 500 || customerAddress.length < 10) {
-            window.alert("Vui lòng nhập địa chỉ hợp lệ")
-            return false;
-        }
-        let customerEmail = document.querySelector(partnerId + " #inp-customer-email").value;
-        let quantity = document.getElementById("inp-quantity").value;
-        if (quantity === 0) {
-            window.alert("Số lượng không hợp lệ")
-            return false;
-        }
-    }
-</script>
 </body>
 </html>

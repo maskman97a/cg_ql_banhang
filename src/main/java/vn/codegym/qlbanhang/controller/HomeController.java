@@ -11,11 +11,10 @@ import java.util.logging.Logger;
 
 @WebServlet({"/home/*"})
 public class HomeController extends BaseController {
-    protected Logger log = Logger.getLogger(HomeController.class.getName());
+    protected final Logger log = Logger.getLogger(HomeController.class.getName());
     private HomeService homeService;
-
     public void init() {
-        this.homeService = new HomeService();
+        homeService = HomeService.getInstance();
     }
 
     @Override

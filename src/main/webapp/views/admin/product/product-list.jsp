@@ -64,7 +64,6 @@
         }
 
         .table thead th {
-            background-color: #007bff;
             color: white;
             text-align: center; /* Centered text in the header */
         }
@@ -124,11 +123,6 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .card-header {
-            background-color: #e3b942;
-            color: #ffffff;
-            border-radius: 10px 10px 0 0;
         }
     </style>
 </head>

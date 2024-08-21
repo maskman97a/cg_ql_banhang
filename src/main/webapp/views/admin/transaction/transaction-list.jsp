@@ -17,12 +17,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .card-header {
-            background-color: #e3b942;
-            color: #ffffff;
-            border-radius: 10px 10px 0 0;
-        }
-
         .table-hover tbody tr:hover {
             background-color: #f1f1f1;
         }

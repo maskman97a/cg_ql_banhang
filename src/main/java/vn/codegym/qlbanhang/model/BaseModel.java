@@ -314,6 +314,9 @@ public class BaseModel {
         PreparedStatement preparedStatement = connection.prepareStatement(sb.toString(), Statement.RETURN_GENERATED_KEYS);
         index = 1;
         for (String columnName : lstColName) {
+            if (exists && columnName.equalsIgnoreCase("id")) {
+                continue;
+            }
             preparedStatement.setObject(index++, ClassUtils.getValueFromColumnAnnotation(baseEntity, columnName));
         }
         if (exists) {

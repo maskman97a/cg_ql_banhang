@@ -9,18 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-            crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/7fc3852c80.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <div class="container">
@@ -46,7 +35,7 @@
                                    required>
                         </div>
                         <a href="${pageContext.request.contextPath}/forgot" class="col-12 link text-white text-end"
-                           data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tài khoản của bạn là: admin/admin">
+                           data-toggle="tooltip" data-placement="top" data-title="Tài khoản của bạn là: admin/admin">
                             <span>Quên mật khẩu?</span>
                         </a>
                     </div>

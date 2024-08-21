@@ -96,7 +96,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 mb-3 text-center">
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otp-modal"
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#otp-modal"
                         ${orderInfo.status == 0 ? '': 'disabled'}
                             onclick="setData( ${orderInfo.id}, '${orderInfo.code}')">
                         Hủy đơn hàng
@@ -110,27 +110,7 @@
             </script>
         </c:forEach>
     </div>
-    <div class="modal fade" id="otp-modal" tabindex="-1" aria-labelledby="otp-modal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form class="form" action="${pageContext.request.contextPath}/order/cancel" method="post">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">Hủy đơn hàng <span id="cancel-order-lb"></span>. Xác nhận OTP</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input id="inp-order-id" type="text" name="orderId" hidden/>
-                        <input id="inp-otp" type="text" class="form-control" placeholder="Nhập OTP" value=""
-                               name="otp"/>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Xác nhận</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <c:import url="/views/order/cancel-order-modal.jsp"/>
 </div>
 
 

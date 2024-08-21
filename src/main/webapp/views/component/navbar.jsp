@@ -50,7 +50,7 @@
                 </div>
                 <div class="col-3 row align-items-center">
                     <div class="col-4">
-                        <button id="btn-open-cart" data-bs-toggle="modal" data-bs-target="#modalCart" hidden></button>
+                        <button id="btn-open-cart" data-toggle="modal" data-target="#modalCart" hidden></button>
                         <div onclick="openCart()">
                             <div class="row align-items-center navbar-text">
                                 <div class="col-6 text-end">
@@ -67,8 +67,8 @@
                         </div>
                     </div>
                     <div class="col-8">
-                        <a class="btn" href="${pageContext.request.contextPath}/order/lookup" data-bs-toggle="tooltip"
-                           data-bs-placement="bottom" data-bs-title="Tra cứu đơn hàng">
+                        <a class="btn" href="${pageContext.request.contextPath}/order/lookup" data-toggle="tooltip"
+                           data-placement="bottom" data-title="Tra cứu đơn hàng">
                             <div class="row align-items-center navbar-text">
                                 <div class="col-5 text-end" style="padding-right:0">
                                     <i class="fa-solid fa-truck-fast fs-3"></i>

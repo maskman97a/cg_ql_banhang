@@ -132,3 +132,21 @@ function renderErrorMessage(elementId, message) {
     return false;
 }
 
+function openConfirmDialog(openDialogBtnId, confirmMessage, formElementId) {
+    let openDialogButton = document.getElementById(openDialogBtnId);
+    openDialogButton.click();
+    let confirmMessageLabel = document.getElementById("confirm-message");
+    confirmMessageLabel.innerHTML = confirmMessage;
+    let confirmBtn = document.getElementById("confirm-button");
+    confirmBtn.onclick = function () {
+        submitFormByElementIdComponentInForm(formElementId);
+    }
+}
+
+function submitFormByElementIdComponentInForm(elementId) {
+    const inputElement = document.getElementById(elementId);
+
+// Find the closest ancestor that is a form
+    inputElement.closest('form').submit();
+}
+

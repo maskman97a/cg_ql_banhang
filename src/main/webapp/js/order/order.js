@@ -10,6 +10,12 @@ function validateCreateOrder(orderTyp) {
 
     }
 
+    let rowCount = getQuantity()
+    document.getElementById("cart-row-count").value = rowCount;
+    if (rowCount === 0) {
+        return renderErrorMessage(messageElementId, "Giỏ hàng không có sản phẩm nào cả!")
+    }
+
     let customerName = document.querySelector(partnerId + " #inp-customer-name").value;
     if (customerName === '') {
         return renderErrorMessage(messageElementId, "Vui lòng nhập Họ và tên!")
@@ -26,27 +32,26 @@ function validateCreateOrder(orderTyp) {
         return renderErrorMessage(messageElementId, "Vui lòng nhập Địa chỉ hợp lệ!")
     }
     let customerEmail = document.querySelector(partnerId + " #inp-customer-email").value;
-    if (!customerEmail.contains("@")) {
+    if (!customerEmail.includes("@")) {
         return renderErrorMessage(messageElementId, "Vui lòng nhập Địa chỉ email hợp lệ!")
     }
     let quantity = document.getElementById("inp-quantity").value;
     if (quantity === 0) {
         return renderErrorMessage(messageElementId, "Số lượng không hợp lệ!")
     }
+    return true;
 }
 
-document.getElementById('form-create-order-batch').addEventListener('submit', function (event) {
-    let rowCount = getQuantity()
-
-    document.getElementById("cart-row-count").value = rowCount;
-});
-
-function validateSubmitCreateOrder() {
+function prepareCreateOrder() {
     if (document.getElementById("cart-order-customer-info-input").hidden) {
         renderCustomerInfo();
-        return false;
+        return;
     }
-    return validateCreateOrder('batch');
+
+
+    if (validateCreateOrder('batch')) {
+        openConfirmDialog("btn-create-order-confirm", "Bạn có chắc chắn muốn tạo đơn hàng?", "cart-order-customer-info-input")
+    }
 }
 
 function renderCustomerInfo() {
@@ -86,7 +91,7 @@ function drawProductList(listProductInCart) {
     }
     if (listProductInCart.length === 0) {
         document.getElementById("cart-empty-message").innerHTML = "Không có sản phẩm nào được chọn";
-        document.getElementById("btn-render-create-order").disabled = true;
+        document.getElementById("btn-prepare-create-order").disabled = true;
         document.getElementById("cart-order-customer-info-input").hidden = true;
     } else {
         document.getElementById("tfoot-table-cart").innerHTML =
@@ -96,10 +101,9 @@ function drawProductList(listProductInCart) {
                  </tr>`
             + `<input id="total-quantity" type="number" value="#totalQuantity" hidden/>`.replace("#totalQuantity", listProductInCart.length);
         document.getElementById("cart-empty-message").innerHTML = "";
-        document.getElementById("btn-render-create-order").disabled = false;
+        document.getElementById("btn-prepare-create-order").disabled = false;
     }
     document.getElementById("tbody-table-cart").innerHTML = returnHtml;
-    console.log(returnHtml);
 }
 
 async function removeProductFromCart(productId) {

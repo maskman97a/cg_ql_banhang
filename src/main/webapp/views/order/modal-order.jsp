@@ -13,8 +13,8 @@
     <script src="${pageContext.request.contextPath}/js/order/order.js"></script>
 </head>
 <body>
-<div class="modal modal-xl fade" tabindex="-1" id="modalOrder" data-bs-backdrop="static"
-     data-bs-keyboard="false" style="">
+<div class="modal modal-xl fade" tabindex="-1" id="modalOrder" data-backdrop="static"
+     data-keyboard="false" style="">
     <c:import url="../component/alert-modal.jsp"/>
     <form class="form needs-validation" action="${pageContext.request.contextPath}/order/create" method="post"
           onsubmit="return validateCreateOrder('single')">
@@ -22,7 +22,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Thông tin đặt hàng</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -83,7 +83,7 @@
                 </div>
                 <div class="modal-footer">
                     <span id="order-single-validate-message" class="text-danger"></span>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     <input type="submit" class="btn btn-primary" value="Đặt hàng"></input>
                 </div>
             </div>

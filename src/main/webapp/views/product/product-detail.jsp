@@ -30,8 +30,8 @@
             <div class="card card-body mb-3">
                 <label id="product-description" class="col-12">${product.description}</label>
             </div>
-            <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-bs-toggle="modal"
-                   data-bs-target="#modalOrder" onclick="initOrderForm()"/>
+            <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-toggle="modal"
+                   data-target="#modalOrder" onclick="initOrderForm()"/>
             <input type="button" class="btn btn-secondary"
                    value="Thêm vào giỏ"
                    onclick="addToCart(${product.id}, 'product-image-${product.id}')"/>

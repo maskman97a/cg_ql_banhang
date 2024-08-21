@@ -72,7 +72,7 @@ public class OrderService extends HomeService {
         String customerAddress = req.getParameter("customer-address");
         CustomerDto customerDto = new CustomerDto(customerName, customerPhoneNumber, customerEmail, customerAddress);
         createOrderRequest.setCustomer(customerDto);
-        if (isBatch) {
+         if (isBatch) {
             String rowCountStr = req.getParameter("rowCount");
             if (rowCountStr != null && !rowCountStr.isEmpty()) {
                 int rowCount = Integer.parseInt(rowCountStr);
@@ -224,6 +224,7 @@ public class OrderService extends HomeService {
         if (!DataUtil.isNullObject(customerEntity)) {
             baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newOrCondition("customer_id", "=", customerEntity.getId()));
         }
+        baseSearchDto.getOrderByConditionDtos().add(new OrderByConditionDto("updated_date", "DESC"));
         List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
         if (DataUtil.isNullOrEmpty(baseEntities)) {
             req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");

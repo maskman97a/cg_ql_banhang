@@ -17,11 +17,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="form-create-order-batch" class="form form-control p-2"
-                  onsubmit="return validateSubmitCreateOrder()"
                   action="${pageContext.request.contextPath}/order/create-order-batch" method="post">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Giỏ hàng</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
 
@@ -50,16 +49,22 @@
                 </div>
                 <div class="modal-footer">
                     <span id="order-validate-message" class="text-danger"></span>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở lại</button>
-                    <button type="submit"
-                            class="btn btn-primary" id="btn-render-create-order">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở lại</button>
+                    <button type="button"
+                            class="btn btn-primary" id="btn-prepare-create-order" onclick="prepareCreateOrder()">
                         Tiến hành đặt hàng
                     </button>
+                    <button type="button" data-target="#confirmDialog" data-toggle="modal"
+                            class="btn btn-primary" id="btn-create-order-confirm"
+                            hidden>1234
+                    </button>
+
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 </body>
 <script>
 

@@ -11,11 +11,12 @@ import vn.codegym.qlbanhang.annotation.Table;
 public class StockEntity extends BaseEntity {
     @Column(name = "product_id")
     private int productId;
-    @Column(name = "availableQuantity")
+    @Column(name = "available_quantity")
     private int availableQuantity;
     @Column(name = "pending_quantity")
     private int pendingQuantity;
-    @Column(name = "totalQuantity")
+    @Column(name = "total_q" +
+            "uantity")
     private int totalQuantity;
 
 }

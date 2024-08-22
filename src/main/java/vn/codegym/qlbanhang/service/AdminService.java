@@ -1,10 +1,7 @@
 package vn.codegym.qlbanhang.service;
 
 import vn.codegym.qlbanhang.constants.Const;
-import vn.codegym.qlbanhang.dto.BaseSearchDto;
-import vn.codegym.qlbanhang.dto.CategoryDto;
-import vn.codegym.qlbanhang.dto.ProductDto;
-import vn.codegym.qlbanhang.dto.UserInfoDto;
+import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.entity.OrderEntity;
 import vn.codegym.qlbanhang.entity.ProductEntity;
@@ -19,10 +16,10 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.EOFException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @MultipartConfig
@@ -49,6 +46,27 @@ public class AdminService extends BaseService {
         this.orderModel = OrderModel.getInstance();
     }
 
+    public void setNavigationBar(HttpServletRequest req) {
+        List<UrlLevelDto> urlLevelDtos = new ArrayList<>();
+        StringBuilder parentPath = new StringBuilder(req.getContextPath());
+        int index = 1;
+        for (String path : req.getRequestURI().split("/")) {
+            if (!path.isEmpty()) {
+                parentPath.append("/").append(path);
+                String urlName = Const.getUrlPathName(path);
+                if (urlName.isEmpty()) {
+                    continue;
+                }
+                UrlLevelDto urlLevelDto = new UrlLevelDto();
+                urlLevelDto.setUrl(parentPath.toString());
+                urlLevelDto.setLevel(index++);
+                urlLevelDto.setName(urlName);
+                urlLevelDtos.add(urlLevelDto);
+            }
+        }
+        req.setAttribute("urlLevelList", urlLevelDtos);
+    }
+
 
     public void renderAdmin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         HttpSession httpSession = req.getSession();
@@ -60,6 +78,7 @@ public class AdminService extends BaseService {
         req.setAttribute("renderProduct", true);
         req.setAttribute("renderCategory", false);
         req.setAttribute("renderOrder", false);
+        req.setAttribute("renderStock", false);
         this.searchProductAdmin(req, resp);
         req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
     }

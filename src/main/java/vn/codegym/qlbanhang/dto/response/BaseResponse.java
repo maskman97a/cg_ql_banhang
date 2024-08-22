@@ -21,6 +21,7 @@ public class BaseResponse<T> {
     }
 
     public void setError(ErrorType errorType) {
+        this.additionalData = null;
         this.errorCode = errorType.getErrorCode();
         this.errorMessage = errorType.getErrorMessage();
     }

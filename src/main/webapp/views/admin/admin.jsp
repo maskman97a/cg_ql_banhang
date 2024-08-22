@@ -38,9 +38,9 @@
             </div>
         </div>
         <div class="row" style="background-color:#758694">
-            <div class="col-2 p-3  text-white">
+            <div class="col-2 p-3">
                 <div class="col-12" style="border-bottom: 1px solid #202020">
-                    <span><b>Danh mục</b></span>
+                    <span class="fs-3"><b>Danh mục</b></span>
                 </div>
                 <div id="category-list" class="container-fluid">
                     <div class=" text-white">
@@ -63,6 +63,11 @@
                                     <a href="${pageContext.request.contextPath}/admin/product" type="button"
                                        style="text-align:left"
                                        class="btn">Quản lý sản phẩm</a>
+                                </div>
+                                <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
+                                    <a href="${pageContext.request.contextPath}/admin/stock" type="button"
+                                       style="text-align:left"
+                                       class="btn">Quản lý tồn kho</a>
                                 </div>
                             </div>
                         </div>
@@ -133,6 +138,9 @@
                     </div>
                     <div ${!renderOrder? 'hidden': ''}>
                         <c:import url="transaction/transaction-list.jsp"/>
+                    </div
+                    <div ${!renderStock? 'hidden': ''}>
+                        <c:import url="stock/stock-list.jsp"/>
                     </div
                 </div>
             </div>

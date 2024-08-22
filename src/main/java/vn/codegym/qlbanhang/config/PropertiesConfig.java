@@ -13,13 +13,18 @@ import java.util.Properties;
 @Setter
 public class PropertiesConfig extends HttpServlet {
     public static final PropertiesConfig inst = new PropertiesConfig();
+    private static final String ENV = System.getenv("ENVIRONMENT");
 
     private Properties properties;
 
     private PropertiesConfig() {
         this.properties = new Properties();
         try {
-            InputStream input = getClass().getClassLoader().getResourceAsStream("/application.properties");
+            String propertiesPath = "/application.properties";
+            if (ENV != null && !ENV.isEmpty()) {
+                propertiesPath = "/application-" + ENV + ".properties";
+            }
+            InputStream input = getClass().getClassLoader().getResourceAsStream(propertiesPath);
             if (input != null) {
                 properties.load(input);
             }

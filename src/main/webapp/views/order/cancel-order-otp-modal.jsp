@@ -11,7 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-<div class="modal fade" id="otp-modal" tabindex="-1" aria-labelledby="otp-modal" aria-hidden="true">
+<div class="modal modal-xl fade" id="otp-modal" tabindex="-1" aria-labelledby="otp-modal" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered">
         <div class="modal-content">
             <form class="form" action="${pageContext.request.contextPath}/order/cancel" method="post">
@@ -20,20 +20,26 @@
                         <span class="modal-title fs-4 col-12">Hủy đơn hàng <span id="cancel-order-lb"></span></span>
                         <span class="fs-5 col-12">Xác nhận OTP</span>
                     </div>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Đóng"></button>
                 </div>
-                <div class="modal-body row">
-                    <span class="col-12 mb-2 text-success">OTP đã được gửi qua Email của bạn.</span>
-                    <input id="inp-order-id" type="text" name="orderId" hidden/>
-                    <input id="inp-otp" type="text" class="form-control col-12" placeholder="Nhập OTP" value=""
-                           name="otp"/>
-                    <span class="col-12 text-danger text-end" style="font-size:12px">Nếu không nhận được Email, vui lòng kiểm tra mục Spam</span>
+                <div class="modal-body p-4">
+                    <div class="col-12 mb-3">
+                        <span class="text-success">OTP đã được gửi qua Email của bạn.</span>
+                    </div>
+                    <div class="col-12">
+                        <input id="inp-order-id" type="text" name="orderId" hidden/>
+                        <input id="inp-otp" type="text" class="form-control col-12" placeholder="Nhập OTP" value=""
+                               name="otp"/>
+                    </div>
+                    <div class="col-12 text-end">
+                        <span class="col-12 text-danger" style="font-size:12px">Nếu không nhận được Email, vui lòng kiểm tra mục Spam</span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" id="btn-resend-otp">Gửi lại OTP
                     </button>
                     <span id="cancel-order-message" class="text-danger"></span>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-primary"
                             onclick="validateCancelOrder()">Xác nhận
                     </button>

@@ -15,6 +15,7 @@ async function prepareCancelOrder(orderId, orderCode) {
         setData(orderId, orderCode);
         document.getElementById("btn-open-dialog-cancel-order-otp").click();
         document.getElementById("btn-resend-otp").onclick = function () {
+            resendCancelOrderOtp('btn-resend-otp')
             sendCancelOrderOtp(orderCode);
         }
     }

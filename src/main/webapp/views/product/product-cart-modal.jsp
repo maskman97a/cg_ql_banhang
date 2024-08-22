@@ -20,7 +20,7 @@
                   action="${pageContext.request.contextPath}/order/create-order-batch" method="post">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Giỏ hàng</h1>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Đóng"></button>
                 </div>
                 <div class="modal-body">
 

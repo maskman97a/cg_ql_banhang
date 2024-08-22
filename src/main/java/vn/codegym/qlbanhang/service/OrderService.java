@@ -184,6 +184,12 @@ public class OrderService extends HomeService {
                     orderEntity = (OrderEntity) orderModel.save(orderEntity);
                     if (!DataUtil.isNullObject(orderEntity)) {
                         req.setAttribute("successResponse", "Hủy đơn hàng " + orderEntity.getCode() + " thành công!");
+                        req.setAttribute("renderOrderLink", true);
+                        CustomerEntity customerEntity = (CustomerEntity) customerModel.findById(orderEntity.getCustomerId());
+                        if (!DataUtil.isNullObject(customerEntity)) {
+                            req.setAttribute("phoneNumber", customerEntity.getPhone());
+                            req.setAttribute("orderCode", orderEntity.getCode());
+                        }
                     } else {
                         responseMessage = "Hủy đơn hàng " + orderEntity.getCode() + " thất bại!";
                     }

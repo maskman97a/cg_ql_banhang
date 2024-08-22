@@ -35,6 +35,12 @@
             <span class="text-danger">${lookupResponse}</span>
             <span class="text-danger" id="lookup-order-error-response">${errorResponse}</span>
             <h2 style="color:green">${successResponse}</h2>
+            <div class="col-12" ${!renderOrderLink? 'hidden': ''}>
+                <span>Quý khách có thể tra cứu đơn hàng</span>
+                <a class="text-success"
+                   href="${pageContext.request.contextPath}/order/lookup-by-code?orderCode=${orderCode}&phoneNumber=${phoneNumber}">Tại
+                    đây</a>
+            </div>
         </div>
     </form>
 
@@ -118,7 +124,7 @@
             </script>
         </c:forEach>
     </div>
-    <c:import url="/views/order/cancel-order-modal.jsp"/>
+    <c:import url="/views/order/cancel-order-otp-modal.jsp"/>
 </div>
 
 

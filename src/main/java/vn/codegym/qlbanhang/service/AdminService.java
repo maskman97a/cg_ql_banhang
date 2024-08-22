@@ -4,12 +4,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
-import vn.codegym.qlbanhang.entity.CategoryEntity;
-import vn.codegym.qlbanhang.entity.OrderEntity;
-import vn.codegym.qlbanhang.entity.ProductEntity;
+import vn.codegym.qlbanhang.entity.*;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.OrderModel;
 import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.model.StockModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 import vn.codegym.qlbanhang.utils.SftpUtils;
 
@@ -37,6 +36,7 @@ public class AdminService extends BaseService {
     private final CategoryService categoryService;
     private final OrderService orderService;
     private final StockService stockService;
+    private final StockModel stockModel;
     private final OrderModel orderModel;
 
     private AdminService() {
@@ -48,6 +48,7 @@ public class AdminService extends BaseService {
         this.categoryModel = CategoryModel.getInstance();
         this.orderModel = OrderModel.getInstance();
         this.stockService = StockService.getInstance();
+        this.stockModel = StockModel.getInstance();
 
     }
 
@@ -188,12 +189,18 @@ public class AdminService extends BaseService {
                     productEntity.setProductCode(req.getParameter("code"));
                     productEntity.setProductName(req.getParameter("name"));
                     productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
-                    productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
+//                    productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
                     productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
                     productEntity.setDescription(req.getParameter("description"));
                     productEntity = (ProductEntity) productModel.save(productEntity);
                     if (!DataUtil.isNullObject(productEntity)) {
                         req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
+                        StockEntity newStockEntity = new StockEntity();
+                        newStockEntity.setProductId(productEntity.getId());
+                        newStockEntity.setAvailableQuantity(Integer.parseInt(req.getParameter("quantity")));
+                        newStockEntity.setTotalQuantity(Integer.parseInt(req.getParameter("quantity")));
+                        stockModel.save(newStockEntity);
+
                         resp.sendRedirect("/admin/product");
                     } else {
                         req.setAttribute("errorMsg", "Thêm mới sản phẩm không thành công");
@@ -219,9 +226,6 @@ public class AdminService extends BaseService {
             } else if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
                 req.setAttribute("errorMsg", "Tên sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
-            } else if (DataUtil.isNullOrEmpty(req.getParameter("quantity"))) {
-                req.setAttribute("errorMsg", "Số lượng bắt buộc nhập");
-                renderUpdateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("price"))) {
                 req.setAttribute("errorMsg", "Giá sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
@@ -244,7 +248,7 @@ public class AdminService extends BaseService {
                     productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
                     productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
                     productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
-                    productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
+//                    productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
                     productEntity.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
                     productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
                     int save = productModel.updateProduct(false, productEntity);

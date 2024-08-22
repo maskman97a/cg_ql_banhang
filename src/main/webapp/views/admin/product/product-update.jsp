@@ -124,16 +124,6 @@
                             }
                         </script>
                         <div class="col-3 mb-3">
-                            <label for="inp-quantity-update">Số lượng</label>
-                        </div>
-                        <div class="col-9">
-                            <input id="inp-quantity-update" type="number" oninput="limitLength(this)"
-                                   class="form-control"
-                                   value="${product.quantity}"
-                                   name="quantity"/>
-                            <div id="quantity-error-update" class="error"></div>
-                        </div>
-                        <div class="col-3 mb-3">
                             <label for="inp-price-update">Giá</label>
                         </div>
                         <div class="col-9">
@@ -193,14 +183,14 @@
         }
 
         // Validate quantity
-        const quantity = document.getElementById('inp-quantity-update').value;
-        const quantityError = document.getElementById('quantity-error-update');
-        if (quantity === '' || parseInt(quantity) <= 0) {
-            quantityError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
-            return false;
-        } else {
-            quantityError.textContent = '';
-        }
+        // const quantity = document.getElementById('inp-quantity-update').value;
+        // const quantityError = document.getElementById('quantity-error-update');
+        // if (quantity === '' || parseInt(quantity) <= 0) {
+        //     quantityError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
+        //     return false;
+        // } else {
+        //     quantityError.textContent = '';
+        // }
 
         // Validate price
         const price = document.getElementById('inp-price-update').value;

@@ -184,7 +184,6 @@
                             <th>Tên sản phẩm</th>
                             <th>Thể loại</th>
                             <th>Giá</th>
-                            <th>Số lượng</th>
                             <th>Mô tả</th>
                             <th>Sửa</th>
                             <th>Xóa</th>
@@ -198,7 +197,6 @@
                                 <td>${product.productName}</td>
                                 <td>${product.categoryName}</td>
                                 <td style="text-align: right">${product.strPrice}</td>
-                                <td style="text-align: right">${product.strQuantity}</td>
                                 <td>${product.description}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/admin/product/update?id=${product.id}"
@@ -225,20 +223,20 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/search?page=${currentPage-1}&size=5">
+                                                         href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage-1}&size=5">
                                     Previous</a></li>
                             </c:if>
 
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/product/search?page=${page}&size=5">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/search?page=${currentPage+1}&size=5">
+                                       href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage+1}&size=5">
                                         Next</a></li>
                             </c:if>
                         </ul>

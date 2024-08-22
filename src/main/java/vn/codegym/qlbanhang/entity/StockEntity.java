@@ -15,8 +15,7 @@ public class StockEntity extends BaseEntity {
     private int availableQuantity;
     @Column(name = "pending_quantity")
     private int pendingQuantity;
-    @Column(name = "total_q" +
-            "uantity")
+    @Column(name = "total_quantity")
     private int totalQuantity;
 
 }

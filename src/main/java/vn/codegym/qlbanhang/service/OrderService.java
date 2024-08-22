@@ -7,29 +7,29 @@ import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.*;
 import vn.codegym.qlbanhang.enums.ErrorType;
 import vn.codegym.qlbanhang.enums.OrderStatus;
-import vn.codegym.qlbanhang.model.CustomerModel;
-import vn.codegym.qlbanhang.model.OrderDetailModel;
-import vn.codegym.qlbanhang.model.OrderModel;
-import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.model.*;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class OrderService extends HomeService {
     private final ProductModel productModel;
     private final CustomerModel customerModel;
     private final OrderModel orderModel;
     private final OrderDetailModel orderDetailModel;
+    private final EmailModel emailModel;
+    private final CancelOrderOtpModel cancelOrderOtpModel;
 
     public OrderService() {
         super(OrderModel.getInstance());
@@ -38,6 +38,8 @@ public class OrderService extends HomeService {
         this.productModel = ProductModel.getInstance();
         this.customerModel = CustomerModel.getInstance();
         this.orderDetailModel = OrderDetailModel.getInstance();
+        this.emailModel = EmailModel.getInstance();
+        this.cancelOrderOtpModel = CancelOrderOtpModel.getInstance();
     }
 
     public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -157,8 +159,20 @@ public class OrderService extends HomeService {
                 OrderEntity orderEntity = (OrderEntity) orderModel.findById(orderId);
                 if (orderEntity != null) {
                     String otp = req.getParameter("otp");
-                    if (DataUtil.isNullOrEmpty(otp) || !otp.equals("000000")) {
+                    if (DataUtil.isNullOrEmpty(otp)) {
                         throw new Exception("Otp không hợp lệ");
+                    }
+                    BaseSearchDto baseSearchDto = new BaseSearchDto();
+                    baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("expired_date", ">", LocalDateTime.now()));
+                    baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("order_id", "=", orderEntity.getId()));
+                    baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("status", "=", Const.STATUS_ACTIVE));
+                    CancelOrderOtpEntity cancelOrderOtpEntity = (CancelOrderOtpEntity) cancelOrderOtpModel.findOne(baseSearchDto);
+                    if (DataUtil.isNullObject(cancelOrderOtpEntity)) {
+                        throw new Exception("OTP hết hạn!");
+                    } else {
+                        if (!otp.equals(cancelOrderOtpEntity.getOtp())) {
+                            throw new Exception("OTP không hợp lệ!");
+                        }
                     }
                     if (orderEntity.getStatus() != OrderStatus.NEW.getValue()) {
                         throw new Exception("Đơn hàng ở trạng thái không hợp lệ");
@@ -347,5 +361,79 @@ public class OrderService extends HomeService {
             req.setAttribute("customerInfo", customerEntity);
         }
 
+    }
+
+    public BaseResponse prepareCancel(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            String orderCode = req.getParameter("orderCode");
+            req.setAttribute("orderCode", orderCode);
+            if (DataUtil.isNullOrEmpty(orderCode)) {
+                baseResponse.setError(ErrorType.INVALID_DATA, "Vui lòng nhập mã đơn hàng!");
+            }
+
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("code", "=", orderCode));
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("status", "=", OrderStatus.NEW.value));
+            OrderEntity orderEntity = (OrderEntity) orderModel.findOne(baseSearchDto);
+            if (DataUtil.isNullObject(orderEntity)) {
+                baseResponse.setError(ErrorType.INVALID_DATA, "Thông tin đơn hàng không hợp lệ");
+            }
+            CustomerEntity customerEntity = (CustomerEntity) customerModel.findById(orderEntity.getCustomerId());
+            if (DataUtil.isNullObject(customerEntity)) {
+                baseResponse.setError(ErrorType.INVALID_DATA, "Thông tin khách hàng không hợp lệ");
+            }
+            Random random = new Random();
+            int randomNumber = 100000 + random.nextInt(900000);
+
+            BaseSearchDto baseSearchForCancelOrderOtp = new BaseSearchDto();
+            baseSearchForCancelOrderOtp.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("order_id", "=", orderEntity.getId()));
+            baseSearchForCancelOrderOtp.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("expired_date", ">", LocalDateTime.now()));
+            CancelOrderOtpEntity cancelOrderOtpEntity = (CancelOrderOtpEntity) cancelOrderOtpModel.findOne(baseSearchForCancelOrderOtp);
+            String otp;
+            if (DataUtil.isNullObject(cancelOrderOtpEntity)) {
+                otp = String.valueOf(randomNumber);
+                cancelOrderOtpEntity = new CancelOrderOtpEntity();
+                cancelOrderOtpEntity.setOrderId(orderEntity.getId());
+                cancelOrderOtpEntity.setOtp(otp);
+                LocalDateTime expiredDate = LocalDateTime.now().plusMinutes(5);
+                cancelOrderOtpEntity.setExpiredDate(expiredDate);
+                cancelOrderOtpModel.save(cancelOrderOtpEntity);
+            } else {
+                otp = cancelOrderOtpEntity.getOtp();
+            }
+
+            byte[] mailBody = createMailCancelOrderOtpContent(orderCode, otp);
+            EmailEntity emailEntity = new EmailEntity();
+            emailEntity.setMailBody(mailBody);
+            emailEntity.setStatus(0);
+            emailEntity.setReceiver(customerEntity.getEmail());
+            emailEntity.setMailTitle("OTP xác nhận hủy đơn hàng: " + orderCode);
+            emailModel.save(emailEntity);
+        } catch (Exception ex) {
+            baseResponse.setError(ErrorType.INTERNAL_SERVER_ERROR);
+        }
+
+        resp.getWriter().write(gson.toJson(baseResponse));
+        resp.setContentType("application/json; charset=UTF-8");
+        return baseResponse;
+    }
+
+    public byte[] createMailCancelOrderOtpContent(String orderCode, String otp) throws IOException {
+        InputStream input = getClass().getClassLoader().getResourceAsStream("/html/otp-email.html");
+        StringBuilder htmlContent = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                htmlContent.append(line).append("\n");
+            }
+        }
+        input.close();
+        String htmlContentStr = htmlContent.toString();
+        htmlContentStr = htmlContentStr.replace("{{otp}}", otp);
+        htmlContentStr = htmlContentStr.replace("{{orderCode}}", orderCode);
+        htmlContentStr = htmlContentStr.replace("{{hotline}}", "0328760158");
+
+        return Base64.getEncoder().encode(htmlContentStr.getBytes());
     }
 }

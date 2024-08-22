@@ -51,12 +51,15 @@ async function addToCart(productId, productImageElementId) {
     }
 }
 
-async function callApi(apiUrl, method, body) {
+async function callApi(apiUrl, method, body, contentType) {
+    if (contentType == null || contentType === "") {
+        contentType = 'application/json; charset=UTF-8';
+    }
     return await fetch(apiUrl, {
         method: method,
         body: body,
         headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
+            'Content-Type': contentType
         }
     })
         .then(response => {

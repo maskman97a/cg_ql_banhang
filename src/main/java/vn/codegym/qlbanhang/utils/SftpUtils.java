@@ -3,10 +3,9 @@ package vn.codegym.qlbanhang.utils;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import vn.codegym.qlbanhang.config.PropertiesConfig;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -14,8 +13,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -24,12 +21,12 @@ import java.util.Properties;
 
 public class SftpUtils {
 
-    private static final String SFTP_HOST = "34.87.23.65";
-    private static final int SFTP_PORT = 22;
+    private static final String SFTP_HOST = PropertiesConfig.getProperty("sftp.host");
+    private static final int SFTP_PORT = Integer.parseInt(PropertiesConfig.getProperty("sftp.port"));
 
-    private static final String SFTP_USER_SERVER = "server";
-    private static final String SFTP_PASSWORD_SERVER = "Sv@123";
-    private static final String SFTP_DIR_SERVER = "/data/public/";
+    private static final String SFTP_USER_SERVER = PropertiesConfig.getProperty("sftp.user");
+    private static final String SFTP_PASSWORD_SERVER = PropertiesConfig.getProperty("sftp.password");
+    private static final String SFTP_DIR_SERVER = PropertiesConfig.getProperty("sftp.dir");
 
     private static Session setupJsch() throws Exception {
         JSch jsch = new JSch();

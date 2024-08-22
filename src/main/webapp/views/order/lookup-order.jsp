@@ -96,12 +96,16 @@
                     </div>
                 </div>
                 <div class="col-md-12 mb-3 text-center">
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#otp-modal"
+                    <button type="button" class="btn btn-danger"
                         ${orderInfo.status == 0 ? '': 'disabled'}
-                            onclick="setData( ${orderInfo.id}, '${orderInfo.code}')">
+                            onclick="prepareCancelOrder( ${orderInfo.id}, '${orderInfo.code}')">
                         Hủy đơn hàng
                     </button>
-                    <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Trở về</a>
+                    <button id="btn-open-dialog-cancel-order-otp" type="button" data-toggle="modal"
+                            data-target="#otp-modal" hidden>
+
+                    </button>
+                        <%--                    <a href="${pageContext.request.contextPath}/home" class="btn btn-secondary">Trở về</a>--%>
                 </div>
             </div>
             <script>

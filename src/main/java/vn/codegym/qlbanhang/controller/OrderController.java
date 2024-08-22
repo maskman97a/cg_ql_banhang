@@ -63,6 +63,13 @@ public class OrderController extends HttpServlet {
             case "/create-order-batch":
                 orderService.executeCreateOrderBatch(request, response);
                 return;
+            case "/prepare-cancel":
+                try {
+                    orderService.prepareCancel(request, response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
             case "/cancel":
                 orderService.executeCancelOrder(request, response);
                 return;

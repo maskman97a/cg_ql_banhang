@@ -2,6 +2,7 @@ package vn.codegym.qlbanhang.database;
 
 import lombok.Getter;
 import lombok.Setter;
+import vn.codegym.qlbanhang.config.PropertiesConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,11 +11,11 @@ import java.sql.SQLException;
 @Getter
 @Setter
 public class DatabaseConnection {
-    private final static String URL = "jdbc:mysql://34.87.23.65:3306/";
-    private final static String SCHEMA = "sales";
-    private final static String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private final static String USERNAME = "root";
-    private final static String PASSWORD = "Mysql@123";
+    private final static String URL = PropertiesConfig.getProperty("datasource.jdbcUrl");
+    private final static String SCHEMA = PropertiesConfig.getProperty("datasource.db_name");
+    private final static String DRIVER = PropertiesConfig.getProperty("datasource.driver-class-name");
+    private final static String USERNAME = PropertiesConfig.getProperty("datasource.username");
+    private final static String PASSWORD = PropertiesConfig.getProperty("datasource.password");
 
     private final Connection connection;
     private String schemaName;

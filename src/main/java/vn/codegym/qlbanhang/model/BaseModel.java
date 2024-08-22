@@ -58,7 +58,6 @@ public class BaseModel {
             if (!DataUtil.isNullObject(baseSearchDto.getPage()) && !DataUtil.isNullObject(baseSearchDto.getSize())) {
                 sql += " limit ? offset ?";
             }
-            System.out.println("Search SQL: " + sql);
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
             if (baseSearchDto.getQueryConditionDtos() != null && !baseSearchDto.getQueryConditionDtos().isEmpty()) {

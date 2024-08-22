@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-12 ">
                                     <textarea class="form-control bg-body-secondary"
-                                              style="font-size: 11px">${product.description}</textarea>
+                                              style="font-size: 11px" readonly>${product.description}</textarea>
                                 </div>
                             </div>
                         </div>

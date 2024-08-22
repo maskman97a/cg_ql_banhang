@@ -1,7 +1,9 @@
 package vn.codegym.qlbanhang.service;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.*;
+import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.entity.OrderEntity;
 import vn.codegym.qlbanhang.entity.ProductEntity;
@@ -34,6 +36,7 @@ public class AdminService extends BaseService {
     private final CategoryModel categoryModel;
     private final CategoryService categoryService;
     private final OrderService orderService;
+    private final StockService stockService;
     private final OrderModel orderModel;
 
     private AdminService() {
@@ -44,6 +47,8 @@ public class AdminService extends BaseService {
         this.productModel = ProductModel.getInstance();
         this.categoryModel = CategoryModel.getInstance();
         this.orderModel = OrderModel.getInstance();
+        this.stockService = StockService.getInstance();
+
     }
 
     public void setNavigationBar(HttpServletRequest req) {
@@ -418,5 +423,20 @@ public class AdminService extends BaseService {
             renderSearchOrder(req, resp);
         }
 
+    }
+
+
+    public void updateStock(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        try {
+            req.setCharacterEncoding("UTF-8");
+            BaseResponse<StockDto> baseResponse = stockService.addProductToStock(req, resp);
+            if (!DataUtil.isNullObject(baseResponse)) {
+                req.setAttribute("successMsgStock", "Cập nhật kho thành công");
+                resp.sendRedirect("/admin/stock");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.renderAdmin(req, resp);
+        }
     }
 }

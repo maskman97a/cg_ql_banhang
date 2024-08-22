@@ -3,6 +3,8 @@ package vn.codegym.qlbanhang.controller;
 
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.codegym.qlbanhang.dto.UserInfoDto;
 import vn.codegym.qlbanhang.service.AdminService;
 import vn.codegym.qlbanhang.service.StockService;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
 
 @WebServlet("/admin/*")
 @MultipartConfig
@@ -62,15 +66,12 @@ public class AdminController extends BaseController {
             case "/stock/search":
                 stockService.searchStock(req, resp);
                 break;
-            case "/stock/add-product-to-stock":
-                stockService.addProductToStock(req, resp);
-                break;
         }
     }
 
     public void routerProduct(HttpServletRequest req, HttpServletResponse resp, String pathInfo) throws ServletException, SQLException, IOException {
         switch (pathInfo) {
-            case "/search":
+            case "/product":
             case "/product/search":
                 adminService.renderAdminFistTab(req, resp);
                 break;
@@ -164,7 +165,9 @@ public class AdminController extends BaseController {
                 case "/category/update":
                     adminService.updateCategory(req, resp);
                     break;
-
+                case "/stock/import-stock":
+                    adminService.updateStock(req, resp);
+                    break;
             }
         }
     }

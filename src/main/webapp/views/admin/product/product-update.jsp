@@ -165,7 +165,7 @@
                         </div>
                         <div class="col-3  d-grid gap-2">
                             <a class="btn btn-secondary"
-                               href="${pageContext.request.contextPath}/admin/">Hủy
+                               href="${pageContext.request.contextPath}/admin/product">Hủy
                             </a>
                         </div>
                         <div class="col-6  d-grid gap-2">

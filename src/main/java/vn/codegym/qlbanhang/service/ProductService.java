@@ -7,9 +7,11 @@ import vn.codegym.qlbanhang.dto.response.CartResponse;
 import vn.codegym.qlbanhang.entity.BaseData;
 import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.ProductEntity;
+import vn.codegym.qlbanhang.entity.StockEntity;
 import vn.codegym.qlbanhang.enums.ProductSort;
 import vn.codegym.qlbanhang.model.CategoryModel;
 import vn.codegym.qlbanhang.model.ProductModel;
+import vn.codegym.qlbanhang.model.StockModel;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
 import javax.servlet.ServletException;
@@ -25,11 +27,13 @@ import java.util.Optional;
 public class ProductService extends BaseService {
     private final ProductModel productModel;
     private final CategoryModel categoryModel;
+    private final StockModel stockModel;
 
     public ProductService() {
         super(ProductModel.getInstance());
         this.productModel = ProductModel.getInstance();
         this.categoryModel = CategoryModel.getInstance();
+        this.stockModel = StockModel.getInstance();
     }
 
     public void findListProduct(HttpServletRequest req, HttpServletResponse resp) {
@@ -48,6 +52,12 @@ public class ProductService extends BaseService {
         Integer id = Integer.parseInt(req.getParameter("id"));
         ProductEntity productEntity = (ProductEntity) productModel.findById(id);
         ProductDto productDto = modelMapper.map(productEntity, ProductDto.class);
+        BaseSearchDto baseSearchDto = new BaseSearchDto();
+        baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("product_id", "=", productEntity.getId()));
+        StockEntity stockEntity = (StockEntity) stockModel.findOne(baseSearchDto);
+        if (!DataUtil.isNullObject(stockEntity)) {
+            productDto.setAvailableQuantity(stockEntity.getAvailableQuantity());
+        }
         req.setAttribute("product", productDto);
         req.setAttribute("showProductDetail", true);
         renderPage(req, resp);
@@ -107,7 +117,11 @@ public class ProductService extends BaseService {
                         productPagingDto = new ProductPagingDto();
                         productListPerCategoryDto.getProductPagingList().add(productPagingDto);
                     }
-                    productPagingDto.getProductList().add(modelMapper.map(baseEntity, ProductDto.class));
+
+
+                    ProductDto productDto = modelMapper.map(baseEntity, ProductDto.class);
+
+                    productPagingDto.getProductList().add(productDto);
                     productPagingDto.setPage(productPage++);
                     if (countProductInPage == 4) {
                         countProductInPage = 0;

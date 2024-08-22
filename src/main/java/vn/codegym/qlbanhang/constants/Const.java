@@ -7,6 +7,7 @@ public class Const {
         public static final int CANCELED = 2;
         public static final int ACCEPTED = 3;
         public static final int REFUND = 4;
+        public static final int IMPORT = 9;
     }
 
     public static final int STATUS_ACTIVE = 1;

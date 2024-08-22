@@ -8,7 +8,8 @@ public enum OrderStatus {
     COMPLETED(1, "Hoàn thành"),
     CANCELED(2, "Đã hủy"),
     ACCEPTED(3, "Đã xác nhận"),
-    REFUND(4, "Hoàn trả");
+    REFUND(4, "Hoàn trả"),
+    IMPORT(9, "Nhập mới");
 
     public final int value;
     public final String description;

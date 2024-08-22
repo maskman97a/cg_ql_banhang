@@ -82,8 +82,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12 ">
-                                    <textarea class="form-control bg-body-secondary"
-                                              style="font-size: 11px" readonly>${product.description}</textarea>
+                                    <c:if test="${product.description != null && !product.description.isEmpty()}">
+                                        <textarea class="form-control bg-body-secondary"
+                                                  style="font-size: 11px" readonly>${product.description}</textarea>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>

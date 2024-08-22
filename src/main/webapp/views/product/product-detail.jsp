@@ -20,15 +20,27 @@
              alt="${product.name}" width="100%" height="100%">
     </div>
     <div class="col-6 row">
-        <div class="col-12 p5">
+        <div class="col-12 p-5">
             <h1 class="col-12">${product.productName}</h1>
             <input value="${product.price}" id="view-product-price-hid" hidden/>
-            <h2 class="col-12">
+            <h2 class="col-12 mb-3">
                 <span id="view-product-price" style="color:red">${product.price}đ</span>
             </h2>
-            <label for="product-description">Mô tả sản phẩm: </label>
-            <div class="card card-body mb-3">
-                <label id="product-description" class="col-12">${product.description}</label>
+
+            <div class="col-12 mb-3">
+                <div class="col-12 p-3 bg-body-secondary justify-content-center">
+                    <label>MÔ TẢ SẢN PHẨM: </label>
+                </div>
+                <div class="col-12">
+                    <textarea class="form-control rounded text-start" style="text-align: left!important;"
+                              readonly>${product.description}
+                    </textarea>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <span class="text-success">
+                Số lượng tồn kho: ${product.availableQuantity}
+            </span>
             </div>
             <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-toggle="modal"
                    data-target="#modalOrder" onclick="initOrderForm()"/>
@@ -48,7 +60,7 @@
 
     function formatPriceDetailRender() {
         let productPrice = parseFloat(document.getElementById("view-product-price-hid").value);
-        document.getElementById("view-product-price").innerHTML = formatNumber(productPrice);
+        document.getElementById("view-product-price").innerHTML = formatNumber(productPrice) + "đ";
     }
 
 

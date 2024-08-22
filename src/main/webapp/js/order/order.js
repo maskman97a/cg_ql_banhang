@@ -8,6 +8,10 @@ function validateCreateOrder(orderTyp) {
         partnerId = "#modalOrder";
         messageElementId = "order-single-validate-message";
 
+        let quantity = document.getElementById("inp-quantity").value;
+        if (quantity === 0) {
+            return renderErrorMessage(messageElementId, "Số lượng không hợp lệ!")
+        }
     }
 
     let rowCount = getQuantity()
@@ -35,10 +39,14 @@ function validateCreateOrder(orderTyp) {
     if (!customerEmail.includes("@")) {
         return renderErrorMessage(messageElementId, "Vui lòng nhập Địa chỉ email hợp lệ!")
     }
-    let quantity = document.getElementById("inp-quantity").value;
-    if (quantity === 0) {
-        return renderErrorMessage(messageElementId, "Số lượng không hợp lệ!")
+
+    let countProduct = document.getElementById("total-quantity").value
+    for (let i = 1; i <= countProduct; i++) {
+        if (document.getElementById("inp-quantity-" + i).value <= 0) {
+            return renderErrorMessage(messageElementId, "Số lượng phải lớn hơn 0");
+        }
     }
+    document.getElementById(messageElementId).innerHTML = "";
     return true;
 }
 

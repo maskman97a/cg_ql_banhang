@@ -6,6 +6,7 @@ import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.ProductEntity;
 import vn.codegym.qlbanhang.entity.StockEntity;
 import vn.codegym.qlbanhang.enums.ErrorType;
+import vn.codegym.qlbanhang.enums.OrderStatus;
 import vn.codegym.qlbanhang.enums.StockTransType;
 import vn.codegym.qlbanhang.exception.BusinessException;
 import vn.codegym.qlbanhang.model.CategoryModel;
@@ -94,8 +95,13 @@ public class StockService extends BaseService {
                 stockEntity.setPendingQuantity(0);
                 stockEntity.setStatus(Const.STATUS_ACTIVE);
             } else {
-                stockEntity.setAvailableQuantity(stockEntity.getAvailableQuantity() + quantity);
-                stockEntity.setTotalQuantity(stockEntity.getTotalQuantity() + quantity);
+                ExecuteStockDto executeStockDto = new ExecuteStockDto();
+                UpdateStockDto updateStockDto = new UpdateStockDto();
+                updateStockDto.setProductId(productId);
+                updateStockDto.setQuantity(quantity);
+                executeStockDto.getUpdateStockList().add(updateStockDto);
+                executeStockDto.setOrderStatus(OrderStatus.IMPORT.value);
+                executeStock(executeStockDto);
             }
             stockEntity = (StockEntity) stockModel.save(stockEntity);
             baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
@@ -152,6 +158,17 @@ public class StockService extends BaseService {
                     //Đơn hàng được yêu cầu hoàn trả
                     for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
+                        if (!DataUtil.isNullObject(stockEntity)) {
+                            stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
+                        } else {
+                            throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
+                        }
+                    }
+                    break;
+                case Const.OrderStatus.IMPORT:
+                    //Đơn hàng được yêu cầu hoàn trả
+                    for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
+                        StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), null);
                         if (!DataUtil.isNullObject(stockEntity)) {
                             stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
                         } else {

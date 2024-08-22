@@ -33,5 +33,6 @@ public class ProductDto extends BaseDto {
     private String categoryName;
     private String strPrice;
     private String strQuantity;
+    private Integer availableQuantity;
 
 }

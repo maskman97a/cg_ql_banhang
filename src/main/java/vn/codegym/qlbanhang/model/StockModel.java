@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StockModel extends BaseModel {
@@ -30,7 +29,6 @@ public class StockModel extends BaseModel {
 
     public StockEntity updateStock(StockEntity stockEntity, int quantity, String type) throws SQLException {
         if (type.equals(StockTransType.EXPORT.name())) {
-            stockEntity.setAvailableQuantity(stockEntity.getAvailableQuantity() - quantity);
             stockEntity.setTotalQuantity(stockEntity.getTotalQuantity() - quantity);
             stockEntity.setPendingQuantity(stockEntity.getPendingQuantity() - quantity);
         } else if (type.equals(StockTransType.IMPORT.name())) {
@@ -45,11 +43,15 @@ public class StockModel extends BaseModel {
         return (StockEntity) save(stockEntity);
     }
 
-    public StockEntity getValidStock(int productId, int quantity) throws SQLException {
+    public StockEntity getValidStock(int productId, Integer quantity) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         QueryConditionDto productQueryConditionDto = QueryConditionDto.newAndCondition("product_id", "=", productId);
-        QueryConditionDto quantityCon = QueryConditionDto.newAndCondition("available_quantity", ">=", quantity);
-        baseSearchDto.setQueryConditionDtos(Arrays.asList(productQueryConditionDto, quantityCon));
+        baseSearchDto.getQueryConditionDtos().add(productQueryConditionDto);
+        if (quantity != null) {
+            QueryConditionDto quantityCon = QueryConditionDto.newAndCondition("available_quantity", ">=", quantity);
+            baseSearchDto.getQueryConditionDtos().add(quantityCon);
+        }
+
         StockEntity stockEntity = (StockEntity) findOne(baseSearchDto);
         if (!DataUtil.isNullObject(stockEntity)) {
             return stockEntity;

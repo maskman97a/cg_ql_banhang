@@ -27,5 +27,5 @@ jobs:
           sudo docker rm ql_banhang_app
           sudo docker image prune -a -f
           sudo docker --debug  build -t ql_banhang_app .
-          sudo docker run --name ql_banhang_app -d --network=bridge -e ENVIRONMENT=prod -e EMAIL_USERNAME=${{secrets.MAIL_USERNAME}} -e MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}} -p 80:8080 ql_banhang_app
+          sudo docker run --name ql_banhang_app -d --network=bridge -e ENVIRONMENT=prod -e MAIL_USERNAME=${{secrets.MAIL_USERNAME}} -e MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}} -p 80:8080 ql_banhang_app
         EOF

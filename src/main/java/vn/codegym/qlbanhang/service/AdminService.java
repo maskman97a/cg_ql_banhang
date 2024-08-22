@@ -5,10 +5,7 @@ import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
 import vn.codegym.qlbanhang.entity.*;
-import vn.codegym.qlbanhang.model.CategoryModel;
-import vn.codegym.qlbanhang.model.OrderModel;
-import vn.codegym.qlbanhang.model.ProductModel;
-import vn.codegym.qlbanhang.model.StockModel;
+import vn.codegym.qlbanhang.model.*;
 import vn.codegym.qlbanhang.utils.DataUtil;
 import vn.codegym.qlbanhang.utils.SftpUtils;
 
@@ -38,6 +35,7 @@ public class AdminService extends BaseService {
     private final StockService stockService;
     private final StockModel stockModel;
     private final OrderModel orderModel;
+    private final OrderDetailModel orderDetailModel;
 
     private AdminService() {
         super(null);
@@ -49,6 +47,7 @@ public class AdminService extends BaseService {
         this.orderModel = OrderModel.getInstance();
         this.stockService = StockService.getInstance();
         this.stockModel = StockModel.getInstance();
+        this.orderDetailModel = OrderDetailModel.getInstance();
 
     }
 
@@ -122,7 +121,7 @@ public class AdminService extends BaseService {
         if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
             categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
         }
-            int size = 10;
+        int size = 10;
         if (req.getParameter("size") != null) {
             size = Integer.parseInt(req.getParameter("size"));
         }
@@ -186,12 +185,12 @@ public class AdminService extends BaseService {
                     ProductEntity productEntity = new ProductEntity();
                     String imageUrl = SftpUtils.getPathSFTP(req, resp);
                     productEntity.setImageUrl(imageUrl);
-                    productEntity.setProductCode(req.getParameter("code"));
-                    productEntity.setProductName(req.getParameter("name"));
+                    productEntity.setProductCode(req.getParameter("code").trim());
+                    productEntity.setProductName(req.getParameter("name").trim());
                     productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
 //                    productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
                     productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
-                    productEntity.setDescription(req.getParameter("description"));
+                    productEntity.setDescription(req.getParameter("description").trim());
                     productEntity = (ProductEntity) productModel.save(productEntity);
                     if (!DataUtil.isNullObject(productEntity)) {
                         req.setAttribute("successMsg", "Thêm mới sản phẩm thành công");
@@ -246,11 +245,11 @@ public class AdminService extends BaseService {
                         productEntity.setImageUrl(imageUrl);
                     }
                     productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
-                    productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code") : null);
-                    productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                    productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code").trim() : null);
+                    productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name").trim() : null);
 //                    productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
                     productEntity.setPrice(!DataUtil.isNullOrEmpty(req.getParameter("price")) ? Long.valueOf(req.getParameter("price")) : null);
-                    productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description") : null);
+                    productEntity.setDescription(!DataUtil.isNullOrEmpty(req.getParameter("description")) ? req.getParameter("description").trim() : null);
                     int save = productModel.updateProduct(false, productEntity);
                     if (save == 1) {
                         req.setAttribute("successMsg", "Cập nhật sản phẩm thành công");
@@ -344,7 +343,7 @@ public class AdminService extends BaseService {
                 CategoryEntity categoryEntity = new CategoryEntity();
                 Integer id = Integer.parseInt(req.getParameter("id"));
                 categoryEntity.setId(id);
-                categoryEntity.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name") : null);
+                categoryEntity.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name").trim() : null);
                 categoryEntity.setUpdatedBy("admin");
                 int save = categoryModel.updateCategory(false, categoryEntity);
                 if (save == 1) {
@@ -405,6 +404,10 @@ public class AdminService extends BaseService {
         req.setAttribute("renderOrder", true);
         Integer orderId = Integer.parseInt(req.getParameter("id"));
         OrderEntity orderEntity = (OrderEntity) orderModel.findById(orderId);
+        BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
+        baseSearchDtoForDetail.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("order_id", "=", orderEntity.getId()));
+        List<BaseEntity> baseEntitiesForDetail = orderDetailModel.search(baseSearchDtoForDetail);
+//        OrderDetailEntity detailEntity = (OrderDetailEntity) baseEntitiesForDetail.get(0);
         switch (action) {
             case "confirm":
                 orderEntity.setStatus(Const.OrderStatus.ACCEPTED);
@@ -419,6 +422,24 @@ public class AdminService extends BaseService {
         orderEntity.setUpdatedBy("admin");
         int save = orderModel.updateOrder(orderEntity, action);
         if (save == 1) {
+            if (!DataUtil.safeEqual(action, "cancel")) {
+                ExecuteStockDto executeStockDto = new ExecuteStockDto();
+                List<UpdateStockDto> updateStockList = new ArrayList<>();
+                for (int i = 0; i < baseEntitiesForDetail.size(); i++) {
+                    OrderDetailEntity detailEntity = (OrderDetailEntity) baseEntitiesForDetail.get(i);
+                    updateStockList.add(UpdateStockDto.builder().quantity(detailEntity.getQuantity()).productId(detailEntity.getProductId()).build());
+                }
+                executeStockDto.setUpdateStockList(updateStockList);
+                switch (action) {
+                    case "confirm":
+                        executeStockDto.setOrderStatus(Const.OrderStatus.ACCEPTED);
+                        break;
+                    case "complete":
+                        executeStockDto.setOrderStatus(Const.OrderStatus.COMPLETED);
+                        break;
+                }
+                stockService.executeStock(executeStockDto);
+            }
             req.setAttribute("successMsg", "Cập nhật đơn hàng thành công");
             resp.sendRedirect("/admin/transaction");
         } else {

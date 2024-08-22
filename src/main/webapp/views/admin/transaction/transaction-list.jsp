@@ -130,15 +130,17 @@
                             <td>${item.address}</td>
                             <td>${item.orderDateStr}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/admin/transaction/confirm?id=${item.id}"
+                                <a onclick="return confirm('Bạn muốn Xác nhận đơn hàng này không?')"
+                                   href="${pageContext.request.contextPath}/admin/transaction/confirm?id=${item.id}"
                                    class="${item.status != 0 ? 'disabled': ''}"
                                    title="Xác nhận đơn hàng">
                                     <i class="fas fa-check-circle icon-large"></i>
                                 </a>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/admin/transaction/complete?id=${item.id}"
-                                   class=" ${item.status != 3 ? 'disabled': 'btn-delete'}"
+                                <a onclick="return confirm('Bạn muốn Xác nhận đơn hàng này hoàn thành không?')"
+                                   href="${pageContext.request.contextPath}/admin/transaction/complete?id=${item.id}"
+                                   class=" ${item.status != 3 ? 'disabled': ''}"
                                    title="Hoàn thành">
                                     <i class="fas fa-check icon-large"></i>
                                 </a>

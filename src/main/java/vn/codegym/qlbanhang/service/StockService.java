@@ -166,7 +166,7 @@ public class StockService extends BaseService {
                     }
                     break;
                 case Const.OrderStatus.IMPORT:
-                    //Đơn hàng được yêu cầu hoàn trả
+                    //Đơn hàng được yêu cầu import
                     for (UpdateStockDto updateStockDto : executeStockDto.getUpdateStockList()) {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), null);
                         if (!DataUtil.isNullObject(stockEntity)) {

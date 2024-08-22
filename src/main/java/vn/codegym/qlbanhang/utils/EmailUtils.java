@@ -20,7 +20,8 @@ public class EmailUtils {
         // Sender's email ID and password need to be mentioned
         final String from = MAIL_USERNAME;
         final String password = MAIL_PASSWORD;
-
+        System.out.println(from);
+        System.out.println(password);
         // Setting up configurations for the email connection to the Google SMTP server using TLS
         Properties properties = new Properties();
         properties.put("mail.smtp.host", EMAIL_SMTP);

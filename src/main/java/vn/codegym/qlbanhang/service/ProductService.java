@@ -252,10 +252,10 @@ public class ProductService extends BaseService {
             } else {
                 cartProductDto.setQuantity(cartProductDto.getQuantity() + 1);
             }
-            cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice().intValue());
+            cartProductDto.setAmount(cartProductDto.getQuantity() * productDto.getPrice());
         } else {
             CartProductDto newCartProductDto = new CartProductDto(cartProductDtoList.size() + 1, productDto, 1);
-            newCartProductDto.setAmount(productDto.getPrice().intValue());
+            newCartProductDto.setAmount(productDto.getPrice());
             cartProductDtoList.add(newCartProductDto);
         }
         cartProductJson = gson.toJson(new Cart(cartProductDtoList));

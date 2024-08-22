@@ -7,7 +7,6 @@ import vn.codegym.qlbanhang.entity.BaseEntity;
 import vn.codegym.qlbanhang.entity.CategoryEntity;
 import vn.codegym.qlbanhang.utils.DataUtil;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +45,7 @@ public class CategoryModel extends BaseModel {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         try {
             String sql = this.getSearchCategorySQL(baseSearchDto, id);
-            sql += " order by id desc ";
+            sql += " order by sort ";
             sql += " limit ? offset ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
             int index = 1;
@@ -66,6 +65,7 @@ public class CategoryModel extends BaseModel {
                 CategoryDto categoryDto = new CategoryDto();
                 categoryDto.setId(rs.getInt("id"));
                 categoryDto.setName(rs.getString("name"));
+                categoryDto.setSort(rs.getInt("sort"));
                 categoryDtoList.add(categoryDto);
             }
         } catch (Exception ex) {
@@ -96,6 +96,7 @@ public class CategoryModel extends BaseModel {
     public List<CategoryDto> getLstCategory() throws SQLException {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         String sql = this.getSearchCategorySQL(null, null);
+        sql += " order by sort";
         PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
         int index = 1;
         ResultSet rs = preparedStatement.executeQuery();
@@ -103,6 +104,7 @@ public class CategoryModel extends BaseModel {
             CategoryDto categoryDto = new CategoryDto();
             categoryDto.setId(rs.getInt("id"));
             categoryDto.setName(rs.getString("name"));
+            categoryDto.setSort(rs.getInt("sort"));
             categoryDtoList.add(categoryDto);
         }
         return categoryDtoList;
@@ -110,7 +112,7 @@ public class CategoryModel extends BaseModel {
 
     public String getSearchCategorySQL(BaseSearchDto baseSearchDto, Integer id) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT id, name ");
+        sb.append(" SELECT id, name, sort ");
         sb.append("  FROM  category  ");
         sb.append(" WHERE status = 1");
         if (!DataUtil.isNullObject(baseSearchDto)) {
@@ -133,6 +135,8 @@ public class CategoryModel extends BaseModel {
             if (!isCancel) {
                 if (!DataUtil.isNullOrEmpty(categoryEntity.getName()))
                     sb.append(" ,name = ? ");
+                if (!DataUtil.isNullObject(categoryEntity.getSort()))
+                    sb.append(" ,sort = ? ");
             }
             if (!DataUtil.isNullObject(categoryEntity.getStatus()))
                 sb.append(" ,status = ? ");
@@ -147,6 +151,8 @@ public class CategoryModel extends BaseModel {
             if (!isCancel) {
                 if (!DataUtil.isNullOrEmpty(categoryEntity.getName()))
                     preparedStatement.setString(index++, categoryEntity.getName().trim());
+                if (!DataUtil.isNullObject(categoryEntity.getSort()))
+                    preparedStatement.setInt(index++, categoryEntity.getSort());
             }
             if (!DataUtil.isNullObject(categoryEntity.getStatus()))
                 preparedStatement.setInt(index++, categoryEntity.getStatus());
@@ -167,7 +173,7 @@ public class CategoryModel extends BaseModel {
             CategoryDto categoryDto = new CategoryDto();
             categoryDto.setId(rs.getInt("id"));
             categoryDto.setName(rs.getString("name"));
-
+            categoryDto.setSort(rs.getInt("sort"));
             return categoryDto;
         }
         return null;

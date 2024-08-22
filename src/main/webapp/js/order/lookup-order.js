@@ -1,7 +1,11 @@
 function validateLookupOrder() {
     let orderCode = document.getElementById("inp-order-code").value.trim()
     if (orderCode === '') {
-        return renderErrorMessage("lookup-order-error-response", "Vui lòng nhập Mã đơn hàng hoặc Số điện thoại!");
+        return renderErrorMessage("lookup-order-error-response", "Vui lòng nhập Mã đơn hàng!");
+    }
+    let phoneNumber = document.getElementById("inp-phone-number").value.trim()
+    if (phoneNumber === '') {
+        return renderErrorMessage("lookup-order-error-response", "Vui lòng nhập Số điện thoại đặt hàng!");
     }
 }
 

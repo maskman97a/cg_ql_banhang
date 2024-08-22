@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import vn.codegym.qlbanhang.utils.DataUtil;
 
 @Getter
 @Setter
@@ -17,7 +16,7 @@ public class CartProductDto {
     @SerializedName("quantity")
     private int quantity;
     @SerializedName("amount")
-    private int amount;
+    private Long amount;
 
     public CartProductDto(int index, ProductDto product, int quantity) {
         this.index = index;

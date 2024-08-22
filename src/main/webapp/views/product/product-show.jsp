@@ -47,19 +47,19 @@
                     <c:forEach var="product" items="${productPaging.productList}">
                         <div class="col-3 p-3">
                             <div class="shadow p-3 rounded mt-3">
-                                <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
-                                   class="row mb-3">
-                                    <div class="col-12 ratio ratio-1x1">
+                                <div class="col-12 ratio ratio-1x1 justify-content-center align-items-center">
+                                    <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
+                                       class="ms-0 row justify-content-center align-items-center">
                                         <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
                                              id="product-image-${product.id}"
-                                             class="img-fluid col-12 rounded product-image"
-                                             alt="${product.name}" width="100%" height="100%" style="z-index: 0">
-                                    </div>
-                                </a>
+                                             class="img-fluid rounded product-image"
+                                             alt="${product.name}" width="100%" style="z-index: 0">
+                                    </a>
+                                </div>
                                 <div class="col-12">
                                     <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
                                        class="col-12" style="text-decoration: none; color:#635c5c">
-                                        <div class="col-12" style="height:60px; line-height: 20px">
+                                        <div class="col-12" style="height:40px; line-height: 20px">
                                             <span class="col-12" style="font-weight: bold;">${product.name}</span>
                                         </div>
                                     </a>

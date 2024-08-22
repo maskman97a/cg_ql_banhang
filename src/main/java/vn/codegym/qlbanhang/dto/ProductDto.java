@@ -26,7 +26,7 @@ public class ProductDto extends BaseDto {
     @SerializedName("quantity")
     private Integer quantity;
     @SerializedName("unitPrice")
-    private Integer unitPrice;
+    private Long unitPrice;
     @SerializedName("categoryId")
     private Integer categoryId;
     @SerializedName("categoryName")

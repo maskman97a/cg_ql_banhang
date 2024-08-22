@@ -18,9 +18,9 @@ public class OrderDetailEntity extends BaseEntity {
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "unit_price")
-    private int unitPrice;
+    private Long unitPrice;
     @Column(name = "amount")
-    private int amount;
+    private Long amount;
 
     private ProductEntity productEntity;
 
@@ -28,7 +28,7 @@ public class OrderDetailEntity extends BaseEntity {
 
     }
 
-    public int getAmount() {
+    public Long getAmount() {
         return quantity * unitPrice;
     }
 }

@@ -19,16 +19,20 @@
           action="${pageContext.request.contextPath}/order/lookup-by-code"
           onsubmit="return validateLookupOrder()">
         <h1>Tra cứu đơn hàng</h1>
-        <div class="col-md-8">
-            <label class="" for="inp-order-code">Mã đơn hàng/Số điện thoại:</label>
+        <div class="col-md-12 mb-3">
+            <label class="" for="inp-order-code">Mã đơn hàng <span class="text-danger">(*)</span></label>
             <input id="inp-order-code" class="form-control" type="text" name="orderCode" value="${orderCode}"
-                   placeholder="Nhập Mã đơn hàng hoặc Số điện thoại">
+                   placeholder="Nhập Mã đơn hàng">
+            <label class="" for="inp-phone-number">Số điện thoại đặt hàng <span class="text-danger">(*)</span></label>
+            <input id="inp-phone-number" class="form-control" type="text" name="phoneNumber"
+                   value="${phoneNumber}"
+                   placeholder="Nhập Số điện thoại đặt hàng">
         </div>
-        <div class="col-md-4">
+        <div class="col-md-12">
             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
         </div>
         <div class="col-12 mb-3">
-            <span>${lookupResponse}</span>
+            <span class="text-danger">${lookupResponse}</span>
             <span class="text-danger" id="lookup-order-error-response">${errorResponse}</span>
             <h2 style="color:green">${successResponse}</h2>
         </div>

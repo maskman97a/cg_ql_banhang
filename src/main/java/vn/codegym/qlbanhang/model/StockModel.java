@@ -64,11 +64,12 @@ public class StockModel extends BaseModel {
         StringBuilder sb = new StringBuilder();
         sb.append("select product_id, product_code, product_name, available_quantity, pending_quantity, total_quantity " +
                 "from stock s " +
-                "         inner join product p on s.product_id = p.id and p.status = 1 ");
+                "         inner join product p on s.product_id = p.id and p.status = 1 " +
+                "         inner join category c on c.id = p.category_id and c.status = 1 ");
         if (!DataUtil.isNullOrEmpty(keyword))
             sb.append(" and ( p.product_name like ? or p.product_code like ? ) ");
         sb.append(" where s.status = 1 ");
-        sb.append(" order by product_name asc ");
+        sb.append(" order by c.sort, product_name asc ");
         sb.append(" limit ? offset ? ");
         int indexParam = 1;
         PreparedStatement ps = getConnection().prepareStatement(sb.toString());

@@ -35,6 +35,11 @@
                             <input id="inp-name" type="text" class="form-control" name="name"
                                    placeholder="Nhập tên Loại sản phẩm"/>
                         </div>
+                        <div class="col-12">
+                            <label class="form-label" for="inp-name">Thứ tự hiển thị:</label>
+                            <input id="inp-sort" type="number" class="form-control" name="sort" min="0"
+                                   placeholder="Nhập tên Thứ tự hiển thị"/>
+                        </div>
                         <script>
                             function limitLength(input) {
                                 if (input.value.length > 15) {

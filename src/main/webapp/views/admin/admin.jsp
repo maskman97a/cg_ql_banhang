@@ -130,12 +130,12 @@
             </div>
             <div class="col-10 pt-3"
                  style="background-color: #F7E7DC; min-height: calc(100vh - 150px)">
-                <div class="col-12">
-                    <a href="${pageContext.request.contextPath}/" class="link"><i class="fa-solid fa-house"></i>Trang
+                <div class="col-12 text-success">
+                    <a href="${pageContext.request.contextPath}/" class="link text-success"><i class="fa-solid fa-house"></i>Trang
                         chủ</a>
                     <c:forEach var="urlLevel" items="${urlLevelList}">
                         >
-                        <a class="link" href="${urlLevel.url}"> ${urlLevel.name}</a>
+                        <a class="link text-success" href="${urlLevel.url}"> ${urlLevel.name}</a>
                     </c:forEach>
                 </div>
                 <div class=" pt-5">

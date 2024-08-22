@@ -77,15 +77,15 @@
                 <div class="col-12">
                     <form class="form row" method="get"
                           action="${pageContext.request.contextPath}/admin/transaction/search">
-                        <input type="hidden" name="size" value="5"/>
+                        <input type="hidden" name="size" value="10"/>
                         <input type="hidden" name="page" value="1"/>
                         <div class="col-2">
-                            <select class="form-control" name="status-order-id">
+                            <select class="form-control" name="statusOrderId">
                                 <option value="">--Trạng thái--</option>
-                                <option value="0">Tạo mới, chờ xác nhận</option>
-                                <option value="1">Hoàn thành</option>
-                                <option value="2">Đã hủy</option>
-                                <option value="3">Đã xác nhận</option>
+                                <option value="0" ${statusOrderId == 0 ? 'selected': ''}>Tạo mới, chờ xác nhận</option>
+                                <option value="1" ${statusOrderId == 1 ? 'selected': ''}>Hoàn thành</option>
+                                <option value="2" ${statusOrderId == 2 ? 'selected': ''}>Đã hủy</option>
+                                <option value="3" ${statusOrderId == 3 ? 'selected': ''}>Đã xác nhận</option>
                             </select>
                         </div>
                         <div class="col-7">
@@ -163,18 +163,18 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage-1}&size=5">Previous</a>
+                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage-1}&size=10&keyword=${keyword}&statusOrderId=${statusOrderId}">Previous</a>
                                 </li>
                             </c:if>
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/transaction/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/transaction/search?page=${page}&size=10&keyword=${keyword}&statusOrderId=${statusOrderId}">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage+1}&size=5">Next</a>
+                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage+1}&size=10&keyword=${keyword}&statusOrderId=${statusOrderId}">Next</a>
                                 </li>
                             </c:if>
                         </ul>

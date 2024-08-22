@@ -22,6 +22,8 @@ public class Const {
                 return "Thể loại";
             case "transaction":
                 return "Đơn hàng";
+            case "stock":
+                return "Kho";
         }
         return "";
     }

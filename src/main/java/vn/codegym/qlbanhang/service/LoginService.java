@@ -21,6 +21,7 @@ public class LoginService {
         this.homeService = HomeService.getInstance();
     }
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         if (userModel.verifyUser(username, password)) {

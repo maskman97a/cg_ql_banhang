@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 public class UpdateStockDto {
     private int productId;
     private int quantity;

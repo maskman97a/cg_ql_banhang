@@ -42,15 +42,28 @@ public class StockService extends BaseService {
         List<CategoryDto> categoryDtoList = categoryModel.getLstCategory();
         req.setAttribute("lstCategory", categoryDtoList);
         String keyword = req.getParameter("keyword");
-        List<StockDto> stockList = stockModel.searchListStock(keyword);
+        int size = 5;
+        if (req.getParameter("size") != null) {
+            size = Integer.parseInt(req.getParameter("size"));
+        }
+        int page = 1;
+        if (req.getParameter("page") != null) {
+            page = Integer.parseInt(req.getParameter("page"));
+            if (page == 0) page = 1;
+        }
+        req.setAttribute("currentPage", page);
+        List<StockDto> stockList = stockModel.searchListStock(keyword, size, page);
+        int count = stockModel.countListStock(keyword);
+        getPaging(req, resp, count, size, page);
         req.setAttribute("renderStockAdmin", true);
+        req.setAttribute("renderStock", true);
         req.setAttribute("stockList", stockList);
         baseResponse.setAdditionalData(stockList);
-        AdminService.getInstance().renderAdmin(req, resp);
+        req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
         return baseResponse;
     }
 
-    public BaseResponse<StockDto> addProductToStock(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public BaseResponse<StockDto> addProductToStock(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException, SQLException {
         BaseResponse<StockDto> baseResponse = new BaseResponse<>();
         try {
             String productIdStr = req.getParameter("productId");

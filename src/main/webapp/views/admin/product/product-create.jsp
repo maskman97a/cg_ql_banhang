@@ -175,7 +175,7 @@
         // Validate quantity
         const quantity = document.getElementById('inp-quantity').value;
         const quantityError = document.getElementById('quantity-error');
-        if (quantity === '' || parseInt(quantity) <= 0) {
+        if (quantity === '' || parseInt(quantity) < 0) {
             quantityError.textContent = 'Số lượng không hợp lệ. Giá trị hợp lệ là số nguyên dương!';
             return false;
         } else {

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="${pageContext.request.contextPath}/js/order/order.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -56,40 +57,33 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="card" ${renderStockAdmin ? 'hidden': ''} >
+    <div class="card" ${!renderStockAdmin ? 'hidden': ''} >
         <div class="card-header text-center">
             <h1>Quản lý tồn kho</h1>
         </div>
         <div class="card-body">
             <div class="col-12 mb-3">
+
                 <% if (request.getAttribute("errorMsg") != null) { %>
                 <div class="alert alert-danger">
                     <%= request.getAttribute("errorMsg") %>
                 </div>
                 <% } %>
-                <% if (request.getAttribute("successMsg") != null) { %>
+                <% if (request.getAttribute("successMsgStock") != null) { %>
                 <div class="alert alert-success">
-                    <%= request.getAttribute("successMsg") %>
+                    <%= request.getAttribute("successMsgStock") %>
                 </div>
                 <% } %>
             </div>
             <div class="row mb-3">
                 <div class="col-12">
                     <form class="form row" method="get"
-                          action="${pageContext.request.contextPath}/admin/transaction/search">
+                          action="${pageContext.request.contextPath}/admin/stock/search">
                         <input type="hidden" name="size" value="5"/>
                         <input type="hidden" name="page" value="1"/>
-                        <div class="col-2">
-                            <select class="form-control" name="category-id">
-                                <option value="0">--Chọn thể loại--</option>
-                                <c:forEach var="category" items="${lstCategory}">
-                                    <option value="${category.id}">${category.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
                         <div class="col-7">
-                            <input type="text" class="form-control" placeholder="Mã đơn hàng/Số điện thoại"
-                                   name="keyword" id="inp-order-code" value="${keyword}">
+                            <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
+                                   value="${keyword}">
                         </div>
                         <div class="col-3">
                             <input type="submit" class="btn btn-success col-12" value="Tìm"/>
@@ -103,51 +97,27 @@
                     <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Mã đơn hàng</th>
-                        <th>Trạng thái đơn hàng</th>
-                        <th>Tên khách hàng</th>
-                        <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Địa chỉ</th>
-                        <th>Ngày đặt hàng</th>
-                        <th>Xác nhận đơn</th>
-                        <th>Hoàn thành</th>
-                        <th>Hủy</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng tồn kho</th>
+                        <th>Số lượng chờ giao hàng</th>
+                        <th>Tổng số lượng</th>
+                        <th>Nhập hàng</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="item" items="${lstOrder}">
+                    <c:forEach var="item" items="${stockList}">
                         <tr>
                             <td>${item.index}</td>
+                            <td>${item.productCode}</td>
+                            <td>${item.productName}</td>
+                            <td>${item.strAvailableQuantity}</td>
+                            <td>${item.strPendingQuantity}</td>
+                            <td>${item.strTotalQuantity}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/admin/transaction/detail?orderCode=${item.code}"
-                                   title="Xem chi tiết">${item.code}</a></td>
-                            <td>${item.statusName}</td>
-                            <td>${item.customerName}</td>
-                            <td>${item.email}</td>
-                            <td>${item.phone}</td>
-                            <td>${item.address}</td>
-                            <td>${item.orderDateStr}</td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/admin/transaction/confirm?id=${item.id}"
-                                   class="${item.status != 0 ? 'disabled': ''}"
-                                   title="Xác nhận đơn hàng">
-                                    <i class="fas fa-check-circle icon-large"></i>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/admin/transaction/complete?id=${item.id}"
-                                   class=" ${item.status != 3 ? 'disabled': 'btn-delete'}"
-                                   title="Hoàn thành">
-                                    <i class="fas fa-check icon-large"></i>
-                                </a>
-                            </td>
-                            <td>
-                                <a onclick="return confirm('Bạn muốn hủy đơn hàng này không?')"
-                                   class=" ${item.status != 0 ? 'disabled': 'btn-delete'}"
-                                   href="${pageContext.request.contextPath}/admin/transaction/delete?id=${item.id}"
-                                   title="Hủy">
-                                    <i class="fas fa-trash-alt icon-large"></i></a>
+                                <div onclick="openStock('${item.productCode}', '${item.productName}', '${item.strAvailableQuantity}', '${item.productId}')">
+                                    <i class="fas fa-edit" style="color: #004eff"></i>
+                                </div>
                             </td>
                         </tr>
                     </c:forEach>
@@ -160,18 +130,18 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage-1}&size=5">Previous</a>
+                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage-1}&size=5">Previous</a>
                                 </li>
                             </c:if>
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/transaction/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/stock/search?page=${page}&size=5">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/transaction/search?page=${currentPage+1}&size=5">Next</a>
+                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage+1}&size=5">Next</a>
                                 </li>
                             </c:if>
                         </ul>
@@ -181,8 +151,70 @@
         </div>
     </div>
 </div>
-<div class="row" ${!renderStockAdmin ? 'hidden': ''}>
-    <c:import url="/views/admin/transaction/transaction-detail.jsp"/>
+<div class="modal modal-xl fade" id="modalStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Chỉnh sửa tồn kho</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="stockForm" class="form form-control p-2" onsubmit="return validateStock()"
+                      action="${pageContext.request.contextPath}/admin/stock/import-stock" method="post">
+                    <input type="hidden" name="productId" id="productId" hidden/>
+                    <div class="form-group">
+                        <strong for="productCode">Mã sản phẩm</strong>
+                        <input type="text" class="form-control" id="productCode" name="productCode" readonly>
+                    </div>
+                    <div class="form-group">
+                        <strong for="productName">Tên sản phẩm</strong>
+                        <input type="text" class="form-control" id="productName" name="productName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <strong for="availableQuantity">Số lượng tồn kho</strong>
+                        <input type="number" class="form-control" id="availableQuantity" name="availableQuantity"
+                               readonly>
+                    </div>
+                    <div class="form-group">
+                        <strong for="availableQuantity">Số lượng</strong>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="0" min="0">
+                    </div>
+                    <div class="modal-footer">
+                        <span id="stock-validate-message" class="text-danger"></span>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở lại</button>
+                        <input type="submit" class="btn btn-primary" value="Nhập hàng"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    function openStock(productCode, productName, availableQuantity, productId) {
+        $('#productCode').val(productCode);
+        $('#productName').val(productName);
+        $('#availableQuantity').val(availableQuantity);
+        $('#productId').val(productId);
+        $('#quantity').val(0);
+        $('#modalStock').modal('show');
+    }
+
+
+    function prepareImportStock() {
+        if (validateStock())
+            openConfirmDialog("btn-import-stock-confirm", "Bạn có chắc chắn muốn tạo đơn hàng?", "cart-order-customer-info")
+    }
+
+    function validateStock() {
+        let messageElementId = "stock-validate-message";
+        let quantity = document.getElementById("quantity").value;
+        if (!quantity || quantity === '0') {
+            return renderErrorMessage(messageElementId, "Số lượng không hợp lệ!")
+        }
+        return true;
+    }
+</script>
 </body>
 </html>

@@ -28,4 +28,21 @@ public class Const {
         }
         return "";
     }
+
+    public static String getIconClass(String path) {
+        switch (path) {
+            case "admin":
+                return "fa-solid fa-user-tie";
+            case "product":
+                return "fas fa-cubes";
+            case "category":
+                return "fas fa-tags";
+            case "transaction":
+                return "fas fa-file-invoice";
+            case "stock":
+                return "fas fa-warehouse";
+            default:
+                return "fas fa-file-alt"; // Icon mặc định
+        }
+    }
 }

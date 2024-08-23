@@ -9,4 +9,5 @@ public class UrlLevelDto {
     int level;
     String url;
     String name;
+    String icon;
 }

@@ -3,6 +3,7 @@ package vn.codegym.qlbanhang.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -10,4 +11,8 @@ import java.util.List;
 public class ExecuteStockDto {
     private List<UpdateStockDto> updateStockList;
     private int orderStatus;
+
+    public ExecuteStockDto(){
+        updateStockList =new ArrayList<>();
+    }
 }

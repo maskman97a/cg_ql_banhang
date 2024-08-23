@@ -61,10 +61,15 @@ public class AdminService extends BaseService {
                 if (urlName.isEmpty()) {
                     continue;
                 }
+                String icon = Const.getIconClass(path);
+                if (icon.isEmpty()) {
+                    continue;
+                }
                 UrlLevelDto urlLevelDto = new UrlLevelDto();
                 urlLevelDto.setUrl(parentPath.toString());
                 urlLevelDto.setLevel(index++);
                 urlLevelDto.setName(urlName);
+                urlLevelDto.setIcon(icon);
                 urlLevelDtos.add(urlLevelDto);
             }
         }
@@ -116,11 +121,9 @@ public class AdminService extends BaseService {
     public void searchProductAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         String keyword = req.getParameter("keyword");
-        req.setAttribute("keyword", keyword);
         Long categoryId = null;
-        if (!DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
-            categoryId = DataUtil.safeToLong(req.getParameter("categoryId"));
-            req.setAttribute("categoryId", categoryId);
+        if (!DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
+            categoryId = DataUtil.safeToLong(req.getParameter("category-id"));
         }
         int size = 10;
         if (req.getParameter("size") != null) {
@@ -163,7 +166,7 @@ public class AdminService extends BaseService {
             } else if (DataUtil.isNullOrEmpty(req.getParameter("code"))) {
                 req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
                 renderCreateProductForm(req, resp);
-            } else if (DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
+            } else if (DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
                 req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
                 renderCreateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
@@ -179,7 +182,7 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderCreateProductForm(req, resp);
             } else {
-                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("categoryId")), null)) {
+                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("category-id")), null)) {
                     req.setAttribute("errorMsg", "Tồn tại sản phẩm có mã " + req.getParameter("code") + " trên hệ thống!");
                     renderCreateProductForm(req, resp);
                 } else {
@@ -188,7 +191,7 @@ public class AdminService extends BaseService {
                     productEntity.setImageUrl(imageUrl);
                     productEntity.setProductCode(req.getParameter("code").trim());
                     productEntity.setProductName(req.getParameter("name").trim());
-                    productEntity.setCategoryId(Integer.parseInt(req.getParameter("categoryId")));
+                    productEntity.setCategoryId(Integer.parseInt(req.getParameter("category-id")));
 //                    productEntity.setQuantity(Integer.parseInt(req.getParameter("quantity")));
                     productEntity.setPrice(DataUtil.safeToLong(req.getParameter("price")));
                     productEntity.setDescription(req.getParameter("description").trim());
@@ -220,7 +223,7 @@ public class AdminService extends BaseService {
             if (DataUtil.isNullOrEmpty(req.getParameter("code"))) {
                 req.setAttribute("errorMsg", "Mã sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
-            } else if (DataUtil.isNullOrEmpty(req.getParameter("categoryId"))) {
+            } else if (DataUtil.isNullOrEmpty(req.getParameter("category-id"))) {
                 req.setAttribute("errorMsg", "Loại sản phẩm bắt buộc nhập");
                 renderUpdateProductForm(req, resp);
             } else if (DataUtil.isNullOrEmpty(req.getParameter("name"))) {
@@ -233,7 +236,7 @@ public class AdminService extends BaseService {
                 req.setAttribute("errorMsg", "Mô tả nhập quá 500 ký tự");
                 renderUpdateProductForm(req, resp);
             } else {
-                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("categoryId")), Integer.parseInt(req.getParameter("id")))) {
+                if (productModel.checkExitsProduct(req.getParameter("code"), Integer.parseInt(req.getParameter("category-id")), Integer.parseInt(req.getParameter("id")))) {
                     req.setAttribute("errorMsg", "Tồn tại sản phẩm có mã " + req.getParameter("code") + " trên hệ thống!");
                     throw new ServletException("Tồn tại sản phẩm có mã " + req.getParameter("code") + " trên hệ thống!");
 //                    renderUpdateProductForm(req, resp);
@@ -245,7 +248,7 @@ public class AdminService extends BaseService {
                         String imageUrl = SftpUtils.getPathSFTP(req, resp);
                         productEntity.setImageUrl(imageUrl);
                     }
-                    productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("categoryId")) ? Integer.parseInt(req.getParameter("categoryId")) : null);
+                    productEntity.setCategoryId(!DataUtil.isNullOrEmpty(req.getParameter("category-id")) ? Integer.parseInt(req.getParameter("category-id")) : null);
                     productEntity.setProductCode(!DataUtil.isNullOrEmpty(req.getParameter("code")) ? req.getParameter("code").trim() : null);
                     productEntity.setProductName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name").trim() : null);
 //                    productEntity.setQuantity(!DataUtil.isNullOrEmpty(req.getParameter("quantity")) ? Integer.parseInt(req.getParameter("quantity")) : null);
@@ -319,7 +322,6 @@ public class AdminService extends BaseService {
                 renderCreateCategoryForm(req, resp);
             } else {
                 categoryEntity.setName(DataUtil.safeToString(req.getParameter("name")).trim());
-                categoryEntity.setSort(DataUtil.safeToInt(req.getParameter("sort")));
                 categoryEntity = (CategoryEntity) categoryModel.save(categoryEntity);
                 if (!DataUtil.isNullObject(categoryEntity)) {
                     req.setAttribute("successMsg", "Thêm Loại sản phẩm thành công");
@@ -346,11 +348,6 @@ public class AdminService extends BaseService {
                 Integer id = Integer.parseInt(req.getParameter("id"));
                 categoryEntity.setId(id);
                 categoryEntity.setName(!DataUtil.isNullOrEmpty(req.getParameter("name")) ? req.getParameter("name").trim() : null);
-                String sortInp = req.getParameter("sort");
-                if (!DataUtil.isNullOrEmpty(sortInp)) {
-                    categoryEntity.setSort(DataUtil.safeToInt(sortInp));
-                }
-
                 categoryEntity.setUpdatedBy("admin");
                 int save = categoryModel.updateCategory(false, categoryEntity);
                 if (save == 1) {

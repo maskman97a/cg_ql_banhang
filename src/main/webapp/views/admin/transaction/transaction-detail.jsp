@@ -31,9 +31,13 @@
                             <span class="row">Mã đơn hàng: ${orderInfo.code}</span>
                             <span class="row">Ngày đặt hàng: ${orderInfo.orderDateStr}</span>
                             <span id="span-total-amount-${orderInfo.id}"
-                                  class="row float-end">Tổng tiền: ${orderInfo.totalAmount}đ</span>
+<%--                                  class="row float-end">Tổng tiền: ${orderInfo.totalAmount}đ</span>--%>
+                                  class="row float-end"></span>
                             <span class="row">Trạng thái: ${orderInfo.orderStatusName}</span>
                             <span class="row">Địa chỉ nhận hàng: ${orderInfo.address}</span>
+                            <script>
+                                document.getElementById("span-total-amount-" + ${orderInfo.id}).innerHTML = "Tổng tiền: " + formatNumber(${orderInfo.totalAmount}) + "đ";
+                            </script>
                         </div>
                     </div>
 
@@ -43,15 +47,17 @@
                             <table class="table">
                                 <thead style="font-weight: bold">
                                 <tr>
+                                    <td>STT</td>
                                     <td>Sản phẩm</td>
                                     <td>Đơn giá</td>
                                     <td>Số lượng</td>
                                     <td>Thành tiền</td>
                                 </tr>
                                 </thead>
-                                <c:forEach var="orderDetail" items="${orderInfo.orderDetailList}">
+                                <c:forEach var="orderDetail" items="${orderInfo.orderDetailEntityList}">
                                     <tr>
-                                        <td>${orderDetail.product.productName}</td>
+                                        <td>${orderDetail.index}</td>
+                                        <td>${orderDetail.productEntity.productName}</td>
                                         <td id="col-unit-price-${orderDetail.id}">${orderDetail.unitPrice}</td>
                                         <td>${orderDetail.quantity}</td>
                                         <td id="col-amount-${orderDetail.id}">${orderDetail.amount}</td>
@@ -66,6 +72,7 @@
                                     <td>Tổng</td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                     <td id="col-total-amount-${orderInfo.id}"
                                         style="color:red; font-weight: bold">${orderInfo.totalAmount}</td>
                                 </tr>
@@ -74,7 +81,8 @@
                         </div>
                     </div>
                     <div class="col-md-12 mb-3 text-center">
-                        <a href="${pageContext.request.contextPath}/admin/transaction" class="btn btn-secondary">Trở về</a>
+                        <a href="${pageContext.request.contextPath}/admin/transaction" class="btn btn-secondary">Trở
+                            về</a>
                     </div>
                 </div>
                 <script>

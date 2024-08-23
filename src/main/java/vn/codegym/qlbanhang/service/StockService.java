@@ -94,6 +94,8 @@ public class StockService extends BaseService {
                 stockEntity.setTotalQuantity(quantity);
                 stockEntity.setPendingQuantity(0);
                 stockEntity.setStatus(Const.STATUS_ACTIVE);
+                stockEntity = (StockEntity) stockModel.save(stockEntity);
+                baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
             } else {
                 ExecuteStockDto executeStockDto = new ExecuteStockDto();
                 UpdateStockDto updateStockDto = new UpdateStockDto();
@@ -101,10 +103,8 @@ public class StockService extends BaseService {
                 updateStockDto.setQuantity(quantity);
                 executeStockDto.getUpdateStockList().add(updateStockDto);
                 executeStockDto.setOrderStatus(OrderStatus.IMPORT.value);
-                executeStock(executeStockDto);
+                baseResponse = executeStock(executeStockDto);
             }
-            stockEntity = (StockEntity) stockModel.save(stockEntity);
-            baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
         } catch (BusinessException ex) {
             baseResponse.setError(ex);
         } catch (Exception ex) {
@@ -138,6 +138,7 @@ public class StockService extends BaseService {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
                         if (!DataUtil.isNullObject(stockEntity)) {
                             stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.EXPORT.name());
+                            baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }
@@ -149,6 +150,7 @@ public class StockService extends BaseService {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
                         if (!DataUtil.isNullObject(stockEntity)) {
                             stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.PENDING.name());
+                            baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }
@@ -160,6 +162,7 @@ public class StockService extends BaseService {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), updateStockDto.getQuantity());
                         if (!DataUtil.isNullObject(stockEntity)) {
                             stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
+                            baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }
@@ -171,6 +174,7 @@ public class StockService extends BaseService {
                         StockEntity stockEntity = stockModel.getValidStock(updateStockDto.getProductId(), null);
                         if (!DataUtil.isNullObject(stockEntity)) {
                             stockModel.updateStock(stockEntity, updateStockDto.getQuantity(), StockTransType.IMPORT.name());
+                            baseResponse.setAdditionalData(modelMapper.map(stockEntity, StockDto.class));
                         } else {
                             throw new BusinessException(ErrorType.INVALID_DATA.getErrorCode(), "Thông tin kho không hợp lệ hoặc không còn đủ số lượng");
                         }

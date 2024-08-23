@@ -74,7 +74,7 @@ public class OrderService extends HomeService {
         String customerAddress = req.getParameter("customer-address");
         CustomerDto customerDto = new CustomerDto(customerName, customerPhoneNumber, customerEmail, customerAddress);
         createOrderRequest.setCustomer(customerDto);
-         if (isBatch) {
+        if (isBatch) {
             String rowCountStr = req.getParameter("rowCount");
             if (rowCountStr != null && !rowCountStr.isEmpty()) {
                 int rowCount = Integer.parseInt(rowCountStr);
@@ -346,29 +346,30 @@ public class OrderService extends HomeService {
     }
 
 
-    public void detailOrderForAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
+    public void detailOrderForAdmin(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
         String orderCode = req.getParameter("orderCode");
         req.setAttribute("orderCode", orderCode);
         if (DataUtil.isNullOrEmpty(orderCode)) {
             req.setAttribute("lookupResponse", "Vui lòng nhập Mã đơn hàng");
+            renderLookupOrderPage(req, resp);
+            return;
         }
+
 
         BaseSearchDto baseSearchDto = new BaseSearchDto();
         baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("code", "=", orderCode));
-        CustomerEntity customerEntity = customerModel.findByPhone(orderCode);
-        if (!DataUtil.isNullObject(customerEntity)) {
-            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newOrCondition("customer_id", "=", customerEntity.getId()));
-        }
+        baseSearchDto.getOrderByConditionDtos().add(new OrderByConditionDto("updated_date", "DESC"));
         List<BaseEntity> baseEntities = orderModel.search(baseSearchDto);
         if (DataUtil.isNullOrEmpty(baseEntities)) {
             req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");
+            renderLookupOrderPage(req, resp);
+            return;
         } else {
+            CustomerEntity customerEntity = new CustomerEntity();
             req.setAttribute("showOrderInfo", true);
             for (BaseEntity baseEntity : baseEntities) {
                 OrderEntity orderEntity = (OrderEntity) baseEntity;
-                if (DataUtil.isNullObject(customerEntity)) {
-                    customerEntity = (CustomerEntity) customerModel.findById(orderEntity.getCustomerId());
-                }
+                customerEntity = (CustomerEntity) customerModel.findById(orderEntity.getCustomerId());
                 orderEntity.setOrderStatusName(OrderStatus.getDescription(orderEntity.getStatus()));
                 BaseSearchDto baseSearchDtoForDetail = new BaseSearchDto();
                 baseSearchDtoForDetail.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("order_id", "=", orderEntity.getId()));
@@ -386,8 +387,8 @@ public class OrderService extends HomeService {
                 }
                 orderEntity.setTotalAmount(totalAmount);
             }
-            req.setAttribute("orderList", baseEntities);
             req.setAttribute("customerInfo", customerEntity);
+            req.setAttribute("orderList", baseEntities);
         }
 
     }

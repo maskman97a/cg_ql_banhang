@@ -41,13 +41,17 @@ const BaseResponse = {
     }
 }
 
-async function addToCart(productId, productImageElementId) {
-    let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
-    let data = await callApi(fetchUrl, "GET")
-    if (data.errorCode === 0) {
-        document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
-        animationCart(productImageElementId);
+async function addToCart(productId, productImageElementId, availableQuantity) {
+    if (availableQuantity > 0) {
+        let fetchUrl = contextPath + '/product/add-to-cart?productId=' + productId;
+        let data = await callApi(fetchUrl, "GET")
+        if (data.errorCode === 0) {
+            document.getElementById("count-cart").innerHTML = data.additionalData.cartCount;
+            animationCart(productImageElementId);
+        } else {
+        }
     } else {
+        showAlert("Sản phẩm này tạm hết, vui lòng quay lại sau!")
     }
 }
 

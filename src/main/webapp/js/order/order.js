@@ -4,6 +4,19 @@ function validateCreateOrder(orderTyp) {
     if (orderTyp === "batch") {
         partnerId = "#cart-order-customer-info-input";
         messageElementId = "order-validate-message";
+
+        let countProduct = document.getElementById("total-quantity").value
+        for (let i = 1; i <= countProduct; i++) {
+            if (document.getElementById("inp-quantity-" + i).value <= 0) {
+                return renderErrorMessage(messageElementId, "Số lượng phải lớn hơn 0");
+            }
+        }
+
+        let rowCount = getQuantity()
+        document.getElementById("cart-row-count").value = rowCount;
+        if (rowCount === 0) {
+            return renderErrorMessage(messageElementId, "Giỏ hàng không có sản phẩm nào cả!")
+        }
     } else {
         partnerId = "#modalOrder";
         messageElementId = "order-single-validate-message";
@@ -14,11 +27,6 @@ function validateCreateOrder(orderTyp) {
         }
     }
 
-    let rowCount = getQuantity()
-    document.getElementById("cart-row-count").value = rowCount;
-    if (rowCount === 0) {
-        return renderErrorMessage(messageElementId, "Giỏ hàng không có sản phẩm nào cả!")
-    }
 
     let customerName = document.querySelector(partnerId + " #inp-customer-name").value;
     if (customerName === '') {
@@ -40,12 +48,6 @@ function validateCreateOrder(orderTyp) {
         return renderErrorMessage(messageElementId, "Vui lòng nhập Địa chỉ email hợp lệ!")
     }
 
-    let countProduct = document.getElementById("total-quantity").value
-    for (let i = 1; i <= countProduct; i++) {
-        if (document.getElementById("inp-quantity-" + i).value <= 0) {
-            return renderErrorMessage(messageElementId, "Số lượng phải lớn hơn 0");
-        }
-    }
     document.getElementById(messageElementId).innerHTML = "";
     return true;
 }

@@ -38,12 +38,15 @@
                         <h1>Cập nhật sản phẩm</h1>
                     </div>
                     <div class="row col-12 align-items-center mb-3">
-                        <div class="col-3 mb-3">
+                        <div class="col-12 mb-3">
                             <label for="inp-name">Tên thể loại</label>
-                        </div>
-                        <div class="col-9">
                             <input id="inp-name" type="text" value="${category.name}"
                                    class="form-control" name="name"/>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="inp-sort">Thứ tự sắp xếp</label>
+                            <input id="inp-sort" type="number" value="${category.sort}" min="0"
+                                   class="form-control" name="sort"/>
                         </div>
                         <script>
                             function limitLength(input) {

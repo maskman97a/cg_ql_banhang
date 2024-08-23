@@ -15,7 +15,7 @@
 <h4>Mã đơn hàng: <span style="color:green">${orderCode}</span></h4>
 <h5>Để đơn hàng được xử lý nhanh hơn, vui lòng liên hệ hotline: 0328760158</h5>
 <span>Bạn có thể xem chi tiết đơn hàng <a class="text-success"
-                                          href="${pageContext.request.contextPath}/order/lookup-by-code?orderCode=${orderCode}">Tại
+                                          href="${pageContext.request.contextPath}/order/lookup-by-code?orderCode=${orderCode}&phoneNumber=${phoneNumber}">Tại
     đây</a></span>
 
 <span class="col-12 text-success text-center" style="font-size:300px"><i class="fa-solid fa-face-laugh"></i></span>

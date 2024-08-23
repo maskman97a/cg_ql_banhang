@@ -79,7 +79,7 @@
                 <div class="col-12">
                     <form class="form row" method="get"
                           action="${pageContext.request.contextPath}/admin/stock/search">
-                        <input type="hidden" name="size" value="5"/>
+                        <input type="hidden" name="size" value="10"/>
                         <input type="hidden" name="page" value="1"/>
                         <div class="col-7">
                             <input type="text" class="form-control" placeholder="Mã/Tên sản phẩm" name="keyword"
@@ -130,18 +130,18 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage-1}&size=5">Previous</a>
+                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage-1}&size=10&keyword=${keyword}">Previous</a>
                                 </li>
                             </c:if>
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/stock/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/stock/search?page=${page}&size=10&keyword=${keyword}">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage+1}&size=5">Next</a>
+                                                         href="${pageContext.request.contextPath}/admin/stock/search?page=${currentPage+1}&size=10&keyword=${keyword}">Next</a>
                                 </li>
                             </c:if>
                         </ul>
@@ -157,7 +157,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Chỉnh sửa tồn kho</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
             <div class="modal-body">
                 <form id="stockForm" class="form form-control p-2" onsubmit="return validateStock()"

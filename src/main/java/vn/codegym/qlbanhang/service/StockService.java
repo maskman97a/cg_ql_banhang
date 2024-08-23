@@ -43,7 +43,7 @@ public class StockService extends BaseService {
         List<CategoryDto> categoryDtoList = categoryModel.getLstCategory();
         req.setAttribute("lstCategory", categoryDtoList);
         String keyword = req.getParameter("keyword");
-        int size = 5;
+        int size = 10;
         if (req.getParameter("size") != null) {
             size = Integer.parseInt(req.getParameter("size"));
         }

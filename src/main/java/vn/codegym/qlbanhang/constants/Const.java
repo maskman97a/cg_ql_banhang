@@ -16,15 +16,15 @@ public class Const {
     public static String getUrlPathName(String path) {
         switch (path) {
             case "admin":
-                return "Quản trị";
+                return "Trang Quản trị";
             case "product":
-                return "Sản phẩm";
+                return "Quản lý Sản phẩm";
             case "category":
-                return "Thể loại";
+                return "Quản lý Loại sản phẩm";
             case "transaction":
-                return "Đơn hàng";
+                return "Quản lý Đơn hàng";
             case "stock":
-                return "Kho";
+                return "Quản lý Tồn kho";
         }
         return "";
     }

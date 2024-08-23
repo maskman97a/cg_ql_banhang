@@ -36,9 +36,9 @@ public class CategoryService extends BaseService {
 
     public void renderSearch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
 
-            List<BaseEntity> categoryDtoList = baseModel.findAll();
-            req.setAttribute("lstCategory", categoryDtoList);
-            req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
+        List<BaseEntity> categoryDtoList = baseModel.findAll();
+        req.setAttribute("lstCategory", categoryDtoList);
+        req.getRequestDispatcher("/views/admin/admin.jsp").forward(req, resp);
 
     }
 
@@ -61,43 +61,43 @@ public class CategoryService extends BaseService {
 
 
     public void renderSearchCategory(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
-            req.setAttribute("renderCategory", true);
-            req.setAttribute("renderCategoryList", true);
-            req.setAttribute("renderProduct", false);
-            req.setAttribute("renderOrder", false);
-            this.searchCategory(req, resp);
-            req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
+        req.setAttribute("renderCategory", true);
+        req.setAttribute("renderCategoryList", true);
+        req.setAttribute("renderProduct", false);
+        req.setAttribute("renderOrder", false);
+        this.searchCategory(req, resp);
+        req.getRequestDispatcher(req.getContextPath() + "/views/admin/admin.jsp").forward(req, resp);
 
     }
 
 
     public void searchCategory(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
         BaseSearchDto baseSearchDto = new BaseSearchDto();
-            String keyword = DataUtil.safeToString(req.getParameter("keyword"));
-            int size = 5;
-            if (req.getParameter("size") != null) {
-                size = Integer.parseInt(req.getParameter("size"));
+        String keyword = DataUtil.safeToString(req.getParameter("keyword"));
+        int size = 10;
+        if (req.getParameter("size") != null) {
+            size = Integer.parseInt(req.getParameter("size"));
+        }
+        int page = 1;
+        if (req.getParameter("page") != null) {
+            page = Integer.parseInt(req.getParameter("page"));
+            if (page == 0) page = 1;
+        }
+        req.setAttribute("currentPage", page);
+        req.getAttribute("currentPage");
+        baseSearchDto.setKeyword(keyword);
+        baseSearchDto.setSize(size);
+        baseSearchDto.setPage(page);
+        List<CategoryDto> lstData = categoryModel.findCategoryByKeyword(baseSearchDto, null);
+        if (lstData != null && !lstData.isEmpty()) {
+            int index = 1;
+            for (CategoryDto productDto : lstData) {
+                productDto.setIndex(index++);
             }
-            int page = 1;
-            if (req.getParameter("page") != null) {
-                page = Integer.parseInt(req.getParameter("page"));
-                if (page == 0) page = 1;
-            }
-            req.setAttribute("currentPage", page);
-            req.getAttribute("currentPage");
-            baseSearchDto.setKeyword(keyword);
-            baseSearchDto.setSize(size);
-            baseSearchDto.setPage(page);
-            List<CategoryDto> lstData = categoryModel.findCategoryByKeyword(baseSearchDto, null);
-            if (lstData != null && !lstData.isEmpty()) {
-                int index = 1;
-                for (CategoryDto productDto : lstData) {
-                    productDto.setIndex(index++);
-                }
-                req.setAttribute("lstCategory", lstData);
-            }
-            int count = categoryModel.countCategory(baseSearchDto, null);
-            getPaging(req, resp, count, size, page);
+            req.setAttribute("lstCategory", lstData);
+        }
+        int count = categoryModel.countCategory(baseSearchDto, null);
+        getPaging(req, resp, count, size, page);
 
     }
 

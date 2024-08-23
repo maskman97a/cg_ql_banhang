@@ -23,7 +23,7 @@ public class OrderEntity extends BaseEntity {
     private String address;
     @Column(name = "order_date")
     private LocalDateTime orderDate;
-    private Integer totalAmount;
+    private Long totalAmount;
     private String orderStatusName;
 
     private String orderDateStr;

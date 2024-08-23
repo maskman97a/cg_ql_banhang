@@ -1,6 +1,5 @@
 package vn.codegym.qlbanhang.service;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.codegym.qlbanhang.constants.Const;
 import vn.codegym.qlbanhang.dto.*;
 import vn.codegym.qlbanhang.dto.response.BaseResponse;
@@ -428,8 +427,8 @@ public class AdminService extends BaseService {
                 for (int i = 0; i < baseEntitiesForDetail.size(); i++) {
                     OrderDetailEntity detailEntity = (OrderDetailEntity) baseEntitiesForDetail.get(i);
                     UpdateStockDto updateStockDto = new UpdateStockDto();
-                    updateStockDto.setProductId(detailEntity.getQuantity());
-                    updateStockDto.setQuantity(detailEntity.getProductId());
+                    updateStockDto.setQuantity(detailEntity.getQuantity());
+                    updateStockDto.setProductId(detailEntity.getProductId());
                     updateStockList.add(updateStockDto);
                 }
                 executeStockDto.setUpdateStockList(updateStockList);

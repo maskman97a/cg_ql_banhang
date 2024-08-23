@@ -13,7 +13,7 @@
                   action="${pageContext.request.contextPath}/stock/confirm-import" method="post">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Kho</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
                 <div class="modal-body">
                     <form id="stockForm">

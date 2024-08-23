@@ -88,14 +88,14 @@
                             <label for="inp-category-name-update">Thể loại</label>
                         </div>
                         <div class="col-9">
-                            <input type="hidden" class="form-control" name="category-id"
-                                   id="category-id-update"
+                            <input type="hidden" class="form-control" name="categoryId"
+                                   id="categoryId-update"
                                    value="${product.categoryId}"/>
                             <input id="inp-category-name-update" type="text" value="${product.categoryName}"
                                    class="form-control"
                                    disabled
                                    name="category-name"/>
-                            <div id="category-id-error-update" class="error"></div>
+                            <div id="categoryId-error-update" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
                             <label for="inp-code">Mã sản phẩm</label>

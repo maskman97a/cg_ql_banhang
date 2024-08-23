@@ -149,13 +149,14 @@
                 <div class="col-12">
                     <form class="form row justify-content-center" method="get"
                           action="${pageContext.request.contextPath}/admin/product/search">
-                        <input type="text" class="form-control" name="size" value="5" hidden/>
+                        <input type="text" class="form-control" name="size" value="10" hidden/>
                         <input type="text" class="form-control" name="page" value="1" hidden/>
                         <div class="col-2">
-                            <select class="form-control" name="category-id">
-                                <option value="0">--Chọn thể loại--</option>
+                            <select class="form-control" name="categoryId">
+                                <option value="0">--Loại sản phẩm--</option>
                                 <c:forEach var="category" items="${lstCategory}">
-                                    <option value="${category.id}">${category.name}</option>
+                                    <option value="${category.id}"
+                                            <c:if test="${category.id == categoryId}">selected</c:if>>${category.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -223,20 +224,20 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage-1}&size=5">
+                                                         href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage-1}&size=10&keyword=${keyword}&categoryId=${categoryId}">
                                     Previous</a></li>
                             </c:if>
 
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/product/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/product/search?page=${page}&size=10&keyword=${keyword}&categoryId=${categoryId}">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage+1}&size=5">
+                                       href="${pageContext.request.contextPath}/admin/product/search?page=${currentPage+1}&size=10&keyword=${keyword}&categoryId=${categoryId}">
                                         Next</a></li>
                             </c:if>
                         </ul>

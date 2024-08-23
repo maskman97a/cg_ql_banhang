@@ -50,7 +50,7 @@ public class BaseService {
         req.setAttribute("totalPage", totalPage);
         pagingDto.setTotalPage(totalPage.intValue());
 
-        int tabSize = 5;
+        int tabSize = 10;
         BigDecimal bTabSize = new BigDecimal(tabSize);
         BigDecimal countTab = totalPage.divide(bTabSize, 0, RoundingMode.CEILING);
         for (int tabIndex = 0; tabIndex < countTab.intValue(); tabIndex++) {

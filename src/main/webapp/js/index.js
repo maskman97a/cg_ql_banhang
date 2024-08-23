@@ -153,3 +153,21 @@ function submitFormByElementIdComponentInForm(elementId) {
     inputElement.closest('form').submit();
 }
 
+function sleepAndPrint(seconds, elementId, subText, defaultText) {
+    const countSeconds = setInterval(() => {
+        document.getElementById(elementId).innerHTML = subText + seconds + "s";
+        document.getElementById(elementId).disabled = true;
+        if (seconds === 0) {
+            clearInterval(countSeconds);
+            document.getElementById(elementId).innerHTML = defaultText;
+            document.getElementById(elementId).disabled = false;
+        }
+        seconds--;
+    }, 1000);
+
+
+}
+
+function resendCancelOrderOtp(btnId) {
+    sleepAndPrint(60, btnId, 'Gửi lại sau ', 'Gửi lại OTP')
+}

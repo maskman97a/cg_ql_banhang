@@ -22,7 +22,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Thông tin đặt hàng</h4>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Đóng"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">

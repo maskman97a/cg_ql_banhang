@@ -56,7 +56,7 @@
                 <div class="col-12">
                     <form class="form" method="get"
                           action="${pageContext.request.contextPath}/admin/category/search">
-                        <input type="hidden" class="form-control" name="size" value="5"/>
+                        <input type="hidden" class="form-control" name="size" value="10"/>
                         <input type="hidden" class="form-control" name="page" value="1"/>
                         <div class="row justify-content-center">
                             <div class="col-7">
@@ -83,6 +83,7 @@
                         <tr>
                             <th>STT</th>
                             <th>Tên Loại sản phẩm</th>
+                            <th>Thứ tự hiển thị</th>
                             <th>Sửa</th>
                             <th>Xóa</th>
                         </tr>
@@ -92,6 +93,7 @@
                             <tr>
                                 <td>${category.index}</td>
                                 <td>${category.name}</td>
+                                <td>${category.sort}</td>
                                 <td>
                                     <a href="${pageContext.request.contextPath}/admin/category/update?id=${category.id}"
                                        title="Sửa">
@@ -115,20 +117,20 @@
                         <ul class="pagination" style="justify-content: center">
                             <c:if test="${!firstTab}">
                                 <li class="page-item"><a class="page-link"
-                                                         href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage-1}&size=5">
+                                                         href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage-1}&size=10&keyword=${keyword}">
                                     Previous</a></li>
                             </c:if>
 
                             <c:forEach begin="${beginPage}" end="${endPage}" var="page">
                                 <li class="page-item ${currentPage == page ? 'active' : ''}">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/category/search?page=${page}&size=5">${page}</a>
+                                       href="${pageContext.request.contextPath}/admin/category/search?page=${page}&size=10&size=10&keyword=${keyword}">${page}</a>
                                 </li>
                             </c:forEach>
                             <c:if test="${!lastTab}">
                                 <li class="page-item">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage+1}&size=5">
+                                       href="${pageContext.request.contextPath}/admin/category/search?page=${currentPage+1}&size=10&size=10&keyword=${keyword}">
                                         Next</a></li>
                             </c:if>
                         </ul>

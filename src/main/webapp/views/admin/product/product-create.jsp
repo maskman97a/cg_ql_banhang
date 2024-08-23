@@ -63,16 +63,16 @@
                             <div id="file-error" class="error"></div>
                         </div>
                         <div class="col-3 mb-3">
-                            <label for="category-id">Thể loại</label>
+                            <label for="categoryId">Thể loại</label>
                         </div>
                         <div class="col-9 mb-3">
-                            <select class="form-control" id="category-id" name="category-id">
+                            <select class="form-control" id="categoryId" name="categoryId">
                                 <option value="0">--Chọn thể loại--</option>
                                 <c:forEach var="category" items="${lstCategory}">
                                     <option value="${category.id}">${category.name}</option>
                                 </c:forEach>
                             </select>
-                            <div id="category-id-error" class="error"></div>
+                            <div id="categoryId-error" class="error"></div>
                         </div>
 
                         <div class="col-3 mb-3">
@@ -153,8 +153,8 @@
         }
 
         // Validate category
-        const categoryId = document.getElementById('category-id').value;
-        const categoryError = document.getElementById('category-id-error');
+        const categoryId = document.getElementById('categoryId').value;
+        const categoryError = document.getElementById('categoryId-error');
         if (categoryId === 0) {
             categoryError.textContent = 'Vui lòng chọn thể loại.';
             return false;

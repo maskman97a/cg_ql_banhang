@@ -43,14 +43,16 @@
                             <table class="table">
                                 <thead style="font-weight: bold">
                                 <tr>
+                                    <td>STT</td>
                                     <td>Sản phẩm</td>
                                     <td>Đơn giá</td>
                                     <td>Số lượng</td>
                                     <td>Thành tiền</td>
                                 </tr>
                                 </thead>
-                                <c:forEach var="orderDetail" items="${orderInfo.orderDetailList}">
+                                <c:forEach var="orderDetail" items="${orderInfo.orderDetailEntityList}">
                                     <tr>
+                                        <td>${orderDetail.index}</td>
                                         <td>${orderDetail.product.productName}</td>
                                         <td id="col-unit-price-${orderDetail.id}">${orderDetail.unitPrice}</td>
                                         <td>${orderDetail.quantity}</td>

@@ -335,7 +335,6 @@ public class OrderService extends HomeService {
             req.setAttribute("lookupResponse", "Không tìm thấy đơn hàng");
         } else {
             req.setAttribute("showOrderInfo", true);
-            req.setAttribute("orderList", baseEntities);
             for (BaseEntity baseEntity : baseEntities) {
                 OrderEntity orderEntity = (OrderEntity) baseEntity;
                 if (DataUtil.isNullObject(customerEntity)) {
@@ -358,6 +357,7 @@ public class OrderService extends HomeService {
                 }
                 orderEntity.setTotalAmount(totalAmount);
             }
+            req.setAttribute("orderList", baseEntities);
             req.setAttribute("customerInfo", customerEntity);
         }
 

@@ -427,7 +427,10 @@ public class AdminService extends BaseService {
                 List<UpdateStockDto> updateStockList = new ArrayList<>();
                 for (int i = 0; i < baseEntitiesForDetail.size(); i++) {
                     OrderDetailEntity detailEntity = (OrderDetailEntity) baseEntitiesForDetail.get(i);
-                    updateStockList.add(UpdateStockDto.builder().quantity(detailEntity.getQuantity()).productId(detailEntity.getProductId()).build());
+                    UpdateStockDto updateStockDto = new UpdateStockDto();
+                    updateStockDto.setProductId(detailEntity.getQuantity());
+                    updateStockDto.setQuantity(detailEntity.getProductId());
+                    updateStockList.add(updateStockDto);
                 }
                 executeStockDto.setUpdateStockList(updateStockList);
                 switch (action) {

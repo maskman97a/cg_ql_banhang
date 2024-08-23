@@ -26,9 +26,12 @@ public class BaseResponse<T> {
         this.errorMessage = errorType.getErrorMessage();
     }
 
-    public void setError(ErrorType errorType, String errorMessage) {
+    public void setError(ErrorType errorType, String errorMessage, Object... args) {
         this.errorCode = errorType.getErrorCode();
         this.errorMessage = errorMessage;
+        if (args != null) {
+            this.errorMessage = String.format(errorMessage, args);
+        }
     }
 
     public void setError(BusinessException ex) {

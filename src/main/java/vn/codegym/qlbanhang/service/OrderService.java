@@ -30,6 +30,7 @@ public class OrderService extends HomeService {
     private final OrderDetailModel orderDetailModel;
     private final EmailModel emailModel;
     private final CancelOrderOtpModel cancelOrderOtpModel;
+    private final StockModel stockModel;
 
     public OrderService() {
         super(OrderModel.getInstance());
@@ -40,6 +41,7 @@ public class OrderService extends HomeService {
         this.orderDetailModel = OrderDetailModel.getInstance();
         this.emailModel = EmailModel.getInstance();
         this.cancelOrderOtpModel = CancelOrderOtpModel.getInstance();
+        this.stockModel = StockModel.getInstance();
     }
 
     public void executeCreateOrderSingle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -48,7 +50,7 @@ public class OrderService extends HomeService {
             OrderEntity orderEntity = baseResponse.getAdditionalData();
             resp.sendRedirect("/order/success?orderId=" + orderEntity.getId());
         } else {
-            resp.sendRedirect("/order/error?errorMessage=" + baseResponse.getErrorMessage());
+            resp.sendRedirect("/order/error?errorMessage=" + Base64.getEncoder().encodeToString(baseResponse.getErrorMessage().getBytes()));
         }
 
     }
@@ -61,7 +63,7 @@ public class OrderService extends HomeService {
             OrderEntity orderEntity = baseResponse.getAdditionalData();
             resp.sendRedirect("/order/success?orderId=" + orderEntity.getId());
         } else {
-            renderOrderErrorPage(req, resp);
+            resp.sendRedirect("/order/error?errorMessage=" + Base64.getEncoder().encodeToString(baseResponse.getErrorMessage().getBytes()));
         }
 
     }
@@ -109,44 +111,64 @@ public class OrderService extends HomeService {
     public BaseResponse<OrderEntity> createOrder(CreateOrderRequest createOrderRequest) {
         BaseResponse<OrderEntity> baseResponse = new BaseResponse<>();
         try {
-            CustomerDto customerDto = createOrderRequest.getCustomer();
-            CustomerEntity customerEntity = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
-            if (customerEntity == null) {
-                CustomerEntity newCustomerEntity = new CustomerEntity();
-                newCustomerEntity.setName(customerDto.getCustomerName());
-                newCustomerEntity.setPhone(customerDto.getCustomerPhoneNumber());
-                newCustomerEntity.setEmail(customerDto.getCustomerEmail());
-                newCustomerEntity.setAddress(customerDto.getCustomerAddress());
-                customerModel.save(newCustomerEntity);
+            baseResponse = validateStock(createOrderRequest.getProductList());
+            if (baseResponse.getErrorCode() == ErrorType.SUCCESS.getErrorCode()) {
+                CustomerDto customerDto = createOrderRequest.getCustomer();
+                CustomerEntity customerEntity = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
+                if (customerEntity == null) {
+                    CustomerEntity newCustomerEntity = new CustomerEntity();
+                    newCustomerEntity.setName(customerDto.getCustomerName());
+                    newCustomerEntity.setPhone(customerDto.getCustomerPhoneNumber());
+                    newCustomerEntity.setEmail(customerDto.getCustomerEmail());
+                    newCustomerEntity.setAddress(customerDto.getCustomerAddress());
+                    customerModel.save(newCustomerEntity);
 
-                customerEntity = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
-            }
-            OrderEntity orderEntity = new OrderEntity();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-            String orderCode = "ORD_" + simpleDateFormat.format(new Date());
-            orderEntity.setStatus(Const.OrderStatus.NEW);
-            orderEntity.setCode(orderCode);
-            orderEntity.setCustomerId(customerEntity.getId());
-            orderEntity.setAddress(createOrderRequest.getCustomer().getCustomerAddress());
-            orderEntity.setOrderDate(LocalDateTime.now());
-            orderEntity = (OrderEntity) orderModel.save(orderEntity);
+                    customerEntity = customerModel.findByPhone(customerDto.getCustomerPhoneNumber());
+                }
+                OrderEntity orderEntity = new OrderEntity();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                String orderCode = "ORD_" + simpleDateFormat.format(new Date());
+                orderEntity.setStatus(Const.OrderStatus.NEW);
+                orderEntity.setCode(orderCode);
+                orderEntity.setCustomerId(customerEntity.getId());
+                orderEntity.setAddress(createOrderRequest.getCustomer().getCustomerAddress());
+                orderEntity.setOrderDate(LocalDateTime.now());
+                orderEntity = (OrderEntity) orderModel.save(orderEntity);
 
-            List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
-            for (ProductDto productDto : createOrderRequest.getProductList()) {
-                ProductEntity productEntity = productModel.findProductById(productDto.getId());
-                OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
-                orderDetailEntity.setProductId(productDto.getId());
-                orderDetailEntity.setOrderId(orderEntity.getId());
-                orderDetailEntity.setQuantity(productDto.getQuantity());
-                orderDetailEntity.setUnitPrice(productEntity.getPrice());
-                orderDetailEntity.setAmount(orderDetailEntity.getUnitPrice() * orderDetailEntity.getQuantity());
-                orderDetailEntity = (OrderDetailEntity) orderDetailModel.save(orderDetailEntity);
-                orderDetailEntityList.add(orderDetailEntity);
+                List<OrderDetailEntity> orderDetailEntityList = new ArrayList<>();
+                for (ProductDto productDto : createOrderRequest.getProductList()) {
+                    ProductEntity productEntity = productModel.findProductById(productDto.getId());
+                    OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
+                    orderDetailEntity.setProductId(productDto.getId());
+                    orderDetailEntity.setOrderId(orderEntity.getId());
+                    orderDetailEntity.setQuantity(productDto.getQuantity());
+                    orderDetailEntity.setUnitPrice(productEntity.getPrice());
+                    orderDetailEntity.setAmount(orderDetailEntity.getUnitPrice() * orderDetailEntity.getQuantity());
+                    orderDetailEntity = (OrderDetailEntity) orderDetailModel.save(orderDetailEntity);
+                    orderDetailEntityList.add(orderDetailEntity);
+                }
+                baseResponse.setAdditionalData(orderEntity);
             }
-            baseResponse.setAdditionalData(orderEntity);
         } catch (Exception ex) {
             ex.printStackTrace();
             baseResponse.setError(ErrorType.INTERNAL_SERVER_ERROR);
+        }
+        return baseResponse;
+    }
+
+    public BaseResponse validateStock(List<ProductDto> productDtoList) throws SQLException {
+        BaseResponse baseResponse = new BaseResponse();
+        for (ProductDto productDto : productDtoList) {
+            BaseSearchDto baseSearchDto = new BaseSearchDto();
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("product_id", "=", productDto.getId()));
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("status", "=", Const.STATUS_ACTIVE));
+            baseSearchDto.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("available_quantity", ">=", productDto.getQuantity()));
+            StockEntity stockEntity = (StockEntity) stockModel.findOne(baseSearchDto);
+            if (DataUtil.isNullObject(stockEntity)) {
+                ProductEntity productEntity = productModel.findProductById(productDto.getId());
+                baseResponse.setError(ErrorType.INVALID_DATA, "Mặt hàng %s không còn đủ số lượng", productEntity.getProductName());
+                return baseResponse;
+            }
         }
         return baseResponse;
     }
@@ -221,7 +243,12 @@ public class OrderService extends HomeService {
 
     public void renderOrderErrorPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("showOrderError", true);
-        req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
+        if (req.getParameter("errorMessage") != null && !req.getParameter("errorMessage").isEmpty()) {
+            String errorMsg = req.getParameter("errorMessage");
+            req.setAttribute("errorMessage", new String(Base64.getDecoder().decode(errorMsg)));
+        } else {
+            req.setAttribute("errorMessage", "Tạo đơn hàng thất bại, vui lòng liên hệ hotline để được hỗ trợ!");
+        }
         renderPage(req, resp);
 
     }

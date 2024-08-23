@@ -47,13 +47,29 @@
                     <c:forEach var="product" items="${productPaging.productList}">
                         <div class="col-3 p-3">
                             <div class="shadow p-3 rounded mt-3">
+                                <div class="col-12 justify-content-end pe-3" style="height:30px">
+                                    <c:if test="${product.availableQuantity <= 0}">
+                                        <div class="col-5 p-1 rounded text-center" style=" background-color: red"><span
+                                                class="text-white"
+                                                style="">Hết hàng</span></div>
+                                    </c:if>
+                                </div>
                                 <div class="col-12 ratio ratio-1x1 justify-content-center align-items-center">
-                                    <a href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
-                                       class="ms-0 row justify-content-center align-items-center">
-                                        <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
-                                             id="product-image-${product.id}"
-                                             class="img-fluid rounded product-image"
-                                             alt="${product.name}" width="100%" style="z-index: 0">
+                                    <img src="${pageContext.request.contextPath}/image/${product.imageUrl}"
+                                         id="product-image-${product.id}"
+                                         class="img-fluid rounded product-image"
+                                         alt="${product.name}" width="100%"
+                                         style="z-index: 0; object-fit: contain; cursor: pointer"
+                                         onclick="viewProductDetail('link-for-product-image-${product.id}')">
+                                    <script>
+                                        function viewProductDetail(linkid) {
+                                            document.getElementById(linkid).click();
+                                        }
+                                    </script>
+                                    <a id="link-for-product-image-${product.id}"
+                                       href="${pageContext.request.contextPath}/product/detail?id=${product.id}"
+                                       hidden>
+
                                     </a>
                                 </div>
                                 <div class="col-12">
@@ -77,7 +93,7 @@
                                         <div class="col-2 text-center fs-4"
                                              style="color:green; padding-right:3px">
                                             <i class="fa-solid fa-cart-plus"
-                                               onclick="addToCart(${product.id}, 'product-image-${product.id}')"></i>
+                                               onclick="addToCart(${product.id}, 'product-image-${product.id}', ${product.availableQuantity})"></i>
                                         </div>
                                     </div>
                                 </div>

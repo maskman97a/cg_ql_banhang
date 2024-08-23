@@ -46,7 +46,7 @@
                    data-target="#modalOrder" onclick="initOrderForm()"/>
             <input type="button" class="btn btn-secondary"
                    value="Thêm vào giỏ"
-                   onclick="addToCart(${product.id}, 'product-image-${product.id}')"/>
+                   onclick="addToCart(${product.id}, 'product-image-${product.id}', ${product.availableQuantity})"/>
         </div>
         <div class="col-12">
 

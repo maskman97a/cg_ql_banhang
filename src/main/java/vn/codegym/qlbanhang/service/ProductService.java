@@ -120,7 +120,14 @@ public class ProductService extends BaseService {
 
 
                     ProductDto productDto = modelMapper.map(baseEntity, ProductDto.class);
-
+                    BaseSearchDto searchStock = new BaseSearchDto();
+                    searchStock.getQueryConditionDtos().add(QueryConditionDto.newAndCondition("product_id", "=", baseEntity.getId()));
+                    StockEntity stockEntity = (StockEntity) stockModel.findOne(searchStock);
+                    if (!DataUtil.isNullObject(stockEntity)) {
+                        productDto.setAvailableQuantity(stockEntity.getAvailableQuantity());
+                    }else{
+                        productDto.setAvailableQuantity(0);
+                    }
                     productPagingDto.getProductList().add(productDto);
                     productPagingDto.setPage(productPage++);
                     if (countProductInPage == 4) {

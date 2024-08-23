@@ -61,10 +61,15 @@ public class AdminService extends BaseService {
                 if (urlName.isEmpty()) {
                     continue;
                 }
+                String icon = Const.getIconClass(path);
+                if (icon.isEmpty()) {
+                    continue;
+                }
                 UrlLevelDto urlLevelDto = new UrlLevelDto();
                 urlLevelDto.setUrl(parentPath.toString());
                 urlLevelDto.setLevel(index++);
                 urlLevelDto.setName(urlName);
+                urlLevelDto.setIcon(icon);
                 urlLevelDtos.add(urlLevelDto);
             }
         }

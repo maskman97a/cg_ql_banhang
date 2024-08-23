@@ -49,7 +49,7 @@
                                                                                              href="${pageContext.request.contextPath}/logout">Đăng xuất</a></span>
             </div>
         </div>
-        <div class="row" style="background-color:#758694">
+        <div class="row" style="background-color:#b1b0b0">
             <div class="col-2 p-3">
                 <div class="col-12" style="border-bottom: 1px solid #202020">
                     <span class="fs-3"><b>Danh mục</b></span>
@@ -61,7 +61,7 @@
                                     onclick="toggleMenu('div-product-manager-list')"
                                     aria-expanded="false"
                                     aria-controls="div-product-manager-list">
-                                Sản phẩm
+                                <i class="fas fa-box"></i> Sản phẩm
                             </button>
                         </div>
                         <div id="div-product-manager-list" class="collapse">
@@ -69,27 +69,28 @@
                                 <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
                                     <a href="${pageContext.request.contextPath}/admin/category" type="button"
                                        style="text-align:left"
-                                       class="btn">Quản lý loại sản phẩm</a>
+                                       class="btn">
+                                        <i class="fa-solid fa-list-check"></i> Quản lý loại sản phẩm</a>
                                 </div>
                                 <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
+
                                     <a href="${pageContext.request.contextPath}/admin/product" type="button"
                                        style="text-align:left"
-                                       class="btn">Quản lý sản phẩm</a>
+                                       class="btn"><i class="fa-solid fa-cube"></i> Quản lý sản phẩm</a>
                                 </div>
                                 <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
                                     <a href="${pageContext.request.contextPath}/admin/stock" type="button"
                                        style="text-align:left"
-                                       class="btn">Quản lý tồn kho</a>
+                                       class="btn"><i class="fa fa-warehouse"></i> Quản lý tồn kho</a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
                             <button class="btn" type="button"
                                     onclick="toggleMenu('div-order-manager-list')"
-                            <%--                                            onclick="toggleMenuV2('div-order-manager-list',this)"--%>
                                     aria-expanded="false"
                                     aria-controls="div-order-manager-list">
-                                Đơn hàng
+                                <i class="fa fa-shopping-cart"></i> Đơn hàng
                             </button>
                         </div>
                         <div id="div-order-manager-list" class="collapse">
@@ -97,7 +98,7 @@
                                 <div class="col-12" style="text-align: left; border-bottom: 1px solid black">
                                     <a href="${pageContext.request.contextPath}/admin/transaction" type="button"
                                        style="text-align:left"
-                                       class="btn">Quản lý đơn hàng</a>
+                                       class="btn"><i class="fa fa-clipboard-list"></i> Quản lý đơn hàng</a>
                                 </div>
                             </div>
                         </div>
@@ -131,11 +132,12 @@
             <div class="col-10 pt-3"
                  style="background-color: #F7E7DC; min-height: calc(100vh - 150px)">
                 <div class="col-12 text-success">
-                    <a href="${pageContext.request.contextPath}/" class="link text-success"><i class="fa-solid fa-house"></i>Trang
-                        chủ</a>
+                    <a href="${pageContext.request.contextPath}/" class="link text-success"><i
+                            class="fa-solid fa-house"></i>Trang chủ</a>
                     <c:forEach var="urlLevel" items="${urlLevelList}">
                         >
-                        <a class="link text-success" href="${urlLevel.url}"> ${urlLevel.name}</a>
+                        <a class="link text-success" href="${urlLevel.url}">
+                            <i class="${urlLevel.icon}"></i>${urlLevel.name}</a>
                     </c:forEach>
                 </div>
                 <div class=" pt-5">

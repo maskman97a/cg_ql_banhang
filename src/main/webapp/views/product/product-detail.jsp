@@ -32,21 +32,31 @@
                     <label>MÔ TẢ SẢN PHẨM: </label>
                 </div>
                 <div class="col-12">
-                    <textarea class="form-control rounded text-start" style="text-align: left!important;"
-                              readonly>${product.description}
+                    <textarea class="container-fluid rounded text-start pt-3"
+                              style="text-align: left !important; border:none"
+                              disabled
+                              readonly>${product.description != '' ? product.description : 'Chưa mô tả cho sản phẩm này!'}
                     </textarea>
                 </div>
             </div>
             <div class="col-12 mb-3">
                 <span class="text-success">
                 Số lượng tồn kho: ${product.availableQuantity}
-            </span>
+                </span>
             </div>
-            <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-toggle="modal"
-                   data-target="#modalOrder" onclick="initOrderForm()"/>
-            <input type="button" class="btn btn-secondary"
-                   value="Thêm vào giỏ"
-                   onclick="addToCart(${product.id}, 'product-image-${product.id}', ${product.availableQuantity})"/>
+            <c:if test="${product.availableQuantity <= 0}">
+                <div class="col-5 p-1 rounded text-center" style=" background-color: red">
+                    <span class="text-white"
+                          style="line-height: 40px">Sản phẩm tạm thời Hết hàng</span>
+                </div>
+            </c:if>
+            <c:if test="${product.availableQuantity > 0}">
+                <input id="btn-order" type="button" class="btn btn-primary" value="Đặt hàng" data-toggle="modal"
+                       data-target="#modalOrder" onclick="initOrderForm()"/>
+                <input type="button" class="btn btn-secondary"
+                       value="Thêm vào giỏ"
+                       onclick="addToCart(${product.id}, 'product-image-${product.id}', ${product.availableQuantity})"/>
+            </c:if>
         </div>
         <div class="col-12">
 

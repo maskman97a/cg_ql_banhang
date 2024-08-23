@@ -98,10 +98,9 @@
                                     </div>
                                 </div>
                                 <div class="col-12 ">
-                                    <c:if test="${product.description != null && !product.description.isEmpty()}">
-                                        <textarea class="form-control bg-body-secondary"
-                                                  style="font-size: 11px" readonly>${product.description}</textarea>
-                                    </c:if>
+                                    <textarea class="form-control bg-body-secondary" disabled
+                                              style="font-size: 11px"
+                                              readonly>${product.description != '' ? product.description : 'Chưa mô tả cho sản phẩm này!'}</textarea>
                                 </div>
                             </div>
                         </div>

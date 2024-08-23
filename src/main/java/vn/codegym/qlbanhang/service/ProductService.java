@@ -57,6 +57,8 @@ public class ProductService extends BaseService {
         StockEntity stockEntity = (StockEntity) stockModel.findOne(baseSearchDto);
         if (!DataUtil.isNullObject(stockEntity)) {
             productDto.setAvailableQuantity(stockEntity.getAvailableQuantity());
+        } else {
+            productDto.setAvailableQuantity(0);
         }
         req.setAttribute("product", productDto);
         req.setAttribute("showProductDetail", true);
